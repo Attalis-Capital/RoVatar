@@ -1,4 +1,13 @@
 -- @ScriptType: ModuleScript
+------------------------------->>>>>>>******
+-- Intentionally overriding Roblox's global warn and print functions.
+-- These no-op (do nothing) replacements are used to easily disable all debug output (warnings or prints)
+-- across this script without removing the original calls.
+-- This is a deliberate design choice for toggling debug output during development.
+local warn = function() end
+local print = function() end
+------------------------------->>>>>>>******
+
 local CS = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
 local RS = game:GetService("ReplicatedStorage")
@@ -39,11 +48,19 @@ local Talking = false
 
 ---------------------->>>>>>>>>>>>>........... Quests Public functions
 
+function RespawnNPC(Model)
+	local new = Model:Clone()
+	new:SetAttribute("Duplicate", true)
+	
+	new.Parent = Model.Parent
+	Model:Destroy()
+end
+
 function Claim(QData:CT.QuestDataType)
 	local plrData :CT.PlayerDataModel = _G.PlayerData
 	local plrQuestData :CT.PlayerQuestDataModel = _G.QuestsData
 
-	local Updated = CF:ClaimQuestReward(QData, plrData, plrQuestData)
+	local Updated = CF.PlayerData.ClaimQuestReward(QData, plrData, plrQuestData)
 
 	if Updated then
 		SFXHandler:Play(Constants.SFXs.Reward, true)
@@ -271,7 +288,7 @@ end
 function QuestGuy:StartConversation()
 	local level = player.Progression.LEVEL.Value
 	local plrData = _G.PlayerData
-	local hasGlider = CF:GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports[Constants.Items.Glider.Id]
+	local hasGlider = CF.PlayerQuestData.GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports[Constants.Items.Glider.Id]
 	
 	local GuideName = self.Instance.Name
 	QuestController.UpdateQuest:Fire(Constants.QuestObjectives.Combined, GuideName)
@@ -304,9 +321,9 @@ function QuestGuy:StartConversation()
 		else
 			--Special check for sequence-wise quests
 			if self.Type == Constants.QuestObjectives.Visit or self.Type == Constants.QuestObjectives.Combined then
-				local journeyQuestProgress = CF:GetJourneyQuestProgress(_G.PlayerData)
+				local journeyQuestProgress = CF.PlayerQuestData.GetJourneyQuestProgress(_G.PlayerData)
 
-				if journeyQuestProgress <= CF:TableLength(QuestModule.Quests.NPC.Combined) then
+				if journeyQuestProgress <= CF.Tables.TableLength(QuestModule.Quests.NPC.Combined) then
 					local assigner = Conversations.NPC.Combined[journeyQuestProgress].Assigner
 					if assigner == self.Instance.Name then
 						dialogues = Conversations.NPC.Combined[journeyQuestProgress]
@@ -316,8 +333,8 @@ function QuestGuy:StartConversation()
 					end
 				end
 			elseif (self.Type == Constants.QuestObjectives.Train) then
-				local kataraQuestProgress = CF:GetKataraQuestProgress(_G.PlayerData)
-				if kataraQuestProgress <= CF:TableLength(QuestModule.Quests.NPC.Train) then
+				local kataraQuestProgress = CF.PlayerQuestData.GetKataraQuestProgress(_G.PlayerData)
+				if kataraQuestProgress <= CF.Tables.TableLength(QuestModule.Quests.NPC.Train) then
 					dialogues = Conversations.NPC.Train[kataraQuestProgress]
 				else
 					CreateNoTaskToAssignDialogue(self)
@@ -375,7 +392,7 @@ function QuestGuy:SetupPrompt()
 			self.Humanoid.WalkSpeed = 10
 			self.Prompt.Enabled = false
 
-			--TODO Stop Dialogue
+			--Karna Stop Dialogue
 		end
 
 		if Talking then
@@ -392,7 +409,13 @@ end
 ---------------- Component functions
 function QuestGuy:Start()
 	print(self, "Quest Start!")
-
+	
+	-- Doing this because the moveTo run properly from client side and each npc can be easily handle on cliet.
+	if not self.Instance:GetAttribute("Duplicate") then
+		RespawnNPC(self.Instance)
+		return
+	end
+	
 	UIController = Knit.GetController("UIController")
 	QuestController = Knit.GetController("QuestController")
 
