@@ -126,7 +126,7 @@ function UpdateState(player, Data: CT.StatsDataType)
 end
 
 function UpdateStats(...)
-	CF:RefreshCombatControls(...)
+	CF.Combats.RefreshCombatControls(...)
 end
 
 function RefillHealth(plr :Player)
@@ -196,7 +196,7 @@ function SetupCharacter(player :Player, Respawn:boolean)
 		
 		if playerData.ActiveProfile then
 			
-			local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(playerData)
+			local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(playerData)
 			local LastMap = activeProfile.LastVisitedMap
 			local LastPos = activeProfile.LastVisitedCF
 			local CharId = activeProfile.CharacterId
@@ -211,7 +211,7 @@ function SetupCharacter(player :Player, Respawn:boolean)
 				Char = Model:Clone()
 				--Check if already same character is mounted
 				
-				CF:ApplyFullInventory(player.Character, activeProfile)
+				CF.Inventory.ApplyFullInventory(player.Character, activeProfile)
 				
 				player.Character.Humanoid.DisplayName = activeProfile.SlotName
 				
@@ -242,14 +242,14 @@ function SetupCharacter(player :Player, Respawn:boolean)
 				OrigChar = nil
 				
 				player.Character:PivotTo(cf)
-				--CF.PivotTo(, cf, true)
+				--CF.Transform.PivotTo(, cf, true)
 			else
 				local Constraint = RSAssets.Scripts.Constraint:Clone()
 				Constraint.Parent = player.Character
 			end
 			
 			
-			CF:ApplyFullInventory(Char, activeProfile)
+			CF.Inventory.ApplyFullInventory(Char, activeProfile)
 			
 			local Bool1 = Instance.new("BoolValue", player.Character)
 			Bool1.Name = "IsAttacking"
@@ -259,7 +259,7 @@ function SetupCharacter(player :Player, Respawn:boolean)
 
 			local SpawnP = SC_Maps[LastMap].Spawn:WaitForChild("Spawn")
 			
-			CF.PivotTo(player.Character, SpawnP, true)
+			CF.Transform.PivotTo(player.Character, SpawnP, true)
 			
 			SetupConstraints(player.Character)
 			CharacterService:OnGamePassStatusChange(player, playerData.GamePurchases.Passes) -- Bind Passes Rewards/Items with character to use. 
@@ -279,20 +279,20 @@ function RedirectToMap(player:Player)
 		end
 
 		if playerData.ActiveProfile then
-			local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(playerData)
+			local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(playerData)
 			local MapName = activeProfile.LastVisitedMap
 			local SpawnP = SC_Maps[MapName].Spawn:WaitForChild("Spawn")
 			local char = player.Character or player.CharacterAdded:Wait()
-			CF.PivotTo(char, SpawnP, true)
+			CF.Transform.PivotTo(char, SpawnP, true)
 			
-			CF:ApplyFullInventory(char, activeProfile)
+			CF.Inventory.ApplyFullInventory(char, activeProfile)
 			
 			CharacterService:OnGamePassStatusChange(player, playerData.GamePurchases.Passes)
 		else
 			local MapName = Constants.GameInventory.Maps.KioshiIsland.Id
 			local SpawnP = SC_Maps[MapName].Spawn:WaitForChild("Spawn")
 			local char = player.Character or player.CharacterAdded:Wait()
-			CF.PivotTo(char, SpawnP, true)
+			CF.Transform.PivotTo(char, SpawnP, true)
 		end
 	end)
 end
