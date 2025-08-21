@@ -214,7 +214,7 @@ function TutorialGuider:SetupPrompt()
 			self.Humanoid.WalkSpeed = 10
 			self.Prompt.Enabled = false
 			
-			--TODO Stop Dialogue
+			--Karna Stop Dialogue
 		end
 		
 		if Talking then
