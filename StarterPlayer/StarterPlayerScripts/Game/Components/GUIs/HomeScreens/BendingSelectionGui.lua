@@ -3,6 +3,7 @@ local CollectionService = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
 local RS = game:GetService("ReplicatedStorage")
 local RunS = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
 local Packages = RS.Packages
 local Knit = require(Packages.Knit)
@@ -55,22 +56,28 @@ local NotificationGui
 ----------------------***************** Private Methods **********************----------------------
 function OnLevelChanged(_plrData)
 	local myData :CT.PlayerDataModel = _plrData or _G.PlayerData
-	
+	print("[BendingSelectionGui] this is _plrData", _plrData)
 	if not myData  then
 		warn("No Data found in AbilitySelection[]");
 		return
 	end
 	
 	do --check unlocked abilities
-		local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(myData)
+		local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
 		local level = activeProfile.PlayerLevel
+		print("[BendingSelectionGui] activeProfile is", activeProfile, "level is", level)
 
 		local requiredLevel, itemId = GetNextAbilityRequiredLevel(level-1)
+		
+		print("[BendingSelectionGui] requiredLevel is", requiredLevel, "itemId is", itemId)
+		print("[BendingSelectionGui] Constants are", Constants.LevelAbilities, "and Constants.LevelAbilities[level]",Constants.LevelAbilities[level])
 
 		if requiredLevel then
-			local abilities = CF:TableLength(activeProfile.Data.EquippedInventory.Abilities)
+			local abilities = CF.Tables.TableLength(activeProfile.Data.EquippedInventory.Abilities)
+			print("[BendingSelectionGui] abilities are", abilities)
+			
 			--print(`SlotId: {activeProfile}, currentAb: {abilities}, requdLvl: {requiredLevel}, currLvl: {level}, abiliCount: {Constants.LevelAbilities[level]}`)
-			if level <= requiredLevel and Constants.LevelAbilities[level] and abilities < Constants.LevelAbilities[level] then
+			if requiredLevel and ((Constants.LevelAbilities[requiredLevel] - 1 > abilities) or (level <= requiredLevel and Constants.LevelAbilities[level] and abilities < Constants.LevelAbilities[level])) then
 				BendingSelectionGui:Toggle(true)
 			else
 				BendingSelectionGui:Toggle(false)
@@ -82,32 +89,41 @@ end
 function OnBendingSelected(itemData :CT.ItemDataType)
 	local myData :CT.PlayerDataModel = _G.PlayerData
 	
-	local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(myData)
+	local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
 	local level = activeProfile.PlayerLevel
-	local abilities = CF:TableLength(activeProfile.Data.EquippedInventory.Abilities)
-
-	if Constants.LevelAbilities[level] and abilities < Constants.LevelAbilities[level] then
-		CF:UpdateProfileInventory(myData, itemData, workspace.ServerTime.Value)
+	local abilities = CF.Tables.TableLength(activeProfile.Data.EquippedInventory.Abilities)
+	local requiredLevel, itemId = GetNextAbilityRequiredLevel(level-1)
+	
+	print("[BendingSelectionGui] inside onBendingSelected", Constants.LevelAbilities, requiredLevel,Constants.LevelAbilities[requiredLevel])
+	
+	--as requiredLevel nil comes when player has maxedout the level and need to have all the 4 bending abilities so we bypass the checks
+	if requiredLevel and ((Constants.LevelAbilities[requiredLevel] - 1 > abilities) or (level <= requiredLevel and Constants.LevelAbilities[level] and abilities < Constants.LevelAbilities[level])) then
+		CF.PlayerData.UpdateProfileInventory(myData, itemData, workspace.ServerTime.Value)
 		_G.PlayerDataStore:UpdateData(myData)
 		BendingSelectionGui:Toggle(false)
 		
 		NotificationGui:ShowMessage(NotificationData.AbilityUnlocked)
 		
-		if abilities == 3 then
+		task.delay(.5, function()
+			OnLevelChanged()
+		end)
+		
+		if abilities == 4 then
 			task.delay(1, function()
 				NotificationGui:ShowMessage(NotificationData.AllAbilitiesUnlocked)
 			end)
 		end
 	else
-		warn("Ability could not equipped, ", itemData.Id, Constants.LevelAbilities[level], abilities)
+		warn("Ability could not equipped, ", itemData.Id, Constants.LevelAbilities[level], abilities, requiredLevel, level)
 	end
+	
 end
 
 function Refresh()
 	local myData :CT.PlayerDataModel = _G.PlayerData
 	for _, item:ItemTemplate in pairs(ui.BaseFrame.Background.Elements:GetChildren()) do
 		if item:IsA("CanvasGroup") then
-			if CF:GetPlayerActiveProfile(myData).Data
+			if CF.PlayerQuestData.GetPlayerActiveProfile(myData).Data
 				.EquippedInventory.Abilities[item.Name] then
 				
 				item.Select.Image = " "
@@ -220,6 +236,11 @@ function BendingSelectionGui:InitButtons()
 			item.Select.Activated:Connect(function()
 				OnBendingSelected(itemData)
 			end)
+			
+			if UserInputService.TouchEnabled then
+				item.Select.Visible = true
+			else
+				
 			TWController:SubsHover(item.BG, nil, nil, function(hover)
 				if hover then
 					item.Select.Visible = true
@@ -227,6 +248,7 @@ function BendingSelectionGui:InitButtons()
 					item.Select.Visible = false				
 				end
 			end)
+			end
 		end
 		
 		_spawn(Constants.GameInventory.Abilities.AirBending)
