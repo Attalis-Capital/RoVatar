@@ -135,7 +135,7 @@ function AddXpInData()
 	if(tonumber(XpTextBox.Text)) then
 		local d :CustomTypes.PlayerDataModel = _G.PlayerData
 		
-		CommonFunctions:UpdateXpInPlayerData(d, tonumber(XpTextBox.Text))
+		CommonFunctions.PlayerData.UpdateXpInPlayerData(d, tonumber(XpTextBox.Text))
 		
 		_G.PlayerDataStore:UpdateData(d)
 		
