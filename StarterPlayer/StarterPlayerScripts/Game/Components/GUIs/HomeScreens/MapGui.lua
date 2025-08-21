@@ -53,7 +53,7 @@ local function MapButtonClick(MapId)
 	local Character = player.Character
 	if Character then
 		local cf = workspace.Scripted_Items.Maps[MapId].Spawn.Spawn
-		CF.PivotTo(player.Character, cf, true)
+		CF.Transform.PivotTo(player.Character, cf, true)
 	end
 end
 
@@ -152,8 +152,8 @@ function MapGui:BindEvents()
 			return
 		end
 		
-		local MapData = CF:GetPlayerActiveProfile(plrData).Data.EquippedInventory.Maps
-		local ActiveMapID = CF:GetPlayerActiveProfile(plrData).LastVisitedMap
+		local MapData = CF.PlayerQuestData.GetPlayerActiveProfile(plrData).Data.EquippedInventory.Maps
+		local ActiveMapID = CF.PlayerQuestData.GetPlayerActiveProfile(plrData).LastVisitedMap
 		
 		for _, Button:TextButton in pairs(ui.Map:GetChildren()) do
 			local ID = Button.Name
