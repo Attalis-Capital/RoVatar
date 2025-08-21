@@ -280,13 +280,13 @@ function BindValueChanged()
 	
 	local function _refreshAbilities(newData :CT.AbilitiesType)
 		UpdateButton(ui.HotbarFrame.ButtonsFrame.FireBending, 
-			CF:GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.FireBending.Id])
+			CF.PlayerQuestData.GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.FireBending.Id])
 		UpdateButton(ui.HotbarFrame.ButtonsFrame.AirBending,
-			CF:GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.AirBending.Id])
+			CF.PlayerQuestData.GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.AirBending.Id])
 		UpdateButton(ui.HotbarFrame.ButtonsFrame.EarthBending, 
-			CF:GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.EarthBending.Id])
+			CF.PlayerQuestData.GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.EarthBending.Id])
 		UpdateButton(ui.HotbarFrame.ButtonsFrame.WaterBending, 
-				CF:GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.WaterBending.Id])
+				CF.PlayerQuestData.GetPlayerActiveProfile(newData).Data.EquippedInventory.Abilities[Constants.GameInventory.Abilities.WaterBending.Id])
 	end
 	
 	local function _refreshWealth(newData:CT.ProfileSlotDataType)
@@ -318,7 +318,7 @@ function BindValueChanged()
 	
 	------ Init All Values
 	local plrData : CT.PlayerDataModel = _G.PlayerData
-	local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(plrData)
+	local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 	
 	----ABILITIES
 	--_refreshAbilities(activeProfile.Data.EquippedInventory.Abilities)
@@ -333,7 +333,7 @@ function BindValueChanged()
 	----- *** Level Change Update On UI
 	_G.PlayerDataStore:ListenSpecChange("AllProfiles", function(NewData, oldData, fullData:CT.PlayerDataModel)
 		if NewData then
-			local activeProfileData = CF:GetPlayerActiveProfile(fullData)
+			local activeProfileData = CF.PlayerQuestData.GetPlayerActiveProfile(fullData)
 			_refreshLevel(activeProfileData.PlayerLevel)
 			_refreshAbilities(fullData)
 			_refreshWealth(activeProfileData)
@@ -363,7 +363,7 @@ function BindValueChanged()
 		if (tick() - TICK) >= 5 then
 			TICK = tick()
 			local plrData :CT.PlayerDataModel = _G.PlayerData
-			local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(plrData)
+			local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 
 			activeProfile.Data.CombatStats.Stamina = StaminaValue.Value
 			activeProfile.Data.CombatStats.Strength = StrengthValue.Value
@@ -385,7 +385,7 @@ function BindValueChanged()
 			LastStrength = StrengthValue.Value
 			
 			local plrData :CT.PlayerDataModel = _G.PlayerData
-			local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(plrData)
+			local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 			
 			activeProfile.Data.CombatStats.Stamina = StaminaValue.Value
 			activeProfile.Data.CombatStats.Strength = StrengthValue.Value
