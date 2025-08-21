@@ -66,14 +66,14 @@ function BuyButtonClick(iData :CT.ItemDataType)
 		return
 	end
 	
-	local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(plrData)
+	local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 	
 	if activeProfile[iData.CurrencyType] >= iData.Price then
 		activeProfile[iData.CurrencyType] -= iData.Price
 		
 		plrData.AllProfiles[plrData.ActiveProfile] = activeProfile
 		
-		CF:UpdateProfileInventory(plrData, iData, true)
+		CF.PlayerData.UpdateProfileInventory(plrData, iData, true)
 		_G.PlayerDataStore:UpdateData(plrData)
 		
 		SFXHandler:Play(Constants.SFXs.Buy, true)
@@ -167,7 +167,7 @@ function ShopGui:BindEvents()
 	local function _refresh()
 		local plrData :CT.PlayerDataModel = _G.PlayerData
 		--print("Inventory.Transports ", plrData)
-		local Transports = CF:GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports
+		local Transports = CF.PlayerQuestData.GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports
 		
 		for _, ButtonCont in pairs(ui.ElementsContainer:GetChildren()) do
 			if ButtonCont:IsA("ImageLabel") then
@@ -191,7 +191,7 @@ function ShopGui:BindEvents()
 						ButtonCont.BuyButton.Gradiant.Enabled = true
 						ButtonCont.BuyButton.BackgroundColor3 = Color3.fromRGB(138, 138, 138)
 					else
-						local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(plrData)
+						local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 						local saving = activeProfile[itemData.CurrencyType]
 						if saving then
 							ButtonCont.BuyButton.Icon.Visible = true
