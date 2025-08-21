@@ -50,7 +50,7 @@ function refreshInventory()
 		for _, v in pairs(Items) do
 			
 			local plrData = _G.PlayerData
-			if not CF:DoesPlayerHaveItem(plrData, v) then
+			if not CF.PlayerData.DoesPlayerHaveItem(plrData, v) then
 				
 				if v.ProductId == 0 then continue end
 				
@@ -68,7 +68,7 @@ function refreshInventory()
 	if #playerInventories > 0 then
 		local mydata = _G.PlayerData
 		for _, outfitData in pairs(playerInventories) do
-			CF:UpdateInventory(mydata, outfitData, "MarketPlace")
+			CF.PlayerData.UpdateInventory(mydata, outfitData, "MarketPlace")
 		end
 		_G.PlayerDataStore:UpdateData(mydata)
 	end
