@@ -51,22 +51,22 @@ local function UpdateMapData(MapName:string, SpawnCF)
 
 		if plrData and plrData.ActiveProfile then
 
-			local ActiveProfile = CF:GetPlayerActiveProfile(plrData)
+			local ActiveProfile = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 			local lastVistedMap = ActiveProfile.LastVisitedMap
 			if lastVistedMap ~= MapName then
 				local D = {
 					LastVisitedMap = MapName,
-					LastVisitedCF = CF.WrapObject(SpawnCF)
+					LastVisitedCF = CF.Transform.WrapObject(SpawnCF)
 				}
 
-				CF:UpdateActiveProfile(plrData, D)
+				CF.PlayerData.UpdateActiveProfile(plrData, D)
 				if not ActiveProfile.Data.EquippedInventory.Maps[lastVistedMap] then
-					CF:UpdateInventory(plrData, Constants.GameInventory.Maps[lastVistedMap], true)
+					CF.PlayerData.UpdateInventory(plrData, Constants.GameInventory.Maps[lastVistedMap], true)
 					NotificationGui:ShowMessage(NotificationData.NewIsland)
 				end
 
 				if not ActiveProfile.Data.EquippedInventory.Maps[MapName] then
-					CF:UpdateInventory(plrData, Constants.GameInventory.Maps[MapName], true)
+					CF.PlayerData.UpdateInventory(plrData, Constants.GameInventory.Maps[MapName], true)
 					NotificationGui:ShowMessage(NotificationData.NewIsland)
 				else
 					print("Already Explored Place by ", MapName)
@@ -165,7 +165,7 @@ function UpdateMap:Start()
 		_G.PlayerDataStore:ListenSpecChange("AllProfiles", function(new, old, full)
 
 			local plrData: CustomTypes.PlayerDataModel = full
-			local activeProfile :CustomTypes.ProfileSlotDataType = CF:GetPlayerActiveProfile(plrData)
+			local activeProfile :CustomTypes.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 
 			if LastMap ~= activeProfile.LastVisitedMap then
 				LastMap = activeProfile.LastVisitedMap
