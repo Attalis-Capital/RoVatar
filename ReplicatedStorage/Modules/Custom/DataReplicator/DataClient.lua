@@ -1,4 +1,12 @@
 -- @ScriptType: ModuleScript
+------------------------------->>>>>>>******
+-- Intentionally overriding Roblox's global warn and print functions.
+-- These no-op (do nothing) replacements are used to easily disable all debug output (warnings or prints)
+-- across this script without removing the original calls.
+-- This is a deliberate design choice for toggling debug output during development.
+local warn = function() end
+local print = function() end
+------------------------------->>>>>>>******
 
 --[[--------------------------------------------------------------------------------------------------
 -------------------/ Structure \-------------------------
