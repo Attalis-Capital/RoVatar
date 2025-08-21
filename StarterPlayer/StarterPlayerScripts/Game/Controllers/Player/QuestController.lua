@@ -52,7 +52,7 @@ function UpdateQuest(Objective, Achivement)
 
 	if NPCQuestActive or DailyQuestActive or LevelQuestActive then
 
-		local IsUpdated, IsAchived, IsCompleted = CF:UpdateQuest(plrData, Objective, Achivement)	
+		local IsUpdated, IsAchived, IsCompleted = CF.Validations.UpdateQuest(plrData, Objective, Achivement)	
 
 		if IsUpdated then 
 			_G.PlayerDataStore:UpdateData(plrData)
@@ -143,8 +143,7 @@ function SpawnItem(ActiveQuest :CT.QuestDataType)
 			local prompt:BillboardGui = TargetItem.Handle.Prompt
 			prompt.Parent = player:WaitForChild("PlayerGui")
 			prompt.Adornee = TargetItem.Handle
-			----TODO: Place them on random places for the future
-
+			
 			local debris = {}
 			debris.Item = TargetItem
 			debris.Gui = prompt
