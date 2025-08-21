@@ -77,7 +77,7 @@ function BuyGamePass(iData:CT.ItemDataType)
 			local pDat = _G.PlayerData
 			--print("[TESTING PASSES] - ", _G.PlayerData.GamePurchases.Passes)
 			--print("GamePass purchase successfull:", iData.Name, pDat)
-			CF:UpdateInventory(pDat, iData, true)
+			CF.PlayerData.UpdateInventory(pDat, iData, true)
 			_G.PlayerDataStore:UpdateData(pDat)
 			
 			UpdateGamePasses()
