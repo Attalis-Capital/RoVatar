@@ -466,7 +466,7 @@ function NPCAI:Start()
 	self:FollowPath()
 	
 	if self.Type ~= "FireBender_MiniBoss" then
-		CF:RandomizeNPCAppearance(self.Instance)
+		CF.PlayerData.RandomizeNPCAppearance(self.Instance)
 	end
 
 end
@@ -484,7 +484,7 @@ function NPCAI:Idle()
 end
 
 function NPCAI:Attack()
-	if self.Instance then
+	if (self.Instance and not self.Instance:FindFirstChild("Ragdoll")) then
 		local damage = Helper.GetDamageRange(self.TargetPlayerLevel)
 		NPCModule.Attack(self.Instance, self.Humanoid, 'Combat', self.Accuracy, damage)
 	end
@@ -518,7 +518,7 @@ function NPCAI:Chasing(dt)
 	local Distance = (FinalPos - SelfPos).Magnitude
 	
 	-- Check attack range
-	if Distance < MinAttackDistance then
+	if Distance < MinAttackDistance and self.TargetHumanoid.Health > 0 and not self.Target:FindFirstChild("Ragdoll") then
 		if (tick() - self.TICK) > attackCoolDown then
 			self.TICK = tick()
 
@@ -526,7 +526,6 @@ function NPCAI:Chasing(dt)
 			if self.RecentDamage and math.random() <= self.BlockProbability and (tick() - self.BLOCKTICK) > blockCoolDown then
 				self.BLOCKTICK = tick()
 				self:ToggleBlock(true)
-				print("[BLOCK] ENABLED ")
 			end
 
 			-- Attack only if not blocking
@@ -613,6 +612,7 @@ function NPCAI:HeartbeatUpdate(Delta:number)
 		end
 		
 		if lastTarget ~= self.Target then
+			self.TargetHumanoid = self.Target.Humanoid
 			self.TargetPlayerLevel = Helper.GetTargetPlayerLevel(self.Target)
 			
 			if self.Type == "FireBender_MiniBoss" then
