@@ -83,7 +83,7 @@ local countDownFunction = function(Data:Data)
 	local QuestData : CT.QuestDataType = Data.QuestData
 	local Label = Data.Label
 
-	local remainingSeconds = CF:QuestRemainingSec(QuestData)
+	local remainingSeconds = CF.Validations.QuestRemainingSec(QuestData)
 
 	local hours = math.floor(remainingSeconds / 3600)
 	remainingSeconds = remainingSeconds % 3600
@@ -93,7 +93,7 @@ local countDownFunction = function(Data:Data)
 	local timeString = string.format("%02d:%02d:%02d", hours, minutes, seconds)
 	Label.Text = timeString
 
-	if not CF:IsQuestValid(QuestData) then
+	if not CF.Validations.IsQuestValid(QuestData) then
 		TimeOver(QuestData)
 	end
 
@@ -138,7 +138,7 @@ function TimeOver(OverQuest:CT.QuestDataType)
 					plrQuestData.NPCQuestData = {}
 				end
 			else
-				if (QuestData.Achieved) and (QuestData.Achieved >= CF:TableLength(QuestData.Targets)) then
+				if (QuestData.Achieved) and (QuestData.Achieved >= CF.Tables.TableLength(QuestData.Targets)) then
 					QuestData.IsCompleted = true
 				end
 
@@ -166,7 +166,7 @@ function TimeOver(OverQuest:CT.QuestDataType)
 					plrQuestData.LevelQuestData = {}
 				end
 			else
-				if (ActiveQuest.Achieved) and (ActiveQuest.Achieved >= CF:TableLength(ActiveQuest.Targets)) then
+				if (ActiveQuest.Achieved) and (ActiveQuest.Achieved >= CF.Tables.TableLength(ActiveQuest.Targets)) then
 
 					ActiveQuest.IsCompleted = true
 				end
@@ -189,7 +189,7 @@ function ClaimButton(QData:CT.QuestDataType)
 	local plrQuestData :CT.PlayerQuestDataModel = _G.QuestsData
 
 	--print('[Quest] Claiming...', QData, plrQuestData, plrData)
-	local Updated = CF:ClaimQuestReward(QData, plrData, plrQuestData)
+	local Updated = CF.PlayerData.ClaimQuestReward(QData, plrData, plrQuestData)
 
 	if Updated then
 
@@ -298,8 +298,10 @@ local function _updateCell(Cell : QuestFrame, QuestData : CT.QuestDataType, IsDa
 			reward = ui.Templates.Gold:Clone()
 		elseif Value.Type == Constants.QuestRewardType.Gems then
 			reward = ui.Templates.Gems:Clone()
+		elseif Value.Type == Constants.QuestRewardType.LevelUp then
+			reward = ui.Templates.LevelUp:Clone()
 		end
-
+		
 		reward.Visible = true
 		reward.Parent = Cell.RewardsFrame
 		reward.Amount.Text = "+"..Value.Value
@@ -338,7 +340,7 @@ local function _updateCell(Cell : QuestFrame, QuestData : CT.QuestDataType, IsDa
 		Cell.ProgressTxt.Visible = true
 		Cell.ClaimButton.Visible = false
 
-		Cell.ProgressTxt.Text = math.ceil(((QuestData.Achieved or 0) / CF:TableLength(QuestData.Targets)) * 100) .. "% COMPLETE"
+		Cell.ProgressTxt.Text = math.ceil(((QuestData.Achieved or 0) / CF.Tables.TableLength(QuestData.Targets)) * 100) .. "% COMPLETE"
 
 		---- Setup Remaining Time
 		local Data : Data = {}
@@ -603,7 +605,7 @@ function QuestGui:Toggle(enable:boolean)
 	ui.BaseFrame.Visible = enable
 
 	if enable then
-		Refresh() -- TODO: Call with Quest Data Update Event. 
+		Refresh() -- Karna: Call with Quest Data Update Event. 
 	end
 
 end
