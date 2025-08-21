@@ -69,6 +69,11 @@ local BasePower = 1
 local SprintPower = 2
 
 local Power = BasePower
+
+-- To manage slowly acceleration at start.
+local CurrentSpeed = 0
+local Acceleration = 5 -- adjust for faster/slower ramp-up
+
 ------------- Helper ------------
 
 local Animations = {
@@ -378,11 +383,28 @@ function Glider:HeartbeatUpdate(dt)
 	
 	if self.Engine then
 		
-		Speed = self.SpeedValue.Value
+		--Speed = self.SpeedValue.Value
 		
-		Speed *= Power
+		--Speed *= Power
 		
-		Speed = math.clamp(Speed, MinSpeed, MaxSpeed)
+		--Speed = math.clamp(Speed, MinSpeed, MaxSpeed)
+		
+		
+		local targetSpeed = self.SpeedValue.Value * Power
+		targetSpeed = math.clamp(targetSpeed, MinSpeed, MaxSpeed)
+
+		-- Smooth acceleration towards targetSpeed
+		if CurrentSpeed < targetSpeed then
+			CurrentSpeed = math.min(CurrentSpeed + Acceleration * dt, targetSpeed)
+		elseif CurrentSpeed > targetSpeed then
+			CurrentSpeed = math.max(CurrentSpeed - Acceleration * dt, targetSpeed)
+		end
+
+		-- Use CurrentSpeed instead of instant speed
+		Speed = CurrentSpeed
+		
+		
+		
 		
 		self.Engine(dt)
 	end
