@@ -84,7 +84,7 @@ function GetQuest()
 	local function _processQuest(weakDay)
 		local Collection = QuestProbabilities[weakDay]
 		local Type = Collection[math.random(1, #Collection)]
-		local Quest = CF:RandomValue(QuestModule.Quests.Daily[Type])
+		local Quest = CF.Tables.RandomValue(QuestModule.Quests.Daily[Type])
 		if not Quest or Quest == {} then
 			warn("[Error] Quest could not finalized≠!")
 			Quest = QuestModule.Quests.Daily.Visit.KioshiIsland
@@ -125,7 +125,7 @@ function UpdateQuest(player, Objective, Achivement)
 	end
 	_G.PlayerDataStore:GetData(player, function(plrData:CT.PlayerDataModel)
 		--PlaySound(player, IsAchieved, IsCompleted)
-		local IsUpdated, IsAchived, IsCompleted = CF:UpdateQuest(plrData, Objective, Achivement)
+		local IsUpdated, IsAchived, IsCompleted = CF.Validations.UpdateQuest(plrData, Objective, Achivement)
 
 		PlaySound(player, IsAchived, IsCompleted)
 		if IsUpdated then
@@ -136,7 +136,7 @@ function UpdateQuest(player, Objective, Achivement)
 end
 
 local function DailyQuest(plrData:CT.PlayerDataModel)
-	local activeProfile = CF:GetPlayerActiveProfile(plrData)
+	local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 	if not IsSameDay(activeProfile.LastUpdatedOn) or not activeProfile.Data.Quests.DailyQuestData.Id then
 		--Karna: * Check for old quest if Completed and not claimed then credit reward
 
@@ -170,7 +170,7 @@ function QuestDataService:OnPlayerAdded(player:Player, plrData:CT.PlayerDataMode
 
 	--Check joining and data
 	warn("Player Joined Quest DATA :	",plrData)
-	local activeProfile = CF:GetPlayerActiveProfile(plrData)
+	local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 	
 	---- Check and update NPC quests (Durations and Claiming...)
 	if activeProfile.Data.Quests.TutorialQuestData.IsCompleted then
