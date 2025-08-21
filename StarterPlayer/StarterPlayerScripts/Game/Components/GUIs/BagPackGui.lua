@@ -97,7 +97,7 @@ function Bind_OnChanges()
 		end
 		--print("[plrData ]", plrData)
 		_spawn(plrData.OwnedInventory.Transports)
-		_spawn(CF:GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports)
+		_spawn(CF.PlayerQuestData.GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports)
 	end
 
 	_G.PlayerDataStore:ListenSpecChange("OwnedInventory", function(newData , old, full) -- Transports Data
