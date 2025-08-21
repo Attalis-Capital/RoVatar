@@ -46,12 +46,20 @@ end
 player.CharacterAdded:Connect(OnCharacterAdded)
 ---------------------->>>>>>>>>>>>>........... Quests Public functions
 
+function RespawnNPC(Model)
+	local new = Model:Clone()
+	new:SetAttribute("Duplicate", true)
+	
+	new.Parent = Model.Parent
+	Model:Destroy()
+end
+
 function Claim(QData:CT.QuestDataType)
 	local plrData :CT.PlayerDataModel = _G.PlayerData
 	local plrQuestData :CT.PlayerQuestDataModel = _G.QuestsData
 
 	--print('[Quest] Claiming...', QData, plrQuestData, plrData)
-	local Updated = CF:ClaimQuestReward(QData, plrData, plrQuestData)
+	local Updated = CF.PlayerData.ClaimQuestReward(QData, plrData, plrQuestData)
 
 	if Updated then
 		SFXHandler:Play(Constants.SFXs.Reward, true)
@@ -205,7 +213,7 @@ local function CreateNoTaskToAssignDialogue(self)
 	local DialogueData :CustomTypes.DialogueDataType = {}
 	DialogueData.Narrator = self.Instance.Name
 
-	if CF:GetJourneyQuestProgress(_G.PlayerData) > CF:TableLength(QuestModule.Quests.NPC.Combined) then
+	if CF.PlayerQuestData.GetJourneyQuestProgress(_G.PlayerData) > CF.Tables.TableLength(QuestModule.Quests.NPC.Combined) then
 		DialogueData.Message = "I don't have any quests for you right now. You can speak to the Pink Guiders for more tasks."
 	else
 		DialogueData.Message = "I don't have any quests for you right now. You can speak to the Journey Master for more tasks."
@@ -255,7 +263,7 @@ function LevelGuider:StartConversation()
 			if conversation then
 				local plrData = _G.PlayerData
 				if Level == 6 then
-					if CF:GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports[Constants.Items.Glider.Id] then
+					if CF.PlayerQuestData.GetPlayerActiveProfile(plrData).Data.EquippedInventory.Transports[Constants.Items.Glider.Id] then
 						CreateNoTaskToAssignDialogue(self)
 					else
 						CreateDialogue(self, conversation)
@@ -346,7 +354,7 @@ function LevelGuider:SetupPrompt()
 			self.Humanoid.WalkSpeed = 10
 			self.Prompt.Enabled = false
 
-			--TODO Stop Dialogue
+			--Karna Stop Dialogue
 		end
 
 		if Talking then
@@ -363,8 +371,15 @@ end
 
 ---------------- Component functions 
 function LevelGuider:Start()
-	print(self, "Quest Start!")
+	
+	-- Doing this because the moveTo run properly from client side and each npc can be easily handle on client.
+	if not self.Instance:GetAttribute("Duplicate") then
+		RespawnNPC(self.Instance)
+		return
+	end
 
+	print(self, "Quest Start!")
+	
 	QuestDataService = Knit.GetService("QuestDataService")
 	MultiplaceHandlerService = Knit.GetService("MultiplaceHandlerService")
 	UIController = Knit.GetController("UIController")
