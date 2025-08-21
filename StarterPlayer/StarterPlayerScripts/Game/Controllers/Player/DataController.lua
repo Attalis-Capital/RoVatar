@@ -32,17 +32,17 @@ local function Init()
 	
 	_G.PlayerDataStore:ListenChange(function(data:CT.PlayerDataModel)
 		--warn("[DataChanged] CHange listened PlayerData")
-		_G.PlayerData = CF:CloneTable(data) --Only use this to get the values (use _G.PlayerDataStore to set/update the data)
-		_G.QuestsData = CF:CloneTable(data.AllProfiles[data.ActiveProfile].Data.Quests)
+		_G.PlayerData = CF.Tables.CloneTable(data) --Only use this to get the values (use _G.PlayerDataStore to set/update the data)
+		_G.QuestsData = CF.Tables.CloneTable(data.AllProfiles[data.ActiveProfile].Data.Quests)
 	end)
 	
 	--_G.QuestsDataStore:ListenChange(function(data)
 	--	warn("[DataChanged] CHange lifstened QuestData")
-	--	_G.QuestsData = CF:CloneTable(data) --Only use this to get the values (use _G.QuestsDataStore to set/update the data)
+	--	_G.QuestsData = CF.Tables.CloneTable(data) --Only use this to get the values (use _G.QuestsDataStore to set/update the data)
 	--end)
 	
-	--_G.PlayerData = CF:GetPlayerDataModel()
-	--_G.QuestsData = CF:GetPlayerQuestDataModel()
+	--_G.PlayerData = CF.PlayerData.GetPlayerDataModel()
+	--_G.QuestsData = CF.PlayerQuestData.GetPlayerQuestDataModel()
 end
 
 Init()
