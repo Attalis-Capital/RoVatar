@@ -155,7 +155,7 @@ end
 
 local function _refresh(Data:CT.SettingsDataType)
 	--print("Setting refresh:", Data, _G.PlayerData)
-	SettingData = Data or CF:GetPlayerActiveProfile(_G.PlayerData).Data.Settings
+	SettingData = Data or CF.PlayerQuestData.GetPlayerActiveProfile(_G.PlayerData).Data.Settings
 
 	SfxToggle(true)
 	ShadowToggle(true)
@@ -208,7 +208,7 @@ function SettingsGui:Start()
 		_refresh()
 	end)
 	_G.PlayerDataStore:ListenSpecChange("AllProfiles", function(NewData, oldData, fullData:CT.PlayerDataModel)
-		local activeProfile :CT.ProfileSlotDataType = CF:GetPlayerActiveProfile(fullData)
+		local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(fullData)
 		_refresh(activeProfile.Data.Settings)
 	end)
 	
