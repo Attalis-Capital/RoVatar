@@ -145,16 +145,16 @@ local function onInvButtonClick(_itemData :CT.ItemDataType)
 	--print("profileSlotData -> Before : ", profileSlotData.Data.EquippedInventory.Styling)
 
 	if _itemData.ProductId then
-		local having = CF:DoesPlayerHaveItem(_G.PlayerData, _itemData)
+		local having = CF.PlayerData.DoesPlayerHaveItem(_G.PlayerData, _itemData)
 		--print("Having : ", having, _G.PlayerData, _itemData)
 		if having then
 			selectedItem = nil
 			ui.CustomizeF.Buy.Visible = false
 
-			if CF:DoesPlayerEquipItem(profileSlotData, _itemData) then
-				CF:EquipItem(profileSlotData, _itemData, false)
+			if CF.PlayerData.DoesPlayerEquipItem(profileSlotData, _itemData) then
+				CF.PlayerData.EquipItem(profileSlotData, _itemData, false)
 			else
-				CF:EquipItem(profileSlotData, _itemData, true)
+				CF.PlayerData.EquipItem(profileSlotData, _itemData, true)
 			end
 
 			_G.SelectedSlotData:Set(profileSlotData, true)
@@ -172,10 +172,10 @@ local function onInvButtonClick(_itemData :CT.ItemDataType)
 		selectedItem = nil
 		ui.CustomizeF.Buy.Visible = false
 
-		if CF:DoesPlayerEquipItem(profileSlotData, _itemData) then
-			CF:EquipItem(profileSlotData, _itemData, false)
+		if CF.PlayerData.DoesPlayerEquipItem(profileSlotData, _itemData) then
+			CF.PlayerData.EquipItem(profileSlotData, _itemData, false)
 		else
-			CF:EquipItem(profileSlotData, _itemData, true)
+			CF.PlayerData.EquipItem(profileSlotData, _itemData, true)
 		end
 
 		_G.SelectedSlotData:Set(profileSlotData, true)
@@ -183,10 +183,10 @@ local function onInvButtonClick(_itemData :CT.ItemDataType)
 
 	if ui.CustomizeF.Buy.Visible == true then
 		_G.UnPurchasedItem = _itemData.ItemType
-		CF:ApplyInventory(workspace.Scripted_Items.LoadGame.Default, _itemData, true)
+		CF.Inventory.ApplyInventory(workspace.Scripted_Items.LoadGame.Default, _itemData, true)
 	else
 		_G.UnPurchasedItem = nil
-		CF:ApplyFullInventory(workspace.Scripted_Items.LoadGame.Default, profileSlotData)
+		CF.Inventory.ApplyFullInventory(workspace.Scripted_Items.LoadGame.Default, profileSlotData)
 	end
 	
 	refreshOwnItems()
@@ -203,7 +203,7 @@ local function onBuyButtonClick()
 			if(itemData.Id == _itemData.Id) then
 				conn:Disconnect()
 				local pDat = _G.PlayerData
-				CF:UpdateInventory(pDat, _itemData, "Purchase")
+				CF.PlayerData.UpdateInventory(pDat, _itemData, "Purchase")
 				--print("[123]Customization purchase successfull:", _itemData.Name, pDat, pDat)
 				_G.PlayerDataStore:UpdateData(pDat)
 				
