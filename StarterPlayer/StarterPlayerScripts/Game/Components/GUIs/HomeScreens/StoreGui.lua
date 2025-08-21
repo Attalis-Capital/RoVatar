@@ -74,11 +74,11 @@ function BuyButtonClick(packF:ImageLabel)
 			local pDat = _G.PlayerData
 			
 			if(iData.ProductCategory == Constants.ProductCategories.Gems) then
-				CF:UpateGemsInPlayerData(pDat, iData.Amount)
+				CF.PlayerData.UpateGemsInPlayerData(pDat, iData.Amount)
 				
 			elseif(iData.ProductCategory == Constants.ProductCategories.Gold) then
 				
-				CF:UpdateGoldInPlayerData(pDat, iData.Amount)
+				CF.PlayerData.UpdateGoldInPlayerData(pDat, iData.Amount)
 			end
 			
 			_G.PlayerDataStore:UpdateData(pDat)
