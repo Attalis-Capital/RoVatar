@@ -243,7 +243,7 @@ function module:Setup(character)
 	character.Humanoid.AutomaticScalingEnabled = false
 	character.Humanoid.BreakJointsOnDeath = false
 	character.HumanoidRootPart.CanCollide = false
-	character.HumanoidRootPart.CustomPhysicalProperties = PhysicalProperties.new(0,0,0,0,0)
+	character.HumanoidRootPart.CustomPhysicalProperties = PhysicalProperties.new(0.0001,0,0,0,0)
 	character.HumanoidRootPart.CollisionGroup = "Players"
 	--print(character.Name)
 	--print(character.HumanoidRootPart.CollisionGroup)
