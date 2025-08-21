@@ -23,6 +23,8 @@ local Positions = workspace.Scripted_Items.Positions
 local DraggerModel = Models.Other.Dragger
 local CharModel = nil
 
+local DurationOfErrorMessage = 5
+
 -- UI
 type SLOT = {
 	DataF :{
@@ -77,6 +79,48 @@ local function textBoxFocusLost()
 	_G.SelectedSlotData:Set(profileSlotData, true)
 end
 
+local shake_Conn = nil
+local function shakeLabel(label, duration, magnitude)
+	if not label or not label:IsA("GuiObject") then return end
+	local freq = 40
+	duration = duration or 0.35
+	magnitude = magnitude or 8
+	-- capture current text if user wants to clear later
+	local originalText = label.Text
+
+	-- cancel any existing shake for this label
+	if shake_Conn and typeof(shake_Conn) == "RBXScriptConnection" then
+		shake_Conn:Disconnect()
+		shake_Conn = nil
+	end
+
+	local targetPos = label.Position
+	local elapsed = 0
+
+	shake_Conn = RunS.Heartbeat:Connect(function(dt)
+		elapsed = elapsed + dt
+		local progress = math.clamp(elapsed / duration, 0, 1)
+		local damping = 1 - progress
+		local angle = elapsed * freq * 2 * math.pi
+		local offset = math.sin(angle) * magnitude * damping
+
+		-- apply horizontal offset
+		label.Position = UDim2.new(
+			targetPos.X.Scale, targetPos.X.Offset + offset,
+			targetPos.Y.Scale, targetPos.Y.Offset
+		)
+
+		if progress >= 1 then
+			-- restore and cleanup
+			if shake_Conn then
+				shake_Conn:Disconnect()
+				shake_Conn = nil
+			end
+			label.Position = targetPos
+		end
+	end)
+end
+
 local thread = nil
 function check()
 	
@@ -90,7 +134,7 @@ function check()
 	if _G.UnPurchasedItem then
 		local err = `Buy or unequip {_G.UnPurchasedItem} to proceed.`
 		label.Text = err
-		thread = task.delay(3, function()
+		thread = task.delay(DurationOfErrorMessage, function()
 			if label.Text == err then
 				label.Text = ""
 			end
@@ -101,18 +145,19 @@ function check()
 	local newName = ui.CreateF.Container.TextBox.Text
 
 	-- Refrence Issue: Need to clone orginal table
-	local plrData :CT.PlayerDataModel = CF:CloneTable(_G.PlayerData)
+	local plrData :CT.PlayerDataModel = CF.Tables.CloneTable(_G.PlayerData)
 
 	local slot_Data :CT.ProfileSlotDataType = _G.SelectedSlotData:Get()
 	local slot_id = slot_Data.SlotId
 
-	local valid, err = CF:ValidateSlotName(plrData.AllProfiles, newName, slot_id)
+	local valid, err = CF.PlayerData.ValidateSlotName(plrData.AllProfiles, newName, slot_id)
 
 	local Label =  ui.CreateF.Container.Note
 	Label.Text = " "
 	if(not valid) then
 		Label.Text = err
-		task.delay(3, function()
+		shakeLabel(Label, 0.5, 8)
+		task.delay(5, function()
 			if Label.Text == err then
 				Label.Text = ""
 			end
@@ -125,7 +170,7 @@ function check()
 			plrData.AllProfiles[slot_id].Data.EquippedInventory.Styling = slot_Data.Data.EquippedInventory.Styling
 
 		else
-			CF:CreateNewSlot(plrData, newName)
+			CF.PlayerData.CreateNewSlot(plrData, newName)
 			plrData.AllProfiles[plrData.ActiveProfile].Data.EquippedInventory.Styling = slot_Data.Data.EquippedInventory.Styling
 			_G.SelectedSlotData:Set(plrData.AllProfiles[plrData.ActiveProfile])
 		end
@@ -134,6 +179,7 @@ function check()
 
 		return true
 	end
+	
 	return false
 end
 
@@ -172,8 +218,8 @@ local function delete()
 	local data :CT.NotificationDataType = NotificationData.DeleteProfile_Confirmation
 
 	NotificationGui:ShowMessage(data, function()
-		local plrData :CT.PlayerDataModel = CF:CloneTable(_G.PlayerData)
-		if CF:TableLength(plrData.AllProfiles) <= 1 then
+		local plrData :CT.PlayerDataModel = CF.Tables.CloneTable(_G.PlayerData)
+		if CF.Tables.TableLength(plrData.AllProfiles) <= 1 then
 			warn("[[LoadGame]] [Error] Can't delete")
 			return
 		end
@@ -182,7 +228,7 @@ local function delete()
 		if(id) then
 			local SlotId = id
 			if plrData.ActiveProfile == SlotId then
-				--TODO: Can't delete the active slot.
+				--Karna: Can't delete the active slot.
 				warn("Can't delete the active slot")
 
 				local nextAssumedProfile = nil
@@ -207,7 +253,7 @@ local function delete()
 			end
 		end
 
-		--TODO: Show warning popup for confirmation
+		--Karna: Show warning popup for confirmation
 		_G.PlayerDataStore:UpdateData(plrData)
 
 		refreshSlots()
@@ -248,9 +294,9 @@ local function updateSelectedSlot(_data :CT.ProfileSlotDataType)
 	-- Wearing full inventory
 	
 	if _data then
-		CF:ApplyFullInventory(CharModel, _data)
+		CF.Inventory.ApplyFullInventory(CharModel, _data)
 	else
-		CF:ApplyFullInventory(CharModel, _G.SelectedSlotData:Get())
+		CF.Inventory.ApplyFullInventory(CharModel, _G.SelectedSlotData:Get())
 	end
 end
 
@@ -267,7 +313,7 @@ function refreshSlots()
 		end
 	end
 
-	local profiles = CF:SortTable(d.AllProfiles, "LastUpdatedOn")
+	local profiles = CF.Tables.SortTable(d.AllProfiles, "LastUpdatedOn")
 
 	local order = 1
 	for i, data :CT.ProfileSlotDataType in pairs(profiles) do
@@ -315,7 +361,7 @@ function refreshSlots()
 			TWController:SubsClick(create_Entry)
 
 			create_Entry.Activated:Connect(function()
-				local slotDataModel = CF:GetSlotDataModel()
+				local slotDataModel = CF.PlayerData.GetSlotDataModel()
 				_G.SelectedSlotData:Set(slotDataModel, true)
 			end)
 		end
@@ -326,11 +372,11 @@ function refreshSlots()
 		if NextEntry.Visible then
 			_G.SelectedSlotData:Set(d.AllProfiles[activeSlotId], true)		
 		else
-			local slotDataModel = CF:GetSlotDataModel()
+			local slotDataModel = CF.PlayerData.GetSlotDataModel()
 			_G.SelectedSlotData:Set(slotDataModel, true)		
 		end
 	else
-		--CF:ApplyFullInventory(CharModel, activeSlot)
+		--CF.Inventor.Table.Tables...ApplyFullInventory(CharModel, activeSlot)
 		warn("Slot entry not found", activeSlotId)
 	end
 
@@ -349,7 +395,7 @@ local customFunc = {
 			CharModel.Parent = workspace.Scripted_Items.LoadGame
 			CharModel:PivotTo(Positions.Character[1].CFrame)
 
-			--TODO: Play Idle animation 
+			--Karna: Play Idle animation 
 
 			local animator : Animator = CharModel:WaitForChild('Humanoid').Animator
 			local animation = Instance.new('Animation')
