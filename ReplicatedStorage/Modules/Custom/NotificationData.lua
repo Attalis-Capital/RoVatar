@@ -19,7 +19,7 @@ NotificationData.EnergyDepleted_Alert = {
 
 NotificationData.InsufficientMana = {
 	Title = "Not Enough Mana",
-	Description = "You need more mana to Perform.",
+	Description = `You need more mana to Perform. Press "N" to recover.`,
 	AutoHideTime = 4,
 	Type = CD.NotificationType.Notification,
 }
