@@ -24,7 +24,7 @@ local QuestDataService
 local NotificationService
 
 -------------- Data Store ##
-_G.PlayerDataStore = DataReplicator.SetupStore(Constants.DataStores.PlayerData, true, CF:GetPlayerDataModel())
+_G.PlayerDataStore = DataReplicator.SetupStore(Constants.DataStores.PlayerData, true, CF.PlayerData.GetPlayerDataModel())
 -------------- Data Store ##
 
 ---
@@ -62,20 +62,20 @@ end
 
 function CheckDataStoreVersion(playerData :CustomTypes.PlayerDataModel)
 
-	local activeDataStoreVersion = CF:GetActiveDataStoreVersion()
+	local activeDataStoreVersion = CF.PlayerData.GetActiveDataStoreVersion()
 	if(playerData.LoginData.MyDataStoreVersion == nil or 
 		playerData.LoginData.MyDataStoreVersion.GameDataStoreVersion ~= activeDataStoreVersion.GameDataStoreVersion) then
 
-		playerData = CF:CheckAndUpdatePlayerData(playerData)
+		playerData = CF.PlayerData.CheckAndUpdatePlayerData(playerData)
 		
 		if DEBUG then
 			print(playerData.LoginData.MyDataStoreVersion.GameDataStoreVersion,"checking active:",activeDataStoreVersion)
 		end
 	end
 	if DEBUG then
-		print("Active Data :", playerData, activeDataStoreVersion, CF:GetActiveDataStoreVersion())
+		print("Active Data :", playerData, activeDataStoreVersion, CF.PlayerData.GetActiveDataStoreVersion())
 	end
-	playerData.LoginData.MyDataStoreVersion = CF:GetActiveDataStoreVersion()
+	playerData.LoginData.MyDataStoreVersion = CF.PlayerData.GetActiveDataStoreVersion()
 	
 	return playerData
 end
@@ -89,10 +89,10 @@ function onPlayerAdded(player:Player)
 		if (isFirstTime) or (playerData.LoginData == nil) then
 			--First time user :)
 			
-			playerData = CF:GetPlayerDataModel()
+			playerData = CF.PlayerData.GetPlayerDataModel()
 			
-			CF:UpdateInventory(playerData, Constants.GameInventory.Maps.KioshiIsland, true)
-			--CF:CreateNewSlot(playerData)
+			CF.PlayerData.UpdateInventory(playerData, Constants.GameInventory.Maps.KioshiIsland, true)
+			--CF.PlayerData.CreateNewSlot(playerData)
 		else
 			--not first time
 		end
@@ -111,7 +111,7 @@ function onPlayerAdded(player:Player)
 		-----
 
 		-- Profile Data
-		CF:RefreshCombatControls(player, playerData.AllProfiles[playerData.ActiveProfile].Data.CombatStats)
+		CF.Combats.RefreshCombatControls(player, playerData.AllProfiles[playerData.ActiveProfile].Data.CombatStats)
 		
 		player.Progression.EXP.Value = playerData.AllProfiles[playerData.ActiveProfile].XP
 		player.Progression.LEVEL.Value = playerData.AllProfiles[playerData.ActiveProfile].PlayerLevel
@@ -121,7 +121,7 @@ function onPlayerAdded(player:Player)
 		playerData.GamePurchases = GamePurchases
 		
 		-- Refresh Inventory for Gamepass Items
-		CF:UpdateInventory(playerData, Constants.GameInventory.Transports.BlueGlider, 
+		CF.PlayerData.UpdateInventory(playerData, Constants.GameInventory.Transports.BlueGlider, 
 			playerData.GamePurchases.Passes[Constants.GameInventory.Transports.BlueGlider.Id])
 		
 		playerData.LoginData.LastLogin = workspace.ServerTime.Value --workspace:GetServerTimeNow()
@@ -164,8 +164,8 @@ function onPlayerAdded(player:Player)
 			local XPTOADD = CurrentEXP.Value - OldEXP
 
 			_G.PlayerDataStore:GetData(player, function(playerData:CustomTypes.PlayerDataModel)
-				CF:UpdateXpInPlayerData(playerData, XPTOADD)
-				local activeProfile = CF:GetPlayerActiveProfile(playerData)
+				CF.PlayerData.UpdateXpInPlayerData(playerData, XPTOADD)
+				local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(playerData)
 				CurrentEXP.Value = activeProfile.XP
 				player.Progression.LEVEL.Value = activeProfile.PlayerLevel
 				
@@ -188,13 +188,13 @@ end
 function PlayerDataService:UpdateDeath(Player : Player)
 	_G.PlayerDataStore:GetData(Player, function(playerData :CT.PlayerDataModel)
 		if playerData then
-			local activeProfile = CF:GetPlayerActiveProfile(playerData)
+			local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(playerData)
 
 			local Deaths = activeProfile.Data.PlayerStats.Deaths
 			local U = {
 				["Data.PlayerStats.Deaths"] = Deaths + 1
 			}
-			CF:UpdateActiveProfile(playerData, U)
+			CF.PlayerData.UpdateActiveProfile(playerData, U)
 			
 			_G.PlayerDataStore:UpdateData(Player, playerData)
 			
@@ -210,23 +210,22 @@ end
 function PlayerDataService:UpdateKills(Player)
 	_G.PlayerDataStore:GetData(Player, function(playerData :CT.PlayerDataModel)
 		if playerData then
-
-			local Kills = CF:GetPlayerActiveProfile(playerData).Data.PlayerStats.Kills
+			local Kills = CF.PlayerQuestData.GetPlayerActiveProfile(playerData).Data.PlayerStats.Kills
 			local U = {
 				["Data.PlayerStats.Kills"] = Kills + 1
 			}
-			CF:UpdateActiveProfile(playerData, U)
+			CF.PlayerData.UpdateActiveProfile(playerData, U)
 			
 			if (Kills+1) == 1 then
-				CF:UpdateGoldInPlayerData(playerData, 100)		
+				CF.PlayerData.UpdateGoldInPlayerData(playerData, 100)		
 				VFXHandler:PlayOnClient(Player, Constants.VFXs.RewardCoin)
 				SFXHandler.Client.PlayAlong(Player, Constants.SFXs.Reward, Player.Character)
 			elseif (Kills+1) == 2 then
-				CF:UpdateXpInPlayerData(playerData, 50)
+				CF.PlayerData.UpdateXpInPlayerData(playerData, 50)
 				VFXHandler:PlayOnClient(Player, Constants.VFXs.RewardXP)
 				SFXHandler.Client.PlayAlong(Player, Constants.SFXs.Reward, Player.Character)
 			elseif (Kills+1) == 3 then
-				CF:UpdateGoldInPlayerData(playerData, 100)
+				CF.PlayerData.UpdateGoldInPlayerData(playerData, 100)
 				VFXHandler:PlayOnClient(Player, Constants.VFXs.RewardCoin)
 				SFXHandler.Client.PlayAlong(Player, Constants.SFXs.Reward, Player.Character)
 			end
