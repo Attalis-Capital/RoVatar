@@ -371,7 +371,7 @@ function OnCharacterAdded(newChar:Model)
 
 	--Jump State Controller
 	newChar.ChildAdded:Connect(function()
-		--:TODO: (TASK_ID) : 1047
+		--:Karna: (TASK_ID) : 1047
 		--if newChar:FindFirstChild("noJump") then
 		--	newChar.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
 		--else
@@ -388,7 +388,7 @@ function OnCharacterAdded(newChar:Model)
 	end)
 
 	newChar.ChildRemoved:Connect(function()
-		--:TODO: (TASK_ID) : 1047
+		--:Karna: (TASK_ID) : 1047
 		--if newChar:FindFirstChild("noJump") then
 		--	newChar.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
 		--else
@@ -665,7 +665,7 @@ function Meditate(enable)
 			Data.State = Constants.MeditateStates.Meditate
 			Data.StateType = Constants.StateTypes.Meditate
 			Data.Max = 100
-			--TODO: Task_Id :1086 
+			--Karna: Task_Id :1086 
 			Data.Current = StrengthValue.Value --plrData.ActiveProfile.Data.CombatStats.Strength
 			
 			meditateState = Constants.MeditateStates.Meditate
@@ -847,7 +847,7 @@ function AirBending(enable:boolean)
 				return
 			end
 
-			-- TODO: TBC
+			-- Karna: TBC
 			--if player.Progression.LEVEL.Value < Costs.AirKickLvl then return end
 		else
 			return
@@ -934,7 +934,7 @@ function EarthBending(enable:boolean)
 				NotificationGui:ShowMessage(data)
 				return 
 			end
-			-- TODO: TBC
+			-- Karna: TBC
 			--if player.Progression.LEVEL.Value < Costs.EarthStompLvl then return end
 			if not isAttacking.Value then
 
@@ -1029,7 +1029,7 @@ function FireBending(enable:boolean)
 				return
 			end
 
-			-- TODO :TBC
+			-- Karna :TBC
 			--if player.Progression.LEVEL.Value < Costs.FireDropKickLvl then return end
 
 			if isAttacking.Value then
@@ -1340,7 +1340,7 @@ function Boomerang(enable)
 		--Camera Shake
 		CameraController:ShakeCam(Constants.CamPresets.Explosion)
 
-		--TODO: Stop Sound
+		--Karna: Stop Sound
 		--spawn(function()
 		--	wait(4)
 		--	SFXHandler:Stop(Constants.SFXs.AirKick_Push)
@@ -1569,7 +1569,7 @@ end
 function CharacterController:AirBending()
 
 	if not _G.SelectedCombat then
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.AirBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.AirBending.Id) then
 			--if player.Progression.LEVEL.Value < Costs.AirKickLvl then return end
 			_G.SelectedCombat = AirBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.AirBending.Id)
@@ -1600,7 +1600,7 @@ function CharacterController:AirBending()
 		ToggleSword(false)
 
 		--if player.Progression.LEVEL.Value < Costs.AirKickLvl then return end
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.AirBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.AirBending.Id) then
 			_G.SelectedCombat = AirBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.AirBending.Id)
 		end
@@ -1610,7 +1610,7 @@ end
 
 function CharacterController:EarthBending()
 	if not _G.SelectedCombat  then
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.EarthBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.EarthBending.Id) then
 			_G.SelectedCombat = EarthBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.EarthBending.Id)
 		end
@@ -1634,7 +1634,7 @@ function CharacterController:EarthBending()
 		--UnEquip
 		ToggleSword(false)
 
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.EarthBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.EarthBending.Id) then
 			_G.SelectedCombat = EarthBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.EarthBending.Id)
 		end
@@ -1643,7 +1643,7 @@ end
 
 function CharacterController:FireBending()
 	if not _G.SelectedCombat  then
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.FireBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.FireBending.Id) then
 			_G.SelectedCombat = FireBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.FireBending.Id)
 		end
@@ -1666,7 +1666,7 @@ function CharacterController:FireBending()
 		--UnEquip
 		ToggleSword(false)
 		
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.FireBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.FireBending.Id) then
 			_G.SelectedCombat = FireBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.FireBending.Id)
 		end
@@ -1676,7 +1676,7 @@ end
 function CharacterController:WaterBending()
 	if not _G.SelectedCombat then
 		
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.WaterBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.WaterBending.Id) then
 			_G.SelectedCombat = WaterBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.WaterBending.Id)
 		end
@@ -1701,7 +1701,7 @@ function CharacterController:WaterBending()
 		--UnEquip
 		ToggleSword(false)
 
-		if CF:DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.WaterBending.Id) then
+		if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.WaterBending.Id) then
 			_G.SelectedCombat = WaterBending
 			PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.WaterBending.Id)
 		end
