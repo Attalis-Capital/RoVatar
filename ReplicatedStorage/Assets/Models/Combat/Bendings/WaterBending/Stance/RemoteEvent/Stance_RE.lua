@@ -1,14 +1,31 @@
 -- @ScriptType: Script
 script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
 
+	local Costs = require(game:GetService("ReplicatedStorage").Modules.Custom.Costs)
+	if plr.Progression and plr.Progression:FindFirstChild("LEVEL") then
+		if plr.Progression.LEVEL.Value < Costs.WaterStanceLvl then return end
+	end
+
+	if not plr:GetAttribute("WaterStanceCD") then
+		plr:SetAttribute("WaterStanceCD", true)
+		task.delay(Costs.Abilities, function()
+			plr:SetAttribute("WaterStanceCD", nil)
+		end)
+	else
+		return
+	end
+
 	local char = plr.Character
 	local FX = char.HumanoidRootPart:FindFirstChild("Ground")
 	local Tween = game:GetService("TweenService")
     FX.CanCollide = false
-	if	plr.Character:FindFirstChild("Stamina").Value >= 25 then
-		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -25
+	if	plr.Character:FindFirstChild("Stamina").Value >= Costs.WaterStanceStamina then
+		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -Costs.WaterStanceStamina
 	end
-	plr.CombatStats:FindFirstChild("EXP").Value = 	plr.CombatStats:FindFirstChild("EXP").Value +5
+	local Exp = plr.Progression:FindFirstChild("EXP")
+	if Exp then
+		Exp.Value += Costs.WaterStanceXp
+	end
 	local FX2 = char.HumanoidRootPart:FindFirstChild("Shock1")
 	local FX3 = char.HumanoidRootPart:FindFirstChild("Shock2")
 	local FX4 = char.HumanoidRootPart:FindFirstChild("Shock3")

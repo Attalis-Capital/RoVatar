@@ -7,7 +7,21 @@ script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
 	local Remotes = RS.Remotes
 	local Replicate = Remotes.Replicate
 	local hrp = plr.Character:WaitForChild("HumanoidRootPart")
-	
+
+	local Costs = require(game:GetService("ReplicatedStorage").Modules.Custom.Costs)
+	if plr.Progression and plr.Progression:FindFirstChild("LEVEL") then
+		if plr.Progression.LEVEL.Value < Costs.EarthStompLvl then return end
+	end
+
+	if not plr:GetAttribute("EarthStompCD") then
+		plr:SetAttribute("EarthStompCD", true)
+		task.delay(Costs.Abilities, function()
+			plr:SetAttribute("EarthStompCD", nil)
+		end)
+	else
+		return
+	end
+
 	local Kick = game.ReplicatedStorage.FX.Earth.Spike:Clone()
 	Kick.Parent = workspace
 	Kick.CanCollide = false
@@ -18,8 +32,8 @@ script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
 	local distance = (Kick.Position - hrp.Position).Magnitude
 	local infNum = math.huge
 
-	if	plr.Character:FindFirstChild("Stamina").Value >= 25 then
-		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -25
+	if	plr.Character:FindFirstChild("Stamina").Value >= Costs.EarthStompStamina then
+		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -Costs.EarthStompStamina
 	end
 
 	if distance > 60 then return end
@@ -93,8 +107,10 @@ end)
 
 
 
-				plr.CombatStats:FindFirstChild("EXP").Value = 	plr.CombatStats:FindFirstChild("EXP").Value +5
-
+				local Exp = plr.Progression:FindFirstChild("EXP")
+				if Exp then
+					Exp.Value += Costs.EarthStompXp
+				end
 
 				hit.Parent.HumanoidRootPart.CFrame = CFrame.lookAt(hit.Parent.HumanoidRootPart.Position, Kick.Position) * CFrame.Angles(0, math.pi, 0)
 				misc.Ragdoll(hit.Parent, 1.5)
@@ -102,11 +118,13 @@ end)
 				misc.UpKnockback(hit.Parent.HumanoidRootPart, 56, 125, 0.15, hitbox)
 
 				Hits[hit.Parent.Name] = true
-				local Damage = math.random(15,23)
+				local Damage = math.random(Costs.EarthStompDamageRange.X, Costs.EarthStompDamageRange.Y)
 				hit.Parent.Humanoid:TakeDamage(Damage)
-				
-			
-			
+				local LastDamage = hit.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', hit.Parent)
+				LastDamage.Name = "DamageBy"
+				LastDamage.Value = plr.Character
+				LastDamage:SetAttribute("Weapon", "EarthStomp")
+
 				wait(4)
 
 				Hits[hit.Parent.Name] = nil

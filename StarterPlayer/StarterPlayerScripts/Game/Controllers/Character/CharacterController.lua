@@ -614,7 +614,7 @@ local function UpdateStrengthOnServer(value)
 end
 
 local function UpdateStaminOnServer(value)
-	local combats = {Strength = value}
+	local combats = {Stamina = value}
 	CharacterService.UpdateStats:Fire(combats)
 end
 

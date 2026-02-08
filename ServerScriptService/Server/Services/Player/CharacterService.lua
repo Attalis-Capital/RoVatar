@@ -41,6 +41,7 @@ local PlayerDataService
 --------------->>>>>>>>>>>>>>>>>>>>>>>>>>> Private Methods <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<---------------------------
 
 local Container = {}
+local RefillHealthCooldowns = {}
 local function HeartBeat(dt) -- Calling in .heartBeat
 	for _, Value in pairs(Container) do
 		for StateType, Data : CT.StatsDataType in pairs(Value) do
@@ -130,6 +131,13 @@ function UpdateStats(...)
 end
 
 function RefillHealth(plr :Player)
+	local now = tick()
+	local lastHeal = RefillHealthCooldowns[plr.UserId]
+	if lastHeal and (now - lastHeal) < 30 then
+		return -- Cooldown not expired
+	end
+	RefillHealthCooldowns[plr.UserId] = now
+
 	local char = plr.Character or plr.CharacterAdded:Wait()
 	local hum :Humanoid = char:WaitForChild("Humanoid")
 	hum.Health = hum.MaxHealth
@@ -434,11 +442,12 @@ function onPlayerAdded(player:Player)
 end
 
 function onPlayerRemoved(player:Player)
-	
-	
+
+
 	local Key = tostring(player.UserId.."Key")
 	Container[Key] = nil
-	
+	RefillHealthCooldowns[player.UserId] = nil
+
 end
 --------------->>>>>>>>>>>>>>>>>>>>>>>>>>> Public Methods <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<---------------------------
 
