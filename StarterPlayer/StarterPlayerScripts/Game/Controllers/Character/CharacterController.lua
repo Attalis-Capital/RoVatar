@@ -1474,60 +1474,156 @@ local Container = {
 	-----* AirBending
 	[CustomControls.AirBending.actionName] = {
 		[Enum.UserInputState.Begin] = function(inputObject :InputObject, button :ImageButton)
-			--CharacterController:AirBending(true)		
+			-- Single-keypress: select ability and immediately start activation
+			if _G.SelectedCombat ~= AirBending then
+				-- Deactivate any current ability first
+				if _G.SelectedCombat and _G.ActiveBending ~= "None" then
+					_G.SelectedCombat(false)
+				end
+				ToggleBoomerang(false)
+				ToggleSword(false)
+				if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.AirBending.Id) then
+					_G.SelectedCombat = AirBending
+					PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.AirBending.Id)
+				else
+					return
+				end
+			end
+			-- Activate the ability
+			AirBending(true)
 		end,
 		[Enum.UserInputState.End] = function(inputObject :InputObject, button :ImageButton)
-			CharacterController:AirBending(false)
+			-- Fire the ability on key release
+			if _G.SelectedCombat == AirBending then
+				AirBending(false)
+			end
 		end,
 	},
 
 	-----* WaterBending
 	[CustomControls.WaterBending.actionName] = {
 		[Enum.UserInputState.Begin] = function(inputObject :InputObject, button :ImageButton)
-			--CharacterController:WaterBending(true)
+			if _G.SelectedCombat ~= WaterBending then
+				if _G.SelectedCombat and _G.ActiveBending ~= "None" then
+					_G.SelectedCombat(false)
+				end
+				ToggleBoomerang(false)
+				ToggleSword(false)
+				if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.WaterBending.Id) then
+					_G.SelectedCombat = WaterBending
+					PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.WaterBending.Id)
+				else
+					return
+				end
+			end
+			WaterBending(true)
 		end,
 		[Enum.UserInputState.End] = function(inputObject :InputObject, button :ImageButton)
-			CharacterController:WaterBending(false)
+			if _G.SelectedCombat == WaterBending then
+				WaterBending(false)
+			end
 		end,
 	},
 
 	-----* FireBending
 	[CustomControls.FireBending.actionName] = {
 		[Enum.UserInputState.Begin] = function(inputObject :InputObject, button :ImageButton)
-			--CharacterController:FireBending(true)
+			if _G.SelectedCombat ~= FireBending then
+				if _G.SelectedCombat and _G.ActiveBending ~= "None" then
+					_G.SelectedCombat(false)
+				end
+				ToggleBoomerang(false)
+				ToggleSword(false)
+				if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.FireBending.Id) then
+					_G.SelectedCombat = FireBending
+					PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.FireBending.Id)
+				else
+					return
+				end
+			end
+			FireBending(true)
 		end,
 		[Enum.UserInputState.End] = function(inputObject :InputObject, button :ImageButton)
-			CharacterController:FireBending(false)
+			if _G.SelectedCombat == FireBending then
+				FireBending(false)
+			end
 		end,
 	},
 
 	-----* EarthBending
 	[CustomControls.EarthBending.actionName] = {
 		[Enum.UserInputState.Begin] = function(inputObject :InputObject, button :ImageButton)
-			--CharacterController:EarthBending(true)
+			if _G.SelectedCombat ~= EarthBending then
+				if _G.SelectedCombat and _G.ActiveBending ~= "None" then
+					_G.SelectedCombat(false)
+				end
+				ToggleBoomerang(false)
+				ToggleSword(false)
+				if CF.PlayerData.DoesPlayerHaveAbility(_G.PlayerData, Constants.GameInventory.Abilities.EarthBending.Id) then
+					_G.SelectedCombat = EarthBending
+					PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Abilities.EarthBending.Id)
+				else
+					return
+				end
+			end
+			EarthBending(true)
 		end,
 		[Enum.UserInputState.End] = function(inputObject :InputObject, button :ImageButton)
-			CharacterController:EarthBending(false)
+			if _G.SelectedCombat == EarthBending then
+				EarthBending(false)
+			end
 		end,
 	},
 
 	-----* Boomerang
 	[CustomControls.Boomerang.actionName] = {
 		[Enum.UserInputState.Begin] = function(inputObject :InputObject, button :ImageButton)
-			--CharacterController:Boomerang(true)
+			if _G.SelectedCombat ~= Boomerang then
+				if _G.SelectedCombat and _G.ActiveBending ~= "None" then
+					_G.SelectedCombat(false)
+				end
+				local passesData = _G.PlayerData.GamePurchases.Passes
+				if passesData[Constants.IAPItems.Boomerang.Id] then
+					ToggleSword(false)
+					_G.SelectedCombat = Boomerang
+					PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Weapons.Boomerang)
+					ToggleBoomerang(true)
+				else
+					return
+				end
+			end
+			Boomerang(true)
 		end,
 		[Enum.UserInputState.End] = function(inputObject :InputObject, button :ImageButton)
-			CharacterController:Boomerang(false)
+			if _G.SelectedCombat == Boomerang then
+				Boomerang(false)
+			end
 		end,
 	},
 
 	-----* MeteoriteSword
 	[CustomControls.MeteoriteSword.actionName] = {
 		[Enum.UserInputState.Begin] = function(inputObject :InputObject, button :ImageButton)
-			--CharacterController:MeteoriteSword(true)
+			if _G.SelectedCombat ~= MeteoriteSword then
+				if _G.SelectedCombat and _G.ActiveBending ~= "None" then
+					_G.SelectedCombat(false)
+				end
+				local passesData = _G.PlayerData.GamePurchases.Passes
+				if passesData[Constants.IAPItems.MeteoriteSword.Id] then
+					ToggleBoomerang(false)
+					_G.SelectedCombat = MeteoriteSword
+					PlayerMenuGui:ToggleSelection(true, Constants.GameInventory.Weapons.MeteoriteSword)
+					ToggleSword(true)
+				else
+					return
+				end
+			end
+			MeteoriteSword(true)
 		end,
 		[Enum.UserInputState.End] = function(inputObject :InputObject, button :ImageButton)
-			CharacterController:MeteoriteSword(false)
+			if _G.SelectedCombat == MeteoriteSword then
+				MeteoriteSword(false)
+			end
 		end,
 	}
 

@@ -55,36 +55,74 @@ return{
 			}
 		},
 		[3] = {
-			-- Quest 
-			Title = "Now that you've mastered the basics, let's teach you how to unlock your first ability",
+			-- Quest: Post-combat teaching - Block, Sprint, Meditation, then progression
+			Title = "Great work defeating those enemies! Before you move on, let me teach you some survival skills.",
 			Objective = QuestsModule.QuestObjectives.Kill,
 			Options = {
 				[1] = {
-					Text = "Continue",
+					Text = "I'm ready to learn!",
 					Image = "rbxassetid://17575066019",
 					ClickAction = {
 						Dialogue = {
-							Title = "Complete quests to earn XP and unlock your skills!! XP will Level you up which will make you stronger and able to fight more higher level enemies",
+							Title = "Blocking: Press Q to block enemy attacks. Blocking reduces incoming damage significantly. Time it right for a Perfect Block to stun your attacker!",
 							Options = {
 								[1] = {
-									Text = "Continue",
+									Text = "Got it!",
 									Image = "rbxassetid://17575066019",
 									ClickAction = {
 										Dialogue = {
-											Title = "Completing Quests, will also give you Gold in order to buy objects that allow you travel around RoVatar!",
+											Title = "Sprinting: Hold Left Shift to run faster. Sprinting uses stamina, so keep an eye on your stamina bar. You can't sprint and block at the same time.",
 											Options = {
 												[1] = {
-													Text = "Okay",
+													Text = "Continue",
 													Image = "rbxassetid://17575066019",
 													ClickAction = {
 														Dialogue = {
-															Title = "So lets get you to the Rock Tribe to begin your training in unlocking your first ability! Come find me there",
+															Title = "Meditation: When your stamina runs low, press N to sit and meditate. This will restore your stamina quickly. Find a safe spot before meditating - you can't move or fight while recovering!",
 															Options = {
 																[1] = {
-																	Text = "Teleport Me",
+																	Text = "Continue",
 																	Image = "rbxassetid://17575066019",
 																	ClickAction = {
-																		Teleport = Constant.Places.RoVatar.PlaceId,
+																		Dialogue = {
+																			Title = "Now about growing stronger - complete quests to earn XP and unlock your skills! XP will Level you up which will make you stronger and able to fight higher level enemies.",
+																			Options = {
+																				[1] = {
+																					Text = "Continue",
+																					Image = "rbxassetid://17575066019",
+																					ClickAction = {
+																						Dialogue = {
+																							Title = "Completing Quests will also give you Gold in order to buy objects that allow you to travel around RoVatar!",
+																							Options = {
+																								[1] = {
+																									Text = "Okay",
+																									Image = "rbxassetid://17575066019",
+																									ClickAction = {
+																										Dialogue = {
+																											Title = "So let's get you to the Rock Tribe to begin your training in unlocking your first ability! Come find me there.",
+																											Options = {
+																												[1] = {
+																													Text = "Teleport Me",
+																													Image = "rbxassetid://17575066019",
+																													ClickAction = {
+																														Teleport = Constant.Places.RoVatar.PlaceId,
+																													}
+																												},
+																												[2] = {
+																													Text = "Let me explore first",
+																													Image = "rbxassetid://17575582976",
+																													ClickAction = {} -- Exit
+																												}
+																											},
+																										},
+																									}
+																								}
+																							},
+																						},
+																					}
+																				}
+																			},
+																		},
 																	}
 																}
 															},

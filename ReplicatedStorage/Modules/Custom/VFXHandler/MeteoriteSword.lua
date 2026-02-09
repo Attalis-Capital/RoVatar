@@ -147,6 +147,9 @@ return function(Player, Action, isHoldingSpace)
 												Exp.Value += MeteoriteSwordXP
 											end
 
+											-- SafeZone: block PvP if either player is in safe zone
+											local blockPvP = isPlayer and (Character:GetAttribute("InSafeZone") or v.Parent:GetAttribute("InSafeZone"))
+											if blockPvP then return end
 											eHum:TakeDamage(M1Damage)
 
 											local LastDamage = eHum.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', eHum.Parent)

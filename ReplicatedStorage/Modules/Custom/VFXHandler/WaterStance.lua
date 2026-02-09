@@ -4,6 +4,7 @@ local Tween = game:GetService("TweenService")
 local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
+local Players = game:GetService("Players")
 
 local Modules = RS.Modules
 local misc = require(Modules.Packages.Misc)
@@ -171,6 +172,9 @@ return function(plr, typ, direction, mouseaim)
 						misc.UpKnockback(hrp2, 35, 65, 0.15, _hitBox)
 
 						local Damage = math.random(WaterStanceDamageRange.X, WaterStanceDamageRange.Y)
+						-- SafeZone: block PvP if either player is in safe zone
+						local victimPlayer = Players:GetPlayerFromCharacter(eChar)
+						if victimPlayer and (char:GetAttribute("InSafeZone") or eChar:GetAttribute("InSafeZone")) then return end
 						hum2:TakeDamage(Damage)
 
 						local LastDamage = hum2.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', hum2.Parent)
