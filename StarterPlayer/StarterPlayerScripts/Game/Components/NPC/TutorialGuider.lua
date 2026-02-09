@@ -157,6 +157,9 @@ end
 function TutorialGuider:StartConversation()
 	local plrQuestData :CustomTypes.PlayerQuestDataModel = _G.QuestsData
 	
+	-- Hide non-essential UI during tutorial for cleaner experience
+	self:ToggleTutorialUI(false)
+	
 	local questData = plrQuestData.TutorialQuestData
 	if questData.Id then
 		if questData.IsCompleted then
@@ -167,6 +170,24 @@ function TutorialGuider:StartConversation()
 	else
 		-- Assign 
 		CreateDialogue(self, Conversation.Tutorial[2])
+	end
+end
+
+-- Hide/show non-essential UI during tutorial to reduce clutter
+function TutorialGuider:ToggleTutorialUI(show: boolean)
+	-- These screens are hidden during tutorial to avoid overwhelming new players
+	local screensToHide = {
+		Constants.UiScreenTags.ShopGui,
+		Constants.UiScreenTags.BackPackGui,
+		Constants.UiScreenTags.MapGui,
+		Constants.UiScreenTags.GamePassGui,
+		Constants.UiScreenTags.StoreGui,
+	}
+	
+	for _, screenTag in ipairs(screensToHide) do
+		pcall(function()
+			UIController:ToggleScreen(screenTag, show)
+		end)
 	end
 end
 
@@ -214,13 +235,17 @@ function TutorialGuider:SetupPrompt()
 			self.Humanoid.WalkSpeed = 10
 			self.Prompt.Enabled = false
 			
-			--Karna Stop Dialogue
+			-- Restore UI when player walks away from tutorial NPC
+			self:ToggleTutorialUI(true)
 		end
 		
 		if Talking then
 			Talking = false
 			task.wait(.6)
 			DialogueGui:Finish(true)
+			
+			-- Restore UI when dialogue is force-closed
+			self:ToggleTutorialUI(true)
 		end
 	end)
 	

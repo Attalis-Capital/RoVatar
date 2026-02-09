@@ -147,6 +147,14 @@ function DialogueGui:InitButtons()
 	ui.DialogueFrame.ContinueButton.Activated:Connect(function()
 		ContinueButton(self)
 	end)
+	
+	-- Click anywhere on the dialogue area to advance (not just the small continue button)
+	-- This fixes the issue where clicking outside the continue button cancels dialogue
+	ui.BaseFrame.Activated:Connect(function()
+		if self.InProcess then
+			ContinueButton(self)
+		end
+	end)
 end
 
 -- Show the dialogue based on the provided data
@@ -167,6 +175,23 @@ function DialogueGui:ShowDialogue(data : CT.DialogueDataType)
 
 	self:UpdateTxts(self._Data)
 	self:UpdateOptions()
+end
+
+-- Skip all remaining dialogue and close - used by tutorial skip button
+function DialogueGui:SkipAll()
+	if self.SpeechThread then
+		local status = coroutine.status(self.SpeechThread)
+		if status ~= "dead" then
+			coroutine.close(self.SpeechThread)
+		end
+	end
+	
+	if self._Data and self._Data.OnSkip then
+		self._Data.OnSkip()
+	end
+	
+	self:Toggle(false)
+	self.InProcess = false
 end
 
 -- Update the text elements in the dialogue

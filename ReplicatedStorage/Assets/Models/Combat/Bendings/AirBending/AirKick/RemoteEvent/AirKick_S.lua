@@ -1,4 +1,5 @@
 -- @ScriptType: Script
+local Players = game:GetService("Players")
 script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
 	local OnHit = false
 	local Alive = true
@@ -79,6 +80,9 @@ wait(0.2)
 				misc.UpKnockback(hit.Parent.HumanoidRootPart, 35, 65, 0.15, h)
 				Hits[hit.Parent.Name] = true
 				local Damage = math.random(15,23)
+				-- SafeZone: block PvP if either player is in safe zone
+				local victimPlayer = Players:GetPlayerFromCharacter(hit.Parent)
+				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or hit.Parent:GetAttribute("InSafeZone")) then return end
 				hit.Parent.Humanoid:TakeDamage(Damage)
 			
 		

@@ -3,6 +3,7 @@
 local Tween = game:GetService("TweenService")
 local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
+local Players = game:GetService("Players")
 
 local Modules = RS.Modules
 local misc = require(Modules.Packages.Misc)
@@ -107,6 +108,9 @@ return function(plr, direction, mouseaim)
 				end
 				
 				local Damage = math.random(BoomerangDamageRange.X, BoomerangDamageRange.Y)
+				-- SafeZone: block PvP if either player is in safe zone
+				local victimPlayer = Players:GetPlayerFromCharacter(hit.Parent)
+				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or hit.Parent:GetAttribute("InSafeZone")) then return end
 				hum:TakeDamage(Damage)
 				
 				local color1 = Color3.fromRGB(187, 0, 5)
