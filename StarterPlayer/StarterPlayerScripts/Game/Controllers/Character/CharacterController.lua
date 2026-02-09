@@ -15,6 +15,7 @@ local CF = require(RS.Modules.Custom.CommonFunctions)
 local SFXHandler = require(RS.Modules.Custom.SFXHandler)
 local CustomTypes = require(RS.Modules.Custom.CustomTypes)
 local NotificationData = require(RS.Modules.Custom.NotificationData)
+local AutoTarget = require(RS.Modules.Custom.AutoTarget)
 
 local player :Player & CustomTypes.PlayerDataModel = game.Players.LocalPlayer
 local Mouse = player:GetMouse()
@@ -503,6 +504,20 @@ local Highlight = nil
 local Target = nil --NPC if in focus.
 local IsCharacterBetweenTargets = false
 
+-- Sprint 2: Auto-target helper. Uses manual Target if available,
+-- falls back to AutoTarget nearest enemy, then Mouse position.
+local function GetTargetPosition()
+	if Target then
+		return Target.Position
+	end
+	-- Auto-target fallback: find nearest enemy
+	local autoPos = AutoTarget.FindNearestPosition(char, RayCastLength)
+	if autoPos then
+		return autoPos
+	end
+	return Mouse.Hit.Position
+end
+
 local function ToggleFocusView(enable)
 	if enable then
 		-- Setup Camera
@@ -897,7 +912,7 @@ function AirBending(enable:boolean)
 		end
 
 		local mousepos = Mouse.Hit
-		local targetPosition = Target and Target.Position or Mouse.Hit.Position
+		local targetPosition = GetTargetPosition()
 		wait(0.25)
 		if (targetPosition - char.PrimaryPart.Position).Magnitude < RayCastLength and humanoid.Health ~= 0 then
 			VFXHandler:PlayOnServer(Constants.VFXs.AirKick, mousepos, targetPosition)
@@ -987,7 +1002,7 @@ function EarthBending(enable:boolean)
 		
 		--Fire on server
 		local mousepos = Mouse.Hit
-		local targetPosition = Target and Target.Position or Mouse.Hit.Position
+		local targetPosition = GetTargetPosition()
 		if (targetPosition - char.PrimaryPart.Position).Magnitude < RayCastLength and humanoid.Health ~= 0 and not IsCharacterBetweenTargets then
 			VFXHandler:PlayOnServer(Constants.VFXs.EarthStomp, mousepos, targetPosition)
 			UpdateStrengthOnServer(StrengthValue.Value - Costs.EarthStompStrength)
@@ -1085,7 +1100,7 @@ function FireBending(enable:boolean)
 		wait(0.5)
 		--Fire on Server
 		local mousepos = Mouse.Hit
-		local targetPosition = Target and Target.Position or Mouse.Hit.Position
+		local targetPosition = GetTargetPosition()
 		
 		if (targetPosition - char.PrimaryPart.Position).Magnitude < RayCastLength and humanoid.Health ~= 0 then
 			VFXHandler:PlayOnServer(Constants.VFXs.FireDropKick, mousepos, targetPosition)
@@ -1332,7 +1347,7 @@ function Boomerang(enable)
 
 		wait(0.25)
 		local mousepos = Mouse.Hit
-		local targetPosition = Target and Target.Position or Mouse.Hit.Position
+		local targetPosition = GetTargetPosition()
 		VFXHandler:PlayOnServer(Constants.VFXs.Boomerang, mousepos, targetPosition)
 		task.delay(.5, function()
 			char.PrimaryPart.Anchored = false
