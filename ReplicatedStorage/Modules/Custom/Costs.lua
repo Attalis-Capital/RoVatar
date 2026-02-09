@@ -58,4 +58,7 @@ return {
 	--
 	BoomerangDamageRange = Vector2.new(30, 50),
 	MeteoriteSwordDamageRange = Vector2.new(15, 25),
+
+	--> Spawn Protection (Sprint 1)
+	SpawnProtectionDuration = 8, -- seconds of ForceField after spawning
 }
