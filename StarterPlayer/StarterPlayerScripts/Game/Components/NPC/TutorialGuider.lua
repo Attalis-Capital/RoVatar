@@ -35,11 +35,12 @@ local DialogueGui = nil
 local QuestGui = nil
 
 -- Variable
-_G.Talking = false
+-- FIX: Use per-component state instead of _G to avoid cross-contamination
+local Talking = false
 
 ---------------------->>>>>>>>>>>>>........... Common local functions
 local char = player.Character or player.CharacterAdded:Wait()
-local function OnCharacterAdded(newChar:Model)
+local function OnCharacterAdded(newChar: Model)
 	char = newChar or player.CharacterAdded:Wait()
 end
 
@@ -57,8 +58,8 @@ local function Teleport(placeID)
 	TeleportService:Teleport(placeID)
 end
 
-function AssignQuest(_questData :CustomTypes.QuestDataType)
-	local plrQuestData :CustomTypes.AllQuestsType = _G.QuestsData 
+function AssignQuest(_questData: CustomTypes.QuestDataType)
+	local plrQuestData: CustomTypes.AllQuestsType = _G.QuestsData 
 	
 	
 	if plrQuestData.TutorialQuestData and plrQuestData.TutorialQuestData.Objective and
@@ -72,10 +73,9 @@ function AssignQuest(_questData :CustomTypes.QuestDataType)
 
 		plrQuestData.TutorialQuestData = _questData
 		
-		local plrData:CustomTypes.PlayerDataModel = _G.PlayerData
+		local plrData: CustomTypes.PlayerDataModel = _G.PlayerData
 		plrData.AllProfiles[plrData.ActiveProfile].Data.Quests = plrQuestData
 		_G.PlayerDataStore:UpdateData(plrData)
-		--print("[Quests] [Player Quest Data ] Updated NPC QuestData ", plrQuestData)
 		
 		if _questData.Title then
 			QuestGui:ShowTitle(_questData.Title)
@@ -83,13 +83,13 @@ function AssignQuest(_questData :CustomTypes.QuestDataType)
 	end
 end
 
-local function CreatePendingQuestDialogue(self, QuestData :CustomTypes.QuestDataType)
+local function CreatePendingQuestDialogue(self, QuestData: CustomTypes.QuestDataType)
 
-	local DialogueData :CustomTypes.DialogueDataType = {}
+	local DialogueData: CustomTypes.DialogueDataType = {}
 	DialogueData.Narrator = self.Instance.Name
 	DialogueData.Message = QuestData.PendingMsg
 
-	local DialogueButton :CustomTypes.DialogueButtonType = {}
+	local DialogueButton: CustomTypes.DialogueButtonType = {}
 	DialogueButton.Txt = "Ok"
 	DialogueButton.Image = "rbxassetid://17575066019"
 
@@ -109,16 +109,16 @@ local function CreatePendingQuestDialogue(self, QuestData :CustomTypes.QuestData
 	DialogueGui:ShowDialogue(DialogueData)
 end
 
-local function CreateDialogue(self, Conversation :CustomTypes.ConversationsDataType)
+local function CreateDialogue(self, Conversation: CustomTypes.ConversationsDataType)
 
-	local DialogueData :CustomTypes.DialogueDataType = {}
+	local DialogueData: CustomTypes.DialogueDataType = {}
 	DialogueData.Narrator = self.Instance.Name
 	DialogueData.Message = Conversation.Title
 	DialogueData.Options = {}
 
-	for key, optData:CustomTypes.ConversationsDataType in pairs(Conversation.Options) do
+	for key, optData: CustomTypes.ConversationsDataType in pairs(Conversation.Options) do
 
-		local DialogueButton :CustomTypes.DialogueButtonType = {}
+		local DialogueButton: CustomTypes.DialogueButtonType = {}
 		DialogueButton.Txt = optData.Text
 		DialogueButton.Image = optData.Image
 
@@ -155,7 +155,7 @@ local function CreateDialogue(self, Conversation :CustomTypes.ConversationsDataT
 end
 
 function TutorialGuider:StartConversation()
-	local plrQuestData :CustomTypes.PlayerQuestDataModel = _G.QuestsData
+	local plrQuestData: CustomTypes.PlayerQuestDataModel = _G.QuestsData
 	
 	local questData = plrQuestData.TutorialQuestData
 	if questData.Id then
@@ -198,13 +198,12 @@ function TutorialGuider:SetupPrompt()
 		end)
 	end
 	
-	local Proximity:ProximityPrompt = self.Instance:FindFirstChild("Proximity")
+	local Proximity: ProximityPrompt = self.Instance:FindFirstChild("Proximity")
 	Proximity.PromptShown:Connect(function()
 		-- Stop NPC from moving and Enable Prompt to talk
 		if not Talking then
 			self.Humanoid.WalkSpeed = 0
 			self.Prompt.Enabled = true
-			--self.Root.CFrame = CFrame.lookAt(self.Root.Position, char.PrimaryPart.Position)
 		end
 	end)
 	
@@ -213,15 +212,14 @@ function TutorialGuider:SetupPrompt()
 		if not Talking then
 			self.Humanoid.WalkSpeed = 10
 			self.Prompt.Enabled = false
-			
-			--Karna Stop Dialogue
 		end
 		
-		if Talking then
-			Talking = false
-			task.wait(.6)
-			DialogueGui:Finish(true)
-		end
+		-- FIX: Do NOT force-close dialogue when proximity prompt hides.
+		-- The old code cancelled active tutorial dialogue if the player moved
+		-- even slightly out of range, which was the #1 reported frustration.
+		-- Instead, let the dialogue continue - the player can close it via
+		-- the dialogue buttons, or it will auto-hide on its own timer.
+		-- The NPC resumes walking only when the player explicitly finishes.
 	end)
 	
 	self.Prompt:GetPropertyChangedSignal("Enabled"):Connect(function()

@@ -32,6 +32,30 @@ local currHitbox
 local M1ImmunityTag = "Immunity"
 local AirImmunityTag = "AirDown"
 
+-- HELPER: Check if PvP should be blocked between attacker and target
+local function isPvPBlocked(attackerPlayer: Player, targetCharacter: Model): boolean
+	-- Allow PvE (attacking NPCs) always
+	local targetPlayer = Players:FindFirstChild(targetCharacter.Name)
+	if not targetPlayer then
+		return false -- Target is an NPC, PvP check not needed
+	end
+
+	-- Block PvP if either player is in a safe zone
+	if attackerPlayer:GetAttribute("InSafeZone") then
+		return true
+	end
+	if targetPlayer:GetAttribute("InSafeZone") then
+		return true
+	end
+
+	-- Block PvP if target has ForceField (spawn protection)
+	if targetCharacter:FindFirstChildOfClass("ForceField") then
+		return true
+	end
+
+	return false
+end
+
 -- FUNCTIONS --
 attackRemote.OnServerEvent:Connect(function(Player, Action, isHoldingSpace)
 
@@ -99,15 +123,26 @@ attackRemote.OnServerEvent:Connect(function(Player, Action, isHoldingSpace)
 									table.insert(hit, v.Parent.Name)
 									local isPlayer = Players:FindFirstChild(v.Parent.Name)
 									local isBlocking
+									
+									-- FIX: Block PvP damage in safe zones
+									if isPlayer and isPvPBlocked(Player, v.Parent) then
+										-- Skip this target - they or we are in a safe zone
+										task.delay(0.2, function()
+											canHit = true
+											CS:RemoveTag(v.Parent, M1ImmunityTag)
+										end)
+										continue
+									end
+									
 									spawn(function()
 										if v.Parent:FindFirstChild("IsAttacking") then 
 											v.Parent.IsAttacking.Value = true
 											wait(1)
 											v.Parent.IsAttacking.Value = false
 										end
-											
+												
 									end)
-										
+											
 									if isPlayer then
 										isBlocking = isPlayer.isBlocking
 									else
@@ -233,12 +268,11 @@ attackRemote.OnServerEvent:Connect(function(Player, Action, isHoldingSpace)
 													end)
 											
 
-
 												end
 											end
 										end
 									else
-								
+									
 									
 									end
 									
@@ -354,7 +388,6 @@ attackRemote.OnServerEvent:Connect(function(Player, Action, isHoldingSpace)
 						M1Debounce = false
 					end)
 				
-
 
 				task.delay(1.5, function()
 					if Combo == 5 then
