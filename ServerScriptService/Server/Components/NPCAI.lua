@@ -93,6 +93,19 @@ local function _onDied(self)
 	__updateKills(self)
 	__updateDeaths(Players:GetPlayerFromCharacter(character))
 
+	-- Sprint 2: Notify the attacker with kill feedback
+	local DamageBy = character:FindFirstChild("DamageBy")
+	if DamageBy and DamageBy.Value then
+		local attacker = Players:GetPlayerFromCharacter(DamageBy.Value)
+		if attacker then
+			local Replicate = RS:FindFirstChild("Remotes") and RS.Remotes:FindFirstChild("Replicate")
+			if Replicate then
+				local enemyName = self.Type or character.Name or "Enemy"
+				Replicate:FireClient(attacker, "EnemyKilled", enemyName)
+			end
+		end
+	end
+
 end
 --------------------------------------->>>>. Data Manage and Update .<<<<----------------------------------------
 

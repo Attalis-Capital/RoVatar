@@ -321,7 +321,19 @@ end
 
 local function _onDied(character)
 	
-	
+	-- Sprint 2: Notify the attacker with kill feedback for PvP kills
+	local DamageBy = character:FindFirstChild("DamageBy")
+	if DamageBy and DamageBy.Value then
+		local attacker = Players:GetPlayerFromCharacter(DamageBy.Value)
+		if attacker then
+			local Replicate = RS:FindFirstChild("Remotes") and RS.Remotes:FindFirstChild("Replicate")
+			if Replicate then
+				local victimName = character.Name or "Player"
+				Replicate:FireClient(attacker, "EnemyKilled", victimName)
+			end
+		end
+	end
+
 	__updateKills(character)
 	__updateDeaths(Players:GetPlayerFromCharacter(character))
 	
