@@ -9,6 +9,21 @@ script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
 	local Replicate = Remotes.Replicate
 	local hrp = plr.Character:WaitForChild("HumanoidRootPart")
 
+	-- Server-side level check
+	local Costs = require(game:GetService("ReplicatedStorage").Modules.Custom.Costs)
+	if plr.Progression and plr.Progression:FindFirstChild("LEVEL") then
+		if plr.Progression.LEVEL.Value < Costs.FireDropKickLvl then return end
+	end
+
+	-- Server-side cooldown
+	if not plr:GetAttribute("FireDropKickCD") then
+		plr:SetAttribute("FireDropKickCD", true)
+		task.delay(Costs.Abilities, function()
+			plr:SetAttribute("FireDropKickCD", nil)
+		end)
+	else
+		return
+	end
 
 	local Hits = {}
 	local Modules = game.ReplicatedStorage.Modules
@@ -19,8 +34,8 @@ script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
 local TS = game:GetService("TweenService")
 	local Tween = game:GetService("TweenService")
 
-	if	plr.Character:FindFirstChild("Stamina").Value >= 25 then
-		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -25
+	if	plr.Character:FindFirstChild("Stamina").Value >= Costs.FireDropKickStamina then
+		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -Costs.FireDropKickStamina
 	end
 
 	local h = RS.Assets.VFXs.Fire.DropKick:Clone()
@@ -117,21 +132,26 @@ local TS = game:GetService("TweenService")
 				end
 			
 		
-				plr.CombatStats:FindFirstChild("EXP").Value = 	plr.CombatStats:FindFirstChild("EXP").Value +5
-				
-				
-			
+				local Exp = plr.Progression:FindFirstChild("EXP")
+				if Exp then
+					Exp.Value += Costs.FireDropKickXp
+				end
+
 				hit.Parent.HumanoidRootPart.CFrame = CFrame.lookAt(hit.Parent.HumanoidRootPart.Position, h.Position) * CFrame.Angles(0, math.pi, 0)
 				misc.Ragdoll(hit.Parent, 3)
 
 				misc.StrongKnockback(hit.Parent.HumanoidRootPart, 35, 45, 0.15, h)
 				misc.UpKnockback(hit.Parent.HumanoidRootPart, 35, 41, 0.15, h)
 				Hits[hit.Parent.Name] = true
-				local Damage = math.random(15,23)
+				local Damage = math.random(Costs.FireDropKickDamageRange.X, Costs.FireDropKickDamageRange.Y)
 				-- SafeZone: block PvP if either player is in safe zone
 				local victimPlayer = Players:GetPlayerFromCharacter(hit.Parent)
 				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or hit.Parent:GetAttribute("InSafeZone")) then return end
 				hit.Parent.Humanoid:TakeDamage(Damage)
+				local LastDamage = hit.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', hit.Parent)
+				LastDamage.Name = "DamageBy"
+				LastDamage.Value = plr.Character
+				LastDamage:SetAttribute("Weapon", "FireDropKick")
 				local ef = game.ReplicatedStorage.FX.Fire.Fire:Clone()
 				ef.Parent = hit.Parent:FindFirstChild("UpperTorso")
 			game.Debris:AddItem(ef,4)
@@ -155,4 +175,3 @@ end
 h:Destroy()
 
 end)
-
