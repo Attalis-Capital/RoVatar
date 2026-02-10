@@ -9,11 +9,59 @@ return {
 		local combatF = plr:FindFirstChild("CombatStats") or Instance.new("Folder", plr)
 		combatF.Name = "CombatStats"
 
+		-- Whitelist of allowed stat names with expected types and constraints
+		local ALLOWED_STATS = {
+			Strength = { type = "number", min = 0, max = 100, maxDelta = 30 },
+			Stamina  = { type = "number", min = 0, max = 100, maxDelta = 30 },
+			EXP      = { type = "number", min = 0, onlyIncrease = true },
+		}
+
 		for name, val in pairs(combatStats) do
+			-- Reject stat names not in the whitelist
+			local rule = ALLOWED_STATS[name]
+			if not rule then
+				warn("[CombatStats] Rejected unknown stat '" .. tostring(name) .. "' from player " .. plr.Name)
+				continue
+			end
+
+			-- Validate that the value type matches what is expected
+			if typeof(val) ~= rule.type then
+				warn("[CombatStats] Rejected stat '" .. name .. "': expected " .. rule.type .. ", got " .. typeof(val) .. " from player " .. plr.Name)
+				continue
+			end
+
+			-- For numeric values, apply constraints
+			if rule.type == "number" then
+				-- Clamp to min/max range if defined
+				if rule.min then
+					val = math.max(rule.min, val)
+				end
+				if rule.max then
+					val = math.min(rule.max, val)
+				end
+
+				local existing = combatF:FindFirstChild(name)
+
+				-- Max delta check: reject if change exceeds allowed delta per update
+				if rule.maxDelta and existing then
+					local delta = math.abs(val - existing.Value)
+					if delta > rule.maxDelta then
+						warn("[CombatStats] Rejected stat '" .. name .. "': delta " .. delta .. " exceeds max " .. rule.maxDelta .. " from player " .. plr.Name)
+						continue
+					end
+				end
+
+				-- EXP should only increase, never decrease from client
+				if rule.onlyIncrease and existing and val < existing.Value then
+					warn("[CombatStats] Rejected stat '" .. name .. "': value cannot decrease from client, player " .. plr.Name)
+					continue
+				end
+			end
+
 			local kk = nil
-			if(typeof(val) == "number") then
+			if typeof(val) == "number" then
 				kk = "NumberValue"
-			elseif(typeof(val) == "string") then
+			elseif typeof(val) == "string" then
 				kk = "StringValue"
 			end
 
