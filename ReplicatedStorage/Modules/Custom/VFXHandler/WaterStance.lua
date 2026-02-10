@@ -4,7 +4,6 @@ local Tween = game:GetService("TweenService")
 local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
-local Players = game:GetService("Players")
 
 local Modules = RS.Modules
 local misc = require(Modules.Packages.Misc)
@@ -28,6 +27,12 @@ local WaterStanceDamageRange = Costs.WaterStanceDamageRange
 return function(plr, typ, direction, mouseaim)
 
 	if(typ == "Weld") then
+		-- Server-side level check
+		local CostsModule = require(script.Parent.Parent.Costs)
+		if plr.Progression and plr.Progression:FindFirstChild("LEVEL") then
+			if plr.Progression.LEVEL.Value < CostsModule.WaterStanceLvl then return end
+		end
+
 		--Weld
 		local char = plr.Character
 		local hrp = char.PrimaryPart
@@ -172,9 +177,6 @@ return function(plr, typ, direction, mouseaim)
 						misc.UpKnockback(hrp2, 35, 65, 0.15, _hitBox)
 
 						local Damage = math.random(WaterStanceDamageRange.X, WaterStanceDamageRange.Y)
-						-- SafeZone: block PvP if either player is in safe zone
-						local victimPlayer = Players:GetPlayerFromCharacter(eChar)
-						if victimPlayer and (char:GetAttribute("InSafeZone") or eChar:GetAttribute("InSafeZone")) then return end
 						hum2:TakeDamage(Damage)
 
 						local LastDamage = hum2.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', hum2.Parent)
@@ -182,12 +184,12 @@ return function(plr, typ, direction, mouseaim)
 						LastDamage.Value = plr.Character
 						LastDamage:SetAttribute("Weapon", Constants.Weapons.Water)
 
-						task.delay(.5, function()
+						task.delay(1.5, function()
 							Hits[eChar] = nil
 						end)
 					end
 				end
-				wait(11)
+				wait(6)
 				if _hitBox then
 					_hitBox:Destroy()
 				end
