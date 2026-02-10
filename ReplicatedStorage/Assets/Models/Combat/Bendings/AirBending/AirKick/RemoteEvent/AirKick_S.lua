@@ -9,6 +9,21 @@ script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
 	local Replicate = Remotes.Replicate
 	local hrp = plr.Character:WaitForChild("HumanoidRootPart")
 
+	-- Server-side level check
+	local Costs = require(game:GetService("ReplicatedStorage").Modules.Custom.Costs)
+	if plr.Progression and plr.Progression:FindFirstChild("LEVEL") then
+		if plr.Progression.LEVEL.Value < Costs.AirKickLvl then return end
+	end
+
+	-- Server-side cooldown
+	if not plr:GetAttribute("AirKickCD") then
+		plr:SetAttribute("AirKickCD", true)
+		task.delay(Costs.Abilities, function()
+			plr:SetAttribute("AirKickCD", nil)
+		end)
+	else
+		return
+	end
 
 	local Hits = {}
 	local Modules = RS.Modules
@@ -20,8 +35,8 @@ local TS = game:GetService("TweenService")
 	local Tween = game:GetService("TweenService")
 
 wait(0.2)
-	if	plr.Character:FindFirstChild("Stamina").Value >= 25 then
-		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -25
+	if	plr.Character:FindFirstChild("Stamina").Value >= Costs.AirKickStamina then
+		plr.Character:FindFirstChild("Stamina").Value = 	plr.Character:FindFirstChild("Stamina").Value -Costs.AirKickStamina
 	end
 	local h = RS.Assets.VFXs.Air.AirThrust:Clone()
 	local BV = Instance.new("BodyVelocity")
@@ -70,22 +85,27 @@ wait(0.2)
 			
 		
 
-				plr.CombatStats:FindFirstChild("EXP").Value = 	plr.CombatStats:FindFirstChild("EXP").Value +5
-				
-			
+				local Exp = plr.Progression:FindFirstChild("EXP")
+				if Exp then
+					Exp.Value += Costs.AirKickXp
+				end
+
 				hit.Parent.HumanoidRootPart.CFrame = CFrame.lookAt(hit.Parent.HumanoidRootPart.Position, h.Position) * CFrame.Angles(0, math.pi, 0)
 				misc.Ragdoll(hit.Parent, 1.5)
 
 				misc.StrongKnockback(hit.Parent.HumanoidRootPart, 35, 45, 0.15, h)
 				misc.UpKnockback(hit.Parent.HumanoidRootPart, 35, 65, 0.15, h)
 				Hits[hit.Parent.Name] = true
-				local Damage = math.random(15,23)
+				local Damage = math.random(Costs.AirKickDamageRange.X, Costs.AirKickDamageRange.Y)
 				-- SafeZone: block PvP if either player is in safe zone
 				local victimPlayer = Players:GetPlayerFromCharacter(hit.Parent)
 				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or hit.Parent:GetAttribute("InSafeZone")) then return end
 				hit.Parent.Humanoid:TakeDamage(Damage)
-			
-		
+				local LastDamage = hit.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', hit.Parent)
+				LastDamage.Name = "DamageBy"
+				LastDamage.Value = plr.Character
+				LastDamage:SetAttribute("Weapon", "AirKick")
+
 				wait(4)
 
 				Hits[hit.Parent.Name] = nil
@@ -105,4 +125,3 @@ end
 h:Destroy()
 
 end)
-
