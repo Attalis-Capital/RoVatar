@@ -1,0 +1,6 @@
+# API keys — never commit
+*.env
+.env.*
+keys.env
+!*.env.template
+!*.env.example
