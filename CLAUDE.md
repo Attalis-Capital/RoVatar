@@ -46,3 +46,27 @@ After changes, check:
 - Server validates all client requests
 - Costs.lua used for all numeric values
 - No edits to Packages/ or Replica/
+
+## Sprint workflow
+
+Mandatory sequence — always follow this order:
+
+### Session start
+1. `/project:start` — load local + shared memory, report state
+2. Enter Plan mode (Shift+Tab twice)
+3. `/project:new-sprint` — propose sprint, wait for approval
+4. Iterate on the plan until solid
+5. Exit Plan mode (Shift+Tab) to normal mode
+
+### Per task (repeat for each task in sprint)
+6. Build the task
+7. `/project:verify` — confirm it works
+8. `/project:simplify` — strip unnecessary complexity
+9. `/project:commit-push` — stage, commit, push, update PROGRESS.md
+
+### Mid-session (as needed)
+- `/project:sprint-status` — quick progress check
+
+### Session end
+10. `/project:learn` — extract lessons (Tier 1 repo, Tier 2 universal)
+11. `/project:handoff` — save state for next session
