@@ -47,6 +47,12 @@ After changes, check:
 - Costs.lua used for all numeric values
 - No edits to Packages/ or Replica/
 
+
+## Gotchas
+
+- {Add every bug/trap discovered here — every mistake becomes a rule}
+
+
 ## Sprint workflow
 
 Mandatory sequence — always follow this order:
