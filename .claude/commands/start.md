@@ -27,9 +27,20 @@ Read CLAUDE.md and PROGRESS.md. You already have git state above — do not re-r
 Fetch the cross-repo learned rules from project-template:
 
 ```bash
-curl -s -H "Authorization: token $(grep -s 'github_pat' .env 2>/dev/null || echo '')" \
-  "https://api.github.com/repos/Attalis-Capital/project-template/contents/LEARNED.md?ref=main" | \
-  python3 -c "import sys,json,base64; d=json.load(sys.stdin); print(base64.b64decode(d['content']).decode()) if 'content' in d else print('LEARNED.md not found -- skipping')"
+# Try gh CLI first (most reliable on local machines), fall back to git credential helper
+GITHUB_TOKEN=$(gh auth token 2>/dev/null || printf 'protocol=https\nhost=github.com\n' | git credential fill 2>/dev/null | grep '^password=' | cut -d= -f2 || echo '')
+if [ -n "$GITHUB_TOKEN" ]; then
+  PYTHON_CMD=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || echo '')
+  if [ -n "$PYTHON_CMD" ]; then
+    curl -sf -H "Authorization: token $GITHUB_TOKEN" \
+      "https://api.github.com/repos/Attalis-Capital/project-template/contents/LEARNED.md?ref=main" | \
+      $PYTHON_CMD -c "import sys,json,base64; d=json.load(sys.stdin); print(base64.b64decode(d['content']).decode())" 2>/dev/null || echo "Could not fetch LEARNED.md -- continuing without shared rules"
+  else
+    echo "No Python available -- skipping shared rules"
+  fi
+else
+  echo "No GitHub auth available -- skipping shared rules"
+fi
 ```
 
 If the fetch fails (no network, no token), skip silently and continue. Do NOT block session start.
