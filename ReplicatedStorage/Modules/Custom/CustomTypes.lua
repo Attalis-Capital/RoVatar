@@ -378,6 +378,7 @@ export type SettingsDataType = {
 	SFX :boolean,
 	Music :boolean,
 	UI :boolean,
+	HasSeenControls :boolean?,
 }
 
 

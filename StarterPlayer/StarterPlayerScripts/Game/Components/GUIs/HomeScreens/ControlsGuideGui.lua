@@ -58,15 +58,54 @@ end
 
 function ControlsGuideGui:Start()
 	warn(self," Starting...")
-	
+
 	if(not self.active) then
 		return
 	end
 
 	self:InitReferences()
 	self:BindEvents()
-	
+	self:ShowOnFirstSpawn()
+
 	print(self," started:", self.active)
+end
+
+function ControlsGuideGui:ShowOnFirstSpawn()
+	-- Show controls guide automatically for first-time players
+	if player:GetAttribute("HasSeenControls") then
+		return
+	end
+
+	task.delay(2, function()
+		-- Re-check in case attribute was set during the delay
+		if player:GetAttribute("HasSeenControls") then
+			return
+		end
+
+		-- Check persisted data — returning players with the flag set skip the guide
+		local myData :CT.PlayerDataModel = _G.PlayerData
+		if myData then
+			local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
+			if activeProfile and activeProfile.Data.Settings
+				and activeProfile.Data.Settings.HasSeenControls then
+				player:SetAttribute("HasSeenControls", true)
+				return
+			end
+		end
+
+		-- Show the guide
+		self:Toggle(true)
+		player:SetAttribute("HasSeenControls", true)
+
+		-- Persist to player data so it survives sessions
+		if myData then
+			local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
+			if activeProfile and activeProfile.Data.Settings then
+				activeProfile.Data.Settings.HasSeenControls = true
+				_G.PlayerDataStore:UpdateData(myData)
+			end
+		end
+	end)
 end
 
 function ControlsGuideGui:InitReferences()

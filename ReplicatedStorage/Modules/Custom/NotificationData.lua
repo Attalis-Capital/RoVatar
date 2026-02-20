@@ -11,8 +11,8 @@ NotificationData.LockedAbility_Alert = {
 }
 
 NotificationData.EnergyDepleted_Alert = {
-	Title = "Not enough energy!",
-	Description = "Switching to basic attack",
+	Title = "Energy depleted!",
+	Description = 'Your energy has run out. Press "N" to meditate and recover it.',
 	AutoHideTime = 4,
 	Type = CD.NotificationType.Notification,
 }
@@ -26,7 +26,7 @@ NotificationData.InsufficientMana = {
 
 NotificationData.InsufficientStamina = {
 	Title = "Not Enough Stamina",
-	Description = "You need more Stamina to Perform.",
+	Description = "You need more stamina to perform. Stamina recovers over time.",
 	AutoHideTime = 4,
 	Type = CD.NotificationType.Notification,
 }

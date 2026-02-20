@@ -121,18 +121,36 @@ end
 
 function Refresh()
 	local myData :CT.PlayerDataModel = _G.PlayerData
+	local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
+	local playerLevel = activeProfile.PlayerLevel
+
 	for _, item:ItemTemplate in pairs(ui.BaseFrame.Background.Elements:GetChildren()) do
 		if item:IsA("CanvasGroup") then
-			if CF.PlayerQuestData.GetPlayerActiveProfile(myData).Data
-				.EquippedInventory.Abilities[item.Name] then
-				
+			local abilityData = Constants.GameInventory.Abilities[item.Name]
+			local requiredLevel = if abilityData then abilityData.RequiredLevel else 0
+
+			if activeProfile.Data.EquippedInventory.Abilities[item.Name] then
+				-- Already owned
+				item.Shadow.Visible = false
 				item.Select.Image = " "
 				item.Select.Active = false
 				item.Select.Label.Text = "Owned"
 				item.Select.Gradiant.Enabled = true
 				item.Select.BackgroundTransparency = 0
-				item.Select.BackgroundColor3 = Color3.fromRGB(138, 138, 138)	
+				item.Select.BackgroundColor3 = Color3.fromRGB(138, 138, 138)
+			elseif requiredLevel > 0 and playerLevel < requiredLevel then
+				-- Locked — player hasn't reached required level
+				item.Shadow.Visible = true
+				item.Shadow.Label.Text = "Requires Lvl " .. requiredLevel
+				item.Select.Active = false
+				item.Select.Label.Text = "Locked"
+				item.Select.Gradiant.Enabled = false
+				item.Select.BackgroundTransparency = 1
+				item.Select.Image = "rbxassetid://17575066019"
+				item.Select.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			else
+				-- Unlocked, selectable
+				item.Shadow.Visible = false
 				item.Select.Active = true
 				item.Select.Label.Text = "Select"
 				item.Select.Gradiant.Enabled = false
