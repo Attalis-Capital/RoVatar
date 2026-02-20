@@ -60,6 +60,10 @@ After changes, check:
 - `QuestDataService:OnPlayerAdded` mutates `plrData` in memory without saving — any data changes in OnPlayerAdded must explicitly call `UpdateData` or they're lost on quick disconnect (before 30s auto-save)
 - `Constants.GameInventory.Abilities[id].RequiredLevel` is the canonical level-gate source — values flow from Costs.lua → Constants.Items → Constants.GameInventory; never hardcode level thresholds
 - `IsSameDay()` in QuestDataService compares `os.date("!*t")` numeric fields against strings (`yday == "1"`) — always false in Luau; daily quest New Year rollover is broken (pre-existing)
+- `_onCharacterAdded` shadows its `player` parameter with `Players:GetPlayerFromCharacter(character)` on line 419 — the re-declaration can return nil; use the original parameter
+- `SetupCharacter` is async (callback inside `_G.PlayerDataStore:GetData`) and replaces `player.Character` — code after `SetupCharacter()` in `_onCharacterAdded` references the stale original character, not the replacement model
+- `ToggleWeapon` sword equip uses `task.delay(.25)` to hide the holstered model — if the player unequips within 0.25s the delayed callback races; always guard with a state check (`Char:FindFirstChild("MeteoriteSword")`)
+- `DamageIndication.BindToAllNPCs()` is a one-shot scan at startup — respawned/new NPCs need a `workspace.DescendantAdded` listener; filter out player characters with `Players:GetPlayerFromCharacter`
 
 
 ## Sprint workflow

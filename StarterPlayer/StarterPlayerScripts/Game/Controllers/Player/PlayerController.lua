@@ -25,7 +25,9 @@ local PlayerController = Knit.CreateController {
 
 -------------------------------->>>>>>>>>  <<<<<<<<<<-------------------------------
 local function init()
-	require(HelperF.DamageIndication):BindToAllNPCs()
+	local DamageIndication = require(HelperF.DamageIndication)
+	DamageIndication.BindToAllNPCs()
+	DamageIndication.BindToNewNPCs()
 	pcall(function()
 		StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
 	end)

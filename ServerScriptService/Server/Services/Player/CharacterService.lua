@@ -373,9 +373,12 @@ local function ToggleWeapon(player, equip, Weapon)
 			local Char = player.Character
 			_weapon.Parent = Char
 			SFXHandler:Play(Constants.SFXs.Sheathe, true)
-			
+
 			task.delay(.25, function()
-					
+				-- Only hide holstered sword if combat clone still exists (player hasn't unequipped)
+				if not Char or not Char.Parent then return end
+				if not Char:FindFirstChild("MeteoriteSword") then return end
+
 				local MeteoriteSword = Char.UpperTorso:FindFirstChild("MeteoriteSword")
 				if MeteoriteSword then
 					MeteoriteSword.Weapon.A.Transparency = 1
@@ -419,10 +422,11 @@ function _onCharacterAdded(character, player, firstTime)
 	local player = Players:GetPlayerFromCharacter(character)
 	SetupCharacter(player, true)
 	if player:WaitForChild("CombatStats") then
-		
+
 		player.CombatStats.Stamina.Value = 100
+		player.CombatStats.Strength.Value = 100
 	end
-	
+
 	if not firstTime then
 		CF.UI.Blink(player, 1.5)
 	end
