@@ -56,6 +56,10 @@ After changes, check:
 - DataServer `DataReceivedFromClient` accepts raw full-data overwrites — any field not explicitly validated can be spoofed by the client
 - WaterStance has two-phase dispatch (`typ == "Weld"` = activation, `else` = deactivation) — stamina/level gates belong only in the Weld branch
 - `RemovePlrData` was exposed as a client RemoteEvent — always audit RemoteEvent creation for destructive operations before shipping
+- New persistent data fields must be added to BOTH `GetSlotDataModel()` defaults (PlayerData.lua) AND the type definition (CustomTypes.lua) — `CheckAndUpdatePlayerData` Sync/remove strips undeclared fields on migration
+- `QuestDataService:OnPlayerAdded` mutates `plrData` in memory without saving — any data changes in OnPlayerAdded must explicitly call `UpdateData` or they're lost on quick disconnect (before 30s auto-save)
+- `Constants.GameInventory.Abilities[id].RequiredLevel` is the canonical level-gate source — values flow from Costs.lua → Constants.Items → Constants.GameInventory; never hardcode level thresholds
+- `IsSameDay()` in QuestDataService compares `os.date("!*t")` numeric fields against strings (`yday == "1"`) — always false in Luau; daily quest New Year rollover is broken (pre-existing)
 
 
 ## Sprint workflow

@@ -156,13 +156,12 @@ function MainMenuGui:InitButtons()
 	end)
 	
 	ui.StoreButton.Activated:Connect(function()
-		--StoreButton()
+		StoreButton()
+	end)
+
+	ui.GamePassBtn.Activated:Connect(function()
 		GamePassButton()
 	end)
-	
-	--ui.GamePassBtn.Activated:Connect(function()
-	--	GamePassButton()
-	--end)
 	
 	ui.MapBtn.Activated:Connect(function()
 		MapButton()
@@ -180,16 +179,16 @@ function MainMenuGui:InitButtons()
 			ui.QuestsBtn.Visible = false
 			task.wait(.015)
 			ui.SettingsBtn.Visible = false
-			--task.wait(.015)
-			--ui.GamePassBtn.Visible = false
+			task.wait(.015)
+			ui.GamePassBtn.Visible = false
 			task.wait(.015)
 			ui.StoreButton.Visible = false
 		else
 			ui.ToggleBtn.Icon.Rotation = 180
 			ui.StoreButton.Visible = true
 			task.wait(.015)
-			--ui.GamePassBtn.Visible = true
-			--task.wait(.015)
+			ui.GamePassBtn.Visible = true
+			task.wait(.015)
 			ui.SettingsBtn.Visible = true
 			task.wait(.015)
 			ui.QuestsBtn.Visible = true

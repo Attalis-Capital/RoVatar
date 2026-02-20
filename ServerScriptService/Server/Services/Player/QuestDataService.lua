@@ -135,8 +135,9 @@ function UpdateQuest(player, Objective, Achivement)
 	end)
 end
 
-local function DailyQuest(plrData:CT.PlayerDataModel)
+local function DailyQuest(plrData:CT.PlayerDataModel): boolean
 	local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
+	local changed = false
 	if not IsSameDay(activeProfile.LastUpdatedOn) or not activeProfile.Data.Quests.DailyQuestData.Id then
 		--Karna: * Check for old quest if Completed and not claimed then credit reward
 
@@ -144,12 +145,14 @@ local function DailyQuest(plrData:CT.PlayerDataModel)
 		local QuestData : CT.QuestDataType = GetQuest()
 		QuestData.StartTime = workspace.ServerTime.Value
 		QuestData.Type = CD.QuestType.DailyQuest
-		
+
 		activeProfile.Data.Quests.DailyQuestData = QuestData
+		changed = true
 	end
-	
+
 	--restore new values
 	plrData.AllProfiles[plrData.ActiveProfile] = activeProfile
+	return changed
 end
 
 local function RefreshDailyQuest(player)
@@ -171,10 +174,14 @@ function QuestDataService:OnPlayerAdded(player:Player, plrData:CT.PlayerDataMode
 	--Check joining and data
 	warn("Player Joined Quest DATA :	",plrData)
 	local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
-	
+
 	---- Check and update NPC quests (Durations and Claiming...)
 	if activeProfile.Data.Quests.TutorialQuestData.IsCompleted then
-		DailyQuest(plrData)
+		local changed = DailyQuest(plrData)
+		if changed then
+			-- Persist immediately so daily quest isn't lost on quick disconnect
+			_G.PlayerDataStore:UpdateData(player, plrData)
+		end
 	end
 
 end

@@ -58,6 +58,7 @@ PlayerData = {
 			Music = true,
 			UI = true,
 			Shadow = true,
+			HasSeenControls = false,
 		}
 
 		slotData.Data.EquippedInventory = {}
