@@ -14,10 +14,12 @@
 ### Commits
 - `c51829d` feat(onboarding): sprint 2 — fix first-session blockers
 - `98601e0` simplify: reduce complexity in ControlsGuideGui
+- `51d09ef` docs: add PROGRESS.md for sprint 2
+- `91d10e5` learn: extract lessons from sprint 2
 
 ### Next Action
-- Run /learn + /handoff
-- Open PR against main
+- Open PR for `sprint-2-onboarding-blockers` against `main`
+- Start Sprint 3 (Issue #3 — Combat critical bugs and balance)
 
 ## Previous Sprints
 ### Sprint #1 — Tier 1 Security Fixes
