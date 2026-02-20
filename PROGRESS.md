@@ -1,29 +1,29 @@
 # PROGRESS.md — RoVatar
 
-## Current Sprint: #2 — First-Session Onboarding Blockers
-**Branch:** `sprint-2-onboarding-blockers`
-**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/2
+## Current Sprint: #3 — Combat Critical Bugs and Balance
+**Branch:** `sprint-3-combat-fixes`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/3
 
 ### Tasks
-- [x] S2.1 — Fix energy depleted notification text (NotificationData.lua)
-- [x] S2.2 — Fix MainMenuGui button wiring (MainMenuGui.lua)
-- [x] S2.3 — Wire ControlsGuideGui to show on first spawn (ControlsGuideGui.lua + data model)
-- [x] S2.4 — Add "Requires Lvl X" overlay to locked abilities (BendingSelectionGui.lua)
-- [x] S2.5 — Harden quest persistence on disconnect (QuestDataService.lua)
+- [x] S3.1 — Fix damage indicators not binding to respawned NPCs (DamageIndication.lua, PlayerController.lua)
+- [x] S3.2 — Reset Strength (mana) alongside Stamina on death (CharacterService.lua)
+- [x] S3.3 — Tune stamina regen (0.1→0.2) and sprint cooldown (0→3s) (Costs.lua)
+- [x] S3.4 — Increase enemy AI attack cooldowns ~2.5x at low levels (Helper.lua)
+- [x] S3.5 — Fix sword holster race condition in task.delay callback (CharacterService.lua)
 
 ### Commits
-- `c51829d` feat(onboarding): sprint 2 — fix first-session blockers
-- `98601e0` simplify: reduce complexity in ControlsGuideGui
-- `51d09ef` docs: add PROGRESS.md for sprint 2
-- `91d10e5` learn: extract lessons from sprint 2
-
-### PR
-- https://github.com/Attalis-Capital/RoVatar/pull/21
+- `d2674e2` feat(combat): sprint 3 — combat critical bugs and balance
 
 ### Next Action
-- Merge PR #21 after review
-- Start Sprint 3 (Issue #3 — Combat critical bugs and balance)
+- Create PR for sprint 3
+- Run /verify
+- Start Sprint 4 (Issue #4 — Progression and quest overhaul)
 
 ## Previous Sprints
+### Sprint #2 — First-Session Onboarding Blockers
+- Branch: `sprint-2-onboarding-blockers`
+- PR: https://github.com/Attalis-Capital/RoVatar/pull/21
+- Commits: `c51829d`, `98601e0`, `51d09ef`, `91d10e5`
+
 ### Sprint #1 — Tier 1 Security Fixes
 - Completed: `36604f5` fix(security): tier 1 critical vulnerability fixes
