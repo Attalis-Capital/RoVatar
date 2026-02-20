@@ -77,33 +77,27 @@ function ControlsGuideGui:ShowOnFirstSpawn()
 	end
 
 	task.delay(2, function()
-		-- Re-check in case attribute was set during the delay
 		if player:GetAttribute("HasSeenControls") then
 			return
 		end
 
-		-- Check persisted data — returning players with the flag set skip the guide
 		local myData :CT.PlayerDataModel = _G.PlayerData
-		if myData then
-			local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
-			if activeProfile and activeProfile.Data.Settings
-				and activeProfile.Data.Settings.HasSeenControls then
-				player:SetAttribute("HasSeenControls", true)
-				return
-			end
+		local activeProfile = myData and CF.PlayerQuestData.GetPlayerActiveProfile(myData)
+		local settings = activeProfile and activeProfile.Data.Settings
+
+		-- Returning player with persisted flag — skip the guide
+		if settings and settings.HasSeenControls then
+			player:SetAttribute("HasSeenControls", true)
+			return
 		end
 
-		-- Show the guide
+		-- First-time player — show guide and persist
 		self:Toggle(true)
 		player:SetAttribute("HasSeenControls", true)
 
-		-- Persist to player data so it survives sessions
-		if myData then
-			local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
-			if activeProfile and activeProfile.Data.Settings then
-				activeProfile.Data.Settings.HasSeenControls = true
-				_G.PlayerDataStore:UpdateData(myData)
-			end
+		if settings then
+			settings.HasSeenControls = true
+			_G.PlayerDataStore:UpdateData(myData)
 		end
 	end)
 end
