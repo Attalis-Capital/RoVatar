@@ -27,11 +27,10 @@ local WaterStanceDamageRange = Costs.WaterStanceDamageRange
 return function(plr, typ, direction, mouseaim)
 
 	if(typ == "Weld") then
-		-- Server-side level check
-		local CostsModule = require(script.Parent.Parent.Costs)
-		if plr.Progression and plr.Progression:FindFirstChild("LEVEL") then
-			if plr.Progression.LEVEL.Value < CostsModule.WaterStanceLvl then return end
-		end
+		-- Server-side stamina + level check
+		if plr.Character:FindFirstChild("Stamina").Value < WaterStanceStamina then return end
+		if plr.CombatStats.Level.Value < WaterStanceLvl then return end
+		plr.Character:FindFirstChild("Stamina").Value -= WaterStanceStamina
 
 		--Weld
 		local char = plr.Character

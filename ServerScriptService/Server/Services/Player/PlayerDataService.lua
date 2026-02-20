@@ -179,7 +179,7 @@ function onPlayerAdded(player:Player)
 end
 
 function onPlayerRemoved(player)
-	
+	_G.PlayerDataStore:RemovePlr(player, true)
 end
 
 -------------------------------------------- Public Methods -----------------------------

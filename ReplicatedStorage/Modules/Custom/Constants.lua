@@ -533,7 +533,7 @@ Constants.Items = {
 		Color = nil,
 
 		--Purchase logs
-		ProductId = 1873595644,
+		ProductId = 1873595644, -- TODO(SECURITY): Replace with unique ProductId from Roblox Dashboard
 		ProductType = Enum.InfoType.Product, --Product, Pass, etc
 		ProductCategory = Constants.ProductCategories.Gems, --Gold, Gems, etc
 
@@ -546,7 +546,7 @@ Constants.Items = {
 		Creator = nil,
 	},
 	["MegaLuck"] = {
-		--Item Info 
+		--Item Info
 		Id = "MegaLuck",
 		Name = "Mega Luck!",
 		Description = "~ Gives you 3x luck while hatching!",
@@ -562,7 +562,7 @@ Constants.Items = {
 		Color = nil,
 
 		--Purchase logs
-		ProductId = 1873595644,
+		ProductId = 1873595644, -- TODO(SECURITY): Replace with unique ProductId from Roblox Dashboard
 		ProductType = Enum.InfoType.Product, --Product, Pass, etc
 		ProductCategory = Constants.ProductCategories.Gold, --Gold, Gems, etc
 
@@ -575,7 +575,7 @@ Constants.Items = {
 		Creator = nil,
 	},
 	["MegaLuck2"] = {
-		--Item Info 
+		--Item Info
 		Id = "MegaLuck2",
 		Name = "Mega Luck!",
 		Description = "~ Gives you 3x luck while hatching!",
@@ -591,7 +591,7 @@ Constants.Items = {
 		Color = nil,
 
 		--Purchase logs
-		ProductId = 1873595644,
+		ProductId = 1873595644, -- TODO(SECURITY): Replace with unique ProductId from Roblox Dashboard
 		ProductType = Enum.InfoType.Product, --Product, Pass, etc
 		ProductCategory = Constants.ProductCategories.Gold, --Gold, Gems, etc
 

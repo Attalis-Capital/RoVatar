@@ -199,7 +199,7 @@ function DataServer.SetupStore(details:storeSetupDetails, handlePlayers :boolean
 	end
 	
 	self:Establish()
-	--self:AutoSave()
+	self:AutoSave()
 	
 	if(typeof(self.HearbeatUpdate) == "function") then
 		self._internalConn["HearbeatUpdate"] = RunS.Heartbeat:Connect(function(dt)
@@ -328,11 +328,9 @@ function DataServer:Establish()
 
 		--Client fires, Server listens
 		self.ClientSide.UpdateDataRqst = Server.CreateEvent(self._RE, "UpdateDataRqst") --Client fires, Server listens (whole data)
-		self.ClientSide.UpdateSpecDataRqst = Server.CreateEvent(self._RE, "UpdateSpecDataRqst") --Client fires, Server listens (specific key)
-		
+
 		--Client fires, Server listens
 		self.ClientSide.ClientConnected = Server.CreateEvent(self._RE, "ClientConnected") --Client fires, Server listens (specific key)
-		self.ClientSide.RemovePlrData = Server.CreateEvent(self._RE, "RemovePlrData") --Client fires, Server listens (specific key)
 
 		--Setup Remote Function calls
 		for name, v in pairs(self.ClientSide) do
@@ -341,23 +339,22 @@ function DataServer:Establish()
 			end
 		end
 
-		
-		--Listen for client events
+
+		--Listen for client events (with rate limiting)
+		local lastUpdate = {}
 		self.ClientSide.UpdateDataRqst:Connect(function(player: Player, data: any)
+			local now = tick()
+			if lastUpdate[player.UserId] and (now - lastUpdate[player.UserId]) < 1 then return end
+			lastUpdate[player.UserId] = now
 			self:DataReceivedFromClient(player, data)
 		end)
-		
-		self.ClientSide.UpdateSpecDataRqst:Connect(function(player: Player, path:string, data: any) 
-			warn("[UpdateSpecData] Received request from client:", player, path, data)
-			self:UpdateSpecData(player, path, data)
+
+		-- Clean up rate limit tracking on player leave
+		game.Players.PlayerRemoving:Connect(function(player)
+			lastUpdate[player.UserId] = nil
 		end)
-		
-		self.ClientSide.RemovePlrData:Connect(function(player: Player, plrId:number) 
-			warn("[RemovePlrData] Received request from client:", player, plrId)
-			self:RemovePlrData(player, plrId)
-		end)
-		
-		self.ClientSide.ClientConnected:Connect(function(player: Player) 
+
+		self.ClientSide.ClientConnected:Connect(function(player: Player)
 			warn(player, "[ClientConnected] with store:", self._storeName)
 			self:GetData(player, function(...)
 				self.ClientSide.InitData:Fire(player, ...)
@@ -638,19 +635,63 @@ function DataServer:ListenSpecChange(plr:Player, path:string, fn :(any, any, any
 end
 
 ----------------------------------------------^^^^^ Update Functions ^^^^^----------------------------------------------
+--# Validate that protected fields did not increase from client data
+-- Returns false if a numeric field increased (client should never raise these)
+local function fieldIncreased(cur, inc)
+	return typeof(cur) == "number" and typeof(inc) == "number" and inc > cur
+end
+
+local function validateClientData(currentData, incomingData, plrName)
+	if typeof(currentData) ~= "table" or typeof(incomingData) ~= "table" then return true end
+
+	-- Top-level protected fields
+	for _, field in ipairs({"Gold", "Gems", "TotalXP"}) do
+		if fieldIncreased(currentData[field], incomingData[field]) then
+			warn("[SECURITY] Rejected: " .. field .. " increased for " .. tostring(plrName))
+			return false
+		end
+	end
+
+	-- Per-profile protected fields
+	if typeof(currentData.AllProfiles) ~= "table" or typeof(incomingData.AllProfiles) ~= "table" then return true end
+	for profileKey, curProfile in pairs(currentData.AllProfiles) do
+		local incProfile = incomingData.AllProfiles[profileKey]
+		if typeof(curProfile) ~= "table" or typeof(incProfile) ~= "table" then continue end
+
+		if fieldIncreased(curProfile.PlayerLevel, incProfile.PlayerLevel)
+			or fieldIncreased(curProfile.XP, incProfile.XP) then
+			warn("[SECURITY] Rejected: profile field increased for " .. tostring(plrName))
+			return false
+		end
+
+		local curStats = curProfile.Data and curProfile.Data.PlayerStats
+		local incStats = incProfile.Data and incProfile.Data.PlayerStats
+		if typeof(curStats) == "table" and typeof(incStats) == "table"
+			and fieldIncreased(curStats.Kills, incStats.Kills) then
+			warn("[SECURITY] Rejected: Kills increased for " .. tostring(plrName))
+			return false
+		end
+	end
+
+	return true
+end
+
 --# Update data on the server. ->Two Way Communication<
 function DataServer:DataReceivedFromClient(plr:Player, data:any)
 	assert(data, "Nil or invalid data in store:", self)
 	assert(table.find(self._setupPlrs, plr.UserId), "Player is not setup yet. Cannot update data.")
 
 	local key = plr.UserId..self._keySuffix
-	--print("Old data:", self._plrsInfo[key].Data:Get(), data)
-	if(not CF:MatchTables(self._plrsInfo[key].Data:Get(), data)) then
-		--warn("[Data Received From Client] :", plr, data)
+	local currentData = self._plrsInfo[key].Data:Get()
+
+	-- Validate protected fields before accepting client data
+	if not validateClientData(currentData, data, plr.Name) then
+		return
+	end
+
+	if(not CF:MatchTables(currentData, data)) then
 		self._plrsInfo[key].Data:Set(data)
 		self._plrsInfo[key].Listeners.WholeData:Fire(data)
-	else
-		--print("No change detected in data.", self)
 	end
 end
 

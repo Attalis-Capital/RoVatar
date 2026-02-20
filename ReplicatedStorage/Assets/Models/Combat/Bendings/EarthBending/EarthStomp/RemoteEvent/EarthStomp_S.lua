@@ -1,6 +1,8 @@
 -- @ScriptType: Script
+-- DISABLED: Old Bendings system retired in favour of VFXHandler dispatch
 local Players = game:GetService("Players")
 script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
+	if true then return end -- Security: disable legacy handler
 	local OnHit = false
 	local Alive = true
 	local RS = game:GetService("ReplicatedStorage")

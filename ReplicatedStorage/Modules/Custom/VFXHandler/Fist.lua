@@ -51,7 +51,7 @@ return function(plr :Player, action, isHoldingSpace)
 		
 		if not M1Debounce.Value and not isBlocking.Value and not Disabled then
 
-			--plr.CombatStats.Stamina.Value -= FistStamina
+			plr.CombatStats.Stamina.Value -= FistStamina
 			
 			local hit = {}
 			M1Debounce.Value = true

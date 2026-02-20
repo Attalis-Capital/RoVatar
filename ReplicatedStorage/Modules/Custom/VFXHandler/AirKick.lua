@@ -18,6 +18,10 @@ local AirKickDamageRange = Costs.AirKickDamageRange
 
 return function(plr, direction, mouseaim)
 
+	if plr.Character:FindFirstChild("Stamina").Value < AirKickCost then return end
+	if plr.CombatStats.Level.Value < AirKickLvl then return end
+	plr.Character:FindFirstChild("Stamina").Value -= AirKickCost
+
 	local OnHit = false
 	local Alive = true
 

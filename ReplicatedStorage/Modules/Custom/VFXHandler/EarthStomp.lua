@@ -22,10 +22,10 @@ local EarthStompMaxDistance = 200
 
 return function(plr, direction, mouseaim)
 
-	--if	plr.Character:FindFirstChild("Stamina").Value < EarthStompStamina then return end
-	--if	plr.CombatStats.Level.Value < EarthStompLvl then return end
+	if plr.Character:FindFirstChild("Stamina").Value < EarthStompStamina then return end
+	if plr.CombatStats.Level.Value < EarthStompLvl then return end
 
-	--plr.Character:FindFirstChild("Stamina").Value -= EarthStompStamina
+	plr.Character:FindFirstChild("Stamina").Value -= EarthStompStamina
 
 	local OnHit = false
 	local Alive = true

@@ -1,5 +1,7 @@
 -- @ScriptType: Script
+-- DISABLED: Old Bendings system retired in favour of VFXHandler dispatch
 script.Parent.OnServerEvent:Connect(function(plr,direction,mouseaim)
+	if true then return end -- Security: disable legacy handler
 
 	local Costs = require(game:GetService("ReplicatedStorage").Modules.Custom.Costs)
 	if plr.Progression and plr.Progression:FindFirstChild("LEVEL") then

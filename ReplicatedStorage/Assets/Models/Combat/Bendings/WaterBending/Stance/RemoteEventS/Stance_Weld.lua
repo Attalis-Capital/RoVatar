@@ -1,5 +1,7 @@
 -- @ScriptType: Script
+-- DISABLED: Old Bendings system retired in favour of VFXHandler dispatch
 script.Parent.OnServerEvent:Connect(function(plr)
+	if true then return end -- Security: disable legacy handler
 	local char = plr.Character
 	local Tween = game:GetService("TweenService")
 	local Effect = game.ReplicatedStorage.Assets.VFXs.Water.Shock1

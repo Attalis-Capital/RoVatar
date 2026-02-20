@@ -33,7 +33,9 @@ local M1ImmunityTag = "Immunity"
 local AirImmunityTag = "AirDown"
 
 -- FUNCTIONS --
+-- DISABLED: Old Bendings system retired in favour of VFXHandler dispatch
 attackRemote.OnServerEvent:Connect(function(Player, Action, isHoldingSpace)
+	if true then return end -- Security: disable legacy handler
 
 	local Character = Player.Character
 	local Humanoid = Character.Humanoid	

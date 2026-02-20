@@ -21,10 +21,10 @@ local FireDropKickDamageRange = Costs.FireDropKickDamageRange
 
 return function(plr, direction, mouseaim)
 
-	--if	plr.Character:FindFirstChild("Stamina").Value < FireDropKickStamina then return end
-	--if	plr.CombatStats.Level.Value < FireDropKickLvl then return end
+	if plr.Character:FindFirstChild("Stamina").Value < FireDropKickStamina then return end
+	if plr.CombatStats.Level.Value < FireDropKickLvl then return end
 
-	--plr.Character:FindFirstChild("Stamina").Value -= FireDropKickStamina
+	plr.Character:FindFirstChild("Stamina").Value -= FireDropKickStamina
 
 
 	local hrp = plr.Character:WaitForChild("HumanoidRootPart")
