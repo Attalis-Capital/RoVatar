@@ -17,8 +17,11 @@
 - `51d09ef` docs: add PROGRESS.md for sprint 2
 - `91d10e5` learn: extract lessons from sprint 2
 
+### PR
+- https://github.com/Attalis-Capital/RoVatar/pull/21
+
 ### Next Action
-- Open PR for `sprint-2-onboarding-blockers` against `main`
+- Merge PR #21 after review
 - Start Sprint 3 (Issue #3 — Combat critical bugs and balance)
 
 ## Previous Sprints

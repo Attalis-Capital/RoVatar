@@ -11,6 +11,10 @@ RoVatar (Roblox elemental-combat game, 25% approval rate). Sprint 2 tackled 5 fi
 - S2.5: QuestDataService `OnPlayerAdded` now saves immediately after daily quest assignment (gated on change)
 - Code review, simplification pass, lesson extraction all completed
 - 5 lessons synced to Supabase (3 global, 2 repo-specific)
+- PR opened: https://github.com/Attalis-Capital/RoVatar/pull/21
+
+### Work in progress
+- None — sprint 2 is fully complete and PR is open
 
 ### Decisions made
 - **HasSeenControls uses client-side UpdateData pattern**: Follows existing codebase pattern (BendingSelectionGui, TutorialGuider all do the same). Field is cosmetic-only, no security risk. Added to both type def and defaults to survive data sync.
@@ -23,12 +27,11 @@ RoVatar (Roblox elemental-combat game, 25% approval rate). Sprint 2 tackled 5 fi
 - `Constants.GameInventory.Abilities[id].RequiredLevel` is the canonical level-gate source (Costs.lua -> Constants.Items -> Constants.GameInventory)
 
 ### Open questions / blockers
-- **PR not yet opened** — branch is pushed, ready for PR creation
-- Pre-existing: `IsSameDay()` string comparison bug breaks New Year daily quest rollover (not fixed this sprint — scope creep)
+- Pre-existing: `IsSameDay()` string comparison bug breaks New Year daily quest rollover (not fixed — scope creep)
 - Pre-existing: BendingSelectionGui ability unlock validation is client-only (no server re-validation)
 
 ### Next actions
-1. Open PR for `sprint-2-onboarding-blockers` against `main`
+1. Merge PR #21 after review
 2. Start Sprint 3 (Issue #3 — Combat critical bugs and balance)
 3. Consider fixing `IsSameDay()` string-vs-number bug as a quick fix before Sprint 3
 
@@ -45,5 +48,5 @@ RoVatar (Roblox elemental-combat game, 25% approval rate). Sprint 2 tackled 5 fi
 ```
 /project:start
 
-Sprint 2 (onboarding blockers) is complete on branch `sprint-2-onboarding-blockers` (4 commits). Open a PR against main, then start Sprint 3 (Issue #3 — Combat critical bugs and balance). Check PROGRESS.md and the Gotchas in CLAUDE.md for context. The IsSameDay() string-vs-number bug in QuestDataService is a known pre-existing issue worth fixing early.
+Sprint 2 (onboarding blockers) is complete. PR #21 is open: https://github.com/Attalis-Capital/RoVatar/pull/21 — merge it, then start Sprint 3 (Issue #3 — Combat critical bugs and balance). Check PROGRESS.md and the Gotchas in CLAUDE.md for context. The IsSameDay() string-vs-number bug in QuestDataService is a known pre-existing issue worth fixing early.
 ```
