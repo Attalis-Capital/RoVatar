@@ -10,7 +10,8 @@ RoVatar (Roblox elemental-combat game). Sprint 4a scoped the 4 highest-impact bu
 - S4.3: Rate-limited `RefreshDailyQuest` (60s cooldown), save only when changed, cleanup on `PlayerRemoving`
 - S4.4: Fixed completed+claimed daily quest blocking new assignment — added `IsCompleted and IsClaimed` guard
 - All 8 verification criteria passed
-- Branch `sprint-4a-quest-fixes` pushed (2 commits)
+- Branch `sprint-4a-quest-fixes` pushed (4 commits)
+- Lessons extracted: 4 Tier 1 added to CLAUDE.md Gotchas, 6 total synced to Supabase with embeddings
 
 ### Decisions made
 - Used `CF.Tables.CloneTable` (deep clone) over `table.clone` (shallow): nested `Targets`/`Reward` tables reference frozen `QuestsModule.Quests` entries — shallow clone would leave them exposed
@@ -29,13 +30,13 @@ RoVatar (Roblox elemental-combat game). Sprint 4a scoped the 4 highest-impact bu
 
 ### Next actions
 1. Create PR for `sprint-4a-quest-fixes` branch
-2. Run `/project:learn` to extract sprint 4a lessons
-3. Plan Sprint 4b — progression redesign (element levelling, damage scaling, travel quest gating, move binding)
+2. Plan Sprint 4b — progression redesign (element levelling, damage scaling, travel quest gating, move binding)
 
 ### Files to review
-- `ServerScriptService/Server/Services/Player/QuestDataService.lua` — all 4 fixes in this single file
+- `ServerScriptService/Server/Services/Player/QuestDataService.lua` — all 4 quest fixes
+- `CLAUDE.md` — updated Gotchas section with 4 new lessons
 
 ### Resume command
 ```
-/project:start then: Sprint 4a (quest fixes) is complete on branch `sprint-4a-quest-fixes` — all 4 tasks done, pushed, verified. Next: create PR for sprint 4a, run /project:learn, then plan Sprint 4b (Issue #4 continuation — progression redesign: element levelling, damage scaling, travel quest gating, move binding). See PROGRESS.md and docs/handoffs/handoff-2026-02-20-quest-sprint4a.md.
+/project:start then: Sprint 4a (quest fixes) is fully complete on branch `sprint-4a-quest-fixes` — all 4 tasks done, pushed, verified, lessons extracted (6 synced to Supabase). Next: create PR for sprint 4a (needs PR #22 merged first), then plan Sprint 4b (Issue #4 continuation — progression redesign: element levelling, damage scaling, travel quest gating, move binding). See PROGRESS.md and docs/handoffs/handoff-2026-02-20-quest-sprint4a.md.
 ```
