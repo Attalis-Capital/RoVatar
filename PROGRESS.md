@@ -13,10 +13,13 @@
 
 ### Commits
 - `d2674e2` feat(combat): sprint 3 — combat critical bugs and balance
+- `cf326db` learn: extract lessons from sprint 3 combat fixes
+
+### PR
+- https://github.com/Attalis-Capital/RoVatar/pull/22
 
 ### Next Action
-- Create PR for sprint 3
-- Run /verify
+- Merge PR #22 after in-game testing
 - Start Sprint 4 (Issue #4 — Progression and quest overhaul)
 
 ## Previous Sprints
