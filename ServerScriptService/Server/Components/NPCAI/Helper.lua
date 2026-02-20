@@ -17,16 +17,17 @@ end
 
 Helper.GetAttackCoolDown = function(level)
 	local cooldownPoints = {
-		{level = 1, value = 1.0},
-		{level = 3, value = 0.9},
-		{level = 5, value = 0.8},
-		{level = 8, value = 0.7},
-		{level = 10, value = 0.6},
-		{level = 25, value = 0.5},
-		{level = 50, value = 0.4},
+		{level = 1, value = 2.5},
+		{level = 3, value = 2.2},
+		{level = 5, value = 1.8},
+		{level = 8, value = 1.5},
+		{level = 10, value = 1.2},
+		{level = 25, value = 0.8},
+		{level = 50, value = 0.6},
 	}
 
-	if level >= 50 then return 0.4 end
+	if level >= 50 then return 0.6 end
+	if level <= 1 then return 2.5 end
 
 	for i = 1, #cooldownPoints - 1 do
 		local a = cooldownPoints[i]
@@ -34,12 +35,11 @@ Helper.GetAttackCoolDown = function(level)
 
 		if level >= a.level and level < b.level then
 			local t = (level - a.level) / (b.level - a.level)
-			local cooldown = a.value + (b.value - a.value) * t
-			return cooldown / 1.0  -- base cooldown is 1.0
+			return a.value + (b.value - a.value) * t
 		end
 	end
 
-	return 1.0
+	return 2.5
 end
 
 Helper.GetBlockCoolDown = function(_opponentLevel)

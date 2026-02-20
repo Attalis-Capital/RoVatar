@@ -101,4 +101,26 @@ function DamageIndication.BindToAllNPCs()
 	end
 end
 
+--// Binds damage indicators to NPCs that spawn after initial load (respawns, new spawns)
+function DamageIndication.BindToNewNPCs()
+	local Players = game:GetService("Players")
+	workspace.DescendantAdded:Connect(function(instance)
+		if not instance:IsA("Humanoid") then return end
+		local model = instance.Parent
+		if not model or not model:IsA("Model") then return end
+		-- Skip player characters — only bind to NPCs
+		if Players:GetPlayerFromCharacter(model) then return end
+		if not model:FindFirstChild("Head") then
+			-- Head may not be parented yet, wait briefly
+			task.delay(0.1, function()
+				if model.Parent and model:FindFirstChild("Head") and model:FindFirstChild("Humanoid") then
+					DamageIndication.new(model)
+				end
+			end)
+			return
+		end
+		DamageIndication.new(model)
+	end)
+end
+
 return DamageIndication

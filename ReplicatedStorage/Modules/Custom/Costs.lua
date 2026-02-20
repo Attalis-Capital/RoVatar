@@ -4,8 +4,8 @@ return {
 	VehicleCoolDown = 2, --5
 
 	--Sprint CoolDown
-	SprintCoolDown = 0, --1
-	StaminaRegenerationRate = .1, -- *dt ..1
+	SprintCoolDown = 3, --1
+	StaminaRegenerationRate = .2, -- *dt ..1
 	StaminaDecrementRate = .075, -- *dt
 
 	--Block CoolDown
