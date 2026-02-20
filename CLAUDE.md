@@ -50,7 +50,12 @@ After changes, check:
 
 ## Gotchas
 
-- {Add every bug/trap discovered here — every mistake becomes a rule}
+- DataServer.lua overrides `warn` and `print` as no-ops at the top — new `warn()` calls won't output unless you bypass this
+- VFXHandler.lua runs in both client and server contexts — server-side security code must go in the `else` (IsServer) block only
+- Old Bendings `_S.lua` scripts are a parallel combat system to VFXHandler — disabling one without the other leaves duplicate exploit paths
+- DataServer `DataReceivedFromClient` accepts raw full-data overwrites — any field not explicitly validated can be spoofed by the client
+- WaterStance has two-phase dispatch (`typ == "Weld"` = activation, `else` = deactivation) — stamina/level gates belong only in the Weld branch
+- `RemovePlrData` was exposed as a client RemoteEvent — always audit RemoteEvent creation for destructive operations before shipping
 
 
 ## Sprint workflow
