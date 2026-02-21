@@ -702,6 +702,41 @@ local function validateClientData(currentData, incomingData, plrName)
 			warn("[SECURITY] Rejected: Kills increased for " .. tostring(plrName))
 			return false
 		end
+
+		-- Protect ElementLevels — only mutated server-side by ElementXp.Award
+		local curEL = curProfile.Data and curProfile.Data.ElementLevels
+		local incEL = incProfile.Data and incProfile.Data.ElementLevels
+		if typeof(curEL) == "table" and typeof(incEL) == "table" then
+			for element, curElData in pairs(curEL) do
+				local incElData = incEL[element]
+				if typeof(curElData) == "table" and typeof(incElData) == "table" then
+					if fieldIncreased(curElData.Level, incElData.Level)
+						or fieldIncreased(curElData.TotalXP, incElData.TotalXP) then
+						warn("[SECURITY] Rejected: ElementLevels." .. element .. " spoofed for " .. tostring(plrName))
+						return false
+					end
+				end
+			end
+		end
+
+		-- Protect Abilities — reject new ability keys not in server copy
+		local curAbilities = curProfile.Data and curProfile.Data.EquippedInventory
+			and curProfile.Data.EquippedInventory.Abilities
+		local incAbilities = incProfile.Data and incProfile.Data.EquippedInventory
+			and incProfile.Data.EquippedInventory.Abilities
+		if typeof(curAbilities) == "table" and typeof(incAbilities) == "table" then
+			for abilityId, _ in pairs(incAbilities) do
+				if not curAbilities[abilityId] then
+					-- Allow if player meets the canonical level requirement from Costs.lua
+					local ABILITY_LEVELS = {AirBending = 5, FireBending = 8, EarthBending = 11, WaterBending = 12}
+					local requiredLevel = ABILITY_LEVELS[abilityId]
+					if not requiredLevel or (curProfile.PlayerLevel or 0) < requiredLevel then
+						warn("[SECURITY] Rejected: Ability", abilityId, "spoofed for", tostring(plrName))
+						return false
+					end
+				end
+			end
+		end
 	end
 
 	return true
