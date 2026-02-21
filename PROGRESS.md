@@ -38,9 +38,12 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 ### Commits
 - `81c663d` S5b: combat security — SafeZone PvP guards, GamePass checks, cleanup
 
+### PR
+- https://github.com/Attalis-Capital/RoVatar/pull/26 (merged)
+
 ### Next Action
-- Create PR for sprint-5b-combat-security → main
-- Plan sprint 5c or 6: remaining audit items (bending-type ownership validation, Abilities/Inventory/ElementLevels spoofing, duplicate DialogueGui in ReplicatedFirst)
+- Plan sprint 5c: bending-type ownership validation in VFXHandler, Abilities/Inventory/ElementLevels spoofing in validateClientData
+- Or pivot to issue #5 UI/UX polish / issue #6 audio system
 
 ---
 
