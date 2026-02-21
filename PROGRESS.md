@@ -25,7 +25,25 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ---
 
-## Current Sprint: #5b — Combat Security & Cleanup
+## Current Sprint: #5c — Data Validation Hardening
+**Branch:** `sprint-5c-data-validation`
+**Issue:** Final two security gaps from 2026-02-22 audit
+
+### Tasks
+- [x] S5c.1 — Bending-type ownership check in VFXHandler (Has_*Bending attributes + server dispatch guard)
+- [x] S5c.2 — ElementLevels validation in validateClientData (reject Level/TotalXP increases)
+- [x] S5c.3 — Abilities validation in validateClientData (reject new keys below level gate)
+
+### Commits
+- `d6dd90b` S5c: data validation hardening — bending ownership, ElementLevels, Abilities
+
+### Next Action
+- Create PR for sprint 5c
+- Plan next sprint: issue #5 UI/UX polish, issue #4 remaining progression, or issue #6 audio system
+
+---
+
+## Previous Sprint: #5b — Combat Security & Cleanup
 **Branch:** `sprint-5b-combat-security`
 **Issue:** Remaining combat security items from full audit (2026-02-22)
 
@@ -40,10 +58,6 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ### PR
 - https://github.com/Attalis-Capital/RoVatar/pull/26 (merged)
-
-### Next Action
-- Plan sprint 5c: bending-type ownership validation in VFXHandler, Abilities/Inventory/ElementLevels spoofing in validateClientData
-- Or pivot to issue #5 UI/UX polish / issue #6 audio system
 
 ---
 
