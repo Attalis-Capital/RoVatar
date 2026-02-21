@@ -48,6 +48,12 @@ After changes, check:
 - No edits to Packages/ or Replica/
 
 
+## Top Session-Ending Bugs (Audit 2026-02-22)
+
+1. **_G.PlayerData nil on startup** — 40+ client files read `_G.PlayerData` without nil guards; any UI interaction before DataReplicator round-trip completes crashes. Guard with a ready-gate or initialise to defaults in `DataController.lua:33`.
+2. **Death during tutorial deadlocks dialogue** — `_G.Talking` stays true after death, `DialogueGui.InProcess` stays true. NPC prompt disabled permanently. Hook `Humanoid.Died` to reset state in `TutorialGuider.lua`.
+3. **DataStore failures invisible + no retry** — `DataServer.lua:7-8` overrides warn/print as no-ops. Save failures at line 410 and GetAsync failures at line 459 are silent. GetAsync failure silently gives player default data, overwriting real progress on next auto-save.
+
 ## Gotchas
 
 - DataServer.lua overrides `warn` and `print` as no-ops at the top — new `warn()` calls won't output unless you bypass this
@@ -67,6 +73,14 @@ After changes, check:
 - VFXHandler bending abilities originally used `plr.CombatStats.Level` which never existed — the correct player level accessor is `plr.Progression.LEVEL.Value` (fixed in sprint 4b)
 - Modules in `ReplicatedStorage` that call `_G.PlayerDataStore` (e.g. `ElementXp.Award`) will nil-index if required client-side — guard with `RunService:IsServer()` or keep server-only logic in ServerScriptService
 - Element level attributes (`ElementLevel_Air`, etc.) must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ElementXp.Award` (on level-up) — if either path is missed, `DamageCalc.GetElementLevel` returns stale data via `plr:GetAttribute()`
+- `LevelUpService.lua:28-31` and `EffectsController.lua:82-85` both watch `CombatStats.Level` which does NOT exist — the real level is `Progression.LEVEL`. Level-up VFX, SFX, ability unlock banners, and broadcast to other players are all permanently dead until fixed.
+- `validateClientData` in `DataServer.lua:644-677` only guards 6 fields (Gold, Gems, TotalXP, PlayerLevel, XP, Kills) — `GamePurchases.Passes`, `Abilities`, `Inventory`, and `ElementLevels` can all be spoofed by the client via `UpdateDataRqst`
+- VFXHandler (`VFXHandler.lua:52`) validates effect name via `VALID_EFFECTS` whitelist but never checks bending-type ownership — any player can fire any ability regardless of their selected element
+- Boomerang and MeteoriteSword server handlers have NO GamePass ownership check — any player can use them via `CastEffect:FireServer("Boomerang", ...)` without purchasing
+- 5 of 7 ability handlers in VFXHandler have NO SafeZone PvP check — only Boomerang and MeteoriteSword check `InSafeZone` attribute (and MeteoriteSword awards XP before the check)
+- Duplicate `DialogueGui.lua` exists in both `ReplicatedFirst/` and `StarterPlayer/.../Components/GUIs/` with the same Component tag `"DialogueGui"` — the ReplicatedFirst copy lacks SkipAll() and has a stale button template path; delete it
+- `QuestController.lua:58` calls `_G.PlayerDataStore:UpdateData(plrData)` with wrong arity (missing player arg) — all client-side quest progress updates silently fail
+- `Calculations.lua:53` calls `_G.Warn(...)` which is never assigned — any code path hitting this crashes
 
 
 ## Sprint workflow

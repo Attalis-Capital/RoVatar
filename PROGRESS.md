@@ -1,5 +1,33 @@
 # PROGRESS.md — RoVatar
 
+## Full Audit — 2026-02-22
+**Type:** First-principles audit (7 agents, 2 waves)
+**Report:** `ROVATAR_AUDIT_REPORT.md`
+**Detail:** `state/AGENT{1-6}_*.md`
+
+### Headline Verdict
+Alexander cannot have 30 continuous minutes of fun — session crashes or softlocks within 5 minutes.
+
+### Key Findings
+- 3 session-ending bugs: _G.PlayerData nil crash, tutorial death deadlock, silent DataStore wipes
+- 2 BROKEN abilities: Boomerang (zero server validation), MeteoriteSword (no GamePass check)
+- 5/7 abilities allow PvP damage in SafeZones
+- GamePurchases.Passes spoofable by client (revenue leak)
+- Level-up VFX/SFX/unlock banners permanently dead (watches wrong stat)
+- Tutorial teaches controls AFTER combat quest
+- 25 debug print/warn calls in production UI code
+
+### Files Modified
+- `CLAUDE.md` — added top 3 session-ending bugs + 9 new gotchas
+- `ROVATAR_AUDIT_REPORT.md` — final 900-word audit report
+- `state/SWARM_STATE.md` — swarm coordination
+- `state/AGENT{1-6}_*.md` — per-agent detailed findings
+
+### Next Action
+- Sprint 5: Fix top 10 audit items (see ROVATAR_AUDIT_REPORT.md § Recommended Sprint Priority)
+
+---
+
 ## Current Sprint: #4b — Progression Foundation
 **Branch:** `sprint-4b-progression-foundation`
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/4
