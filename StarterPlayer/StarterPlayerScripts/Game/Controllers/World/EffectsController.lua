@@ -42,10 +42,10 @@ local function InitXPListener()
 		end
 
 		local plr = game.Players.LocalPlayer
-		local combatStats = plr:WaitForChild("CombatStats", 10)
-		if not combatStats then return end
+		local progression = plr:WaitForChild("Progression", 10)
+		if not progression then return end
 
-		local expValue = combatStats:WaitForChild("EXP", 10)
+		local expValue = progression:WaitForChild("EXP", 10)
 		if not expValue then return end
 
 		local lastExp = expValue.Value

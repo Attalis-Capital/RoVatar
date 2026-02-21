@@ -80,11 +80,11 @@ After changes, check:
 - ~~5 of 7 ability handlers in VFXHandler have NO SafeZone PvP check~~ — FIXED in sprint 5b: all 7 abilities now check `InSafeZone` before XP/damage/knockback
 - ~~Duplicate `DialogueGui.lua` exists in both `ReplicatedFirst/` and `StarterPlayer/.../Components/GUIs/`~~ — FIXED in sprint 5b: ReplicatedFirst copy deleted
 - `QuestController.lua:58` calls `_G.PlayerDataStore:UpdateData(plrData)` with wrong arity (missing player arg) — all client-side quest progress updates silently fail
-- `Calculations.lua:53` calls `_G.Warn(...)` which is never assigned — any code path hitting this crashes
+- ~~`Calculations.lua:53` calls `_G.Warn(...)` which is never assigned — any code path hitting this crashes~~ — FIXED: replaced with `warn(...)` (standard Luau)
 - In Roblox Luau, bare `Talking` and `_G.Talking` are different variables — `_G` is the shared cross-script table, bare globals are script-scoped only. Always use the `_G.` prefix for cross-script state
 - `GetPlayerDataModel()` and `GetSlotDataModel()` access `workspace.ServerTime.Value` — calling on client at require-time crashes if ServerTime doesn't exist yet. Always pcall or guard with `FindFirstChild`
 - `OnPlayerLeaving` cleanup must be unconditional — never gate `_plrsInfo` cleanup on `Save()` success or player state leaks permanently on DataStore outages
-- `EffectsController.lua` XP listener still watches `CombatStats.EXP` (not Progression) — verify `CombatStats` folder still exists and contains EXP; if removed, the 10s WaitForChild silently times out and XP popups are dead
+- ~~`EffectsController.lua` XP listener still watches `CombatStats.EXP` (not Progression)~~ — FIXED: now watches `Progression.EXP` (matches the Level listener pattern)
 - SafeZone PvP checks must go before ALL victim effects (ragdoll, knockback, CFrame, VFX) not just before `TakeDamage` — otherwise players still get flung/stunned in safe zones
 - VFXHandler ability modules live as children of the VFXHandler ModuleScript (`ReplicatedStorage/Modules/Custom/VFXHandler/`), not the old Bendings `_S.lua` scripts which are disabled with `if true then return end`
 - `Hits[target]` debounce set before a SafeZone early-return is never cleared by the delayed nil-setter — low impact for short-lived hitboxes but a structural leak pattern to watch

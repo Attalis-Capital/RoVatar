@@ -50,7 +50,7 @@ return {
 
 		local location = GetRandomPos(spawnner, obj) do
 			if not location then
-				_G.Warn("[Need To Calculate Position Again -->>>>]")
+				warn("[Need To Calculate Position Again -->>>>]")
 				location = CalculatePos(spawnner)
 			end
 
