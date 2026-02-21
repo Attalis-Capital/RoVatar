@@ -57,7 +57,10 @@ local function Init()
 	_G.PlayerDataStore:ListenChange(function(data:CT.PlayerDataModel)
 		--warn("[DataChanged] CHange listened PlayerData")
 		_G.PlayerData = CF.Tables.CloneTable(data) --Only use this to get the values (use _G.PlayerDataStore to set/update the data)
-		_G.QuestsData = CF.Tables.CloneTable(data.AllProfiles[data.ActiveProfile].Data.Quests)
+		local profile = data.ActiveProfile and data.AllProfiles and data.AllProfiles[data.ActiveProfile]
+		if profile and profile.Data and profile.Data.Quests then
+			_G.QuestsData = CF.Tables.CloneTable(profile.Data.Quests)
+		end
 	end)
 	
 	--_G.QuestsDataStore:ListenChange(function(data)
