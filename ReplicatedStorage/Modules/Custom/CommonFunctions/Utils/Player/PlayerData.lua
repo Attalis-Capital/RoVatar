@@ -107,6 +107,14 @@ PlayerData = {
 			Deaths = 0,
 		}
 
+		local defaultElementLevel = { Level = 1, XP = 0, TotalXP = 0 }
+		slotData.Data.ElementLevels = {
+			Air   = { Level = defaultElementLevel.Level, XP = defaultElementLevel.XP, TotalXP = defaultElementLevel.TotalXP },
+			Fire  = { Level = defaultElementLevel.Level, XP = defaultElementLevel.XP, TotalXP = defaultElementLevel.TotalXP },
+			Earth = { Level = defaultElementLevel.Level, XP = defaultElementLevel.XP, TotalXP = defaultElementLevel.TotalXP },
+			Water = { Level = defaultElementLevel.Level, XP = defaultElementLevel.XP, TotalXP = defaultElementLevel.TotalXP },
+		}
+
 		return slotData
 	end,
 	
@@ -646,6 +654,26 @@ PlayerData = {
 		return playerData
 	end,
 	
+	UpdateElementXpInPlayerData = function(playerData: CT.PlayerDataModel, element: string, xpToAdd: number)
+		local Costs = require(RS.Modules.Custom.Costs)
+		local activeProfile: CT.ProfileSlotDataType = PlayerQuestData.GetPlayerActiveProfile(playerData)
+		local elData = activeProfile.Data.ElementLevels[element]
+		if not elData then return end
+
+		elData.XP += xpToAdd
+		elData.TotalXP += xpToAdd
+
+		-- Level-up loop
+		local curve = Costs.ElementLevelData
+		while elData.Level < Costs.MaxElementLevel and curve[elData.Level] and elData.XP >= curve[elData.Level] do
+			elData.XP -= curve[elData.Level]
+			elData.Level += 1
+		end
+
+		activeProfile.Data.ElementLevels[element] = elData
+		playerData.AllProfiles[playerData.ActiveProfile] = activeProfile
+	end,
+
 	UpdateSubscription = function(playerData: CT.PlayerDataModel, SubscriptionId, add)
 		--if playerData.GamePurchases.Subscriptions[SubscriptionId] then
 		playerData.GamePurchases.Subscriptions[SubscriptionId] = add

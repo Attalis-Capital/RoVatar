@@ -17,6 +17,8 @@ local SFXHandler = require(script.Parent.Parent.SFXHandler)
 local Hitboxes = RS.Hitboxes
 local Replicate = RS.Remotes.Replicate
 
+local DamageCalc = require(script.Parent.Parent.CommonFunctions.Utils.DamageCalc)
+
 ----- Values
 local FistStamina = Costs.FistStamina
 local FistXP = Costs.FistXP
@@ -37,7 +39,8 @@ return function(plr :Player, action, isHoldingSpace)
 	local pStrength = plr.CombatStats.Strength.Value
 	local isBlocking = plr:WaitForChild("isBlocking")
 
-	local M1Damage = 7.1 * (1 + (pStrength * 0.015))
+	local baseM1 = 7.1 * (1 + (pStrength * 0.015))
+	local M1Damage = DamageCalc.Calculate(baseM1, DamageCalc.GetPlayerLevel(plr), 0)
 	local M1StunDuration = 1
 
 	local Disabled = false -- Char:FindFirstChild("Disabled")

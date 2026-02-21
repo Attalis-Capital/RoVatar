@@ -13,16 +13,20 @@ local Constants = require(RS.Modules.Custom.Constants)
 local FireDropKick = RS.Assets.VFXs.Fire.DropKick
 local Fire_Fire = RS.Assets.VFXs.Fire.Fire
 
+local DamageCalc = require(RS.Modules.Custom.CommonFunctions.Utils.DamageCalc)
+local ElementXp = require(RS.Modules.Custom.CommonFunctions.Utils.ElementXp)
+
 local FireDropKickStamina = Costs.FireDropKickStamina
 local FireDropKickXp = Costs.FireDropKickXp
 local FireDropKickLvl = Costs.FireDropKickLvl
 local FireDropKickDamageRange = Costs.FireDropKickDamageRange
+local FireDropKickElementXp = Costs.FireDropKickElementXp
 
 
 return function(plr, direction, mouseaim)
 
 	if plr.Character:FindFirstChild("Stamina").Value < FireDropKickStamina then return end
-	if plr.CombatStats.Level.Value < FireDropKickLvl then return end
+	if plr.Progression.LEVEL.Value < FireDropKickLvl then return end
 
 	plr.Character:FindFirstChild("Stamina").Value -= FireDropKickStamina
 
@@ -139,18 +143,17 @@ return function(plr, direction, mouseaim)
 				if Exp then
 					Exp.Value += FireDropKickXp
 				end
-				
+				ElementXp.Award(plr, "Fire", FireDropKickElementXp)
+
 				hrp.CFrame = CFrame.lookAt(hrp.Position, h.Position) * CFrame.Angles(0, math.pi, 0)
-				--print('FireDROP Stared')
 				misc.Ragdoll(char, 3)
 
 				misc.StrongKnockback(hrp, 35, 45, 0.15, h)
 				misc.UpKnockback(hrp, 35, 41, 0.15, h)
 				Hits[char] = true
-				
-				--print("FireDROP ENDED")
-				
-				local Damage = math.random(FireDropKickDamageRange.X, FireDropKickDamageRange.Y)
+
+				local baseDamage = math.random(FireDropKickDamageRange.X, FireDropKickDamageRange.Y)
+				local Damage = DamageCalc.Calculate(baseDamage, DamageCalc.GetPlayerLevel(plr), DamageCalc.GetElementLevel(plr, "Fire"))
 				char.Humanoid:TakeDamage(Damage)
 				
 				local LastDamage = char:FindFirstChild("DamageBy") or Instance.new('ObjectValue', char)

@@ -106,7 +106,10 @@ function onPlayerAdded(player:Player)
 		-- Quest Data
 		
 		--Karna: Task_Id :1086
-		playerData.AllProfiles[playerData.ActiveProfile].Data.CombatStats.Stamina = 100
+		local playerLevel = playerData.AllProfiles[playerData.ActiveProfile].PlayerLevel or 1
+		local scaledMaxStamina = Costs.BaseMaxStamina + Costs.MaxStaminaPerLevel * (playerLevel - 1)
+		playerData.AllProfiles[playerData.ActiveProfile].Data.CombatStats.Stamina = scaledMaxStamina
+		playerData.AllProfiles[playerData.ActiveProfile].Data.CombatStats.MaxStamina = scaledMaxStamina
 		playerData.AllProfiles[playerData.ActiveProfile].Data.CombatStats.Strength = 100
 		-----
 
@@ -115,6 +118,14 @@ function onPlayerAdded(player:Player)
 		
 		player.Progression.EXP.Value = playerData.AllProfiles[playerData.ActiveProfile].XP
 		player.Progression.LEVEL.Value = playerData.AllProfiles[playerData.ActiveProfile].PlayerLevel
+
+		-- Set element level attributes for damage scaling (fast path — no GetData on every hit)
+		local elementLevels = playerData.AllProfiles[playerData.ActiveProfile].Data.ElementLevels
+		if elementLevels then
+			for element, elData in pairs(elementLevels) do
+				player:SetAttribute("ElementLevel_" .. element, elData.Level)
+			end
+		end
 		-- Profile Data
 		
 		local GamePurchases = IAPService:RefreshPurchaseDataUpdates(player, playerData)
@@ -145,6 +156,13 @@ function onPlayerAdded(player:Player)
 		do --check unlocked abilities
 			local Level = newActiveProfile.PlayerLevel
 			player.Progression.LEVEL.Value = Level
+
+			-- Update scaled MaxStamina on level-up
+			local scaledMax = Costs.BaseMaxStamina + Costs.MaxStaminaPerLevel * (Level - 1)
+			local staminaVal = player:FindFirstChild("CombatStats") and player.CombatStats:FindFirstChild("Stamina")
+			if staminaVal then
+				staminaVal.Value = scaledMax
+			end
 		end
 	end)
 	

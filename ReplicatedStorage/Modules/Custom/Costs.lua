@@ -33,13 +33,13 @@ return {
 	MeteoriteSwordStamina = 5, 
 
 	--Usage gain Xp
-	AirKickXp = 4,
-	EarthStompXp = 5,
-	FireDropKickXp = 7,
-	WaterStanceXp = 3, -- every second on damage
-	FistXP = 3,
-	MeteoriteSwordXP = 6,
-	BoomerangXP = 8,
+	AirKickXp = 7,
+	EarthStompXp = 8,
+	FireDropKickXp = 10,
+	WaterStanceXp = 5, -- every second on damage
+	FistXP = 5,
+	MeteoriteSwordXP = 9,
+	BoomerangXP = 11,
 
 	--Usage Strength/Mana Costs
 	AirKickStrength = 12,
@@ -58,4 +58,29 @@ return {
 	--
 	BoomerangDamageRange = Vector2.new(30, 50),
 	MeteoriteSwordDamageRange = Vector2.new(15, 25),
+
+	-- Element XP awarded per ability hit
+	AirKickElementXp = 5,
+	EarthStompElementXp = 6,
+	FireDropKickElementXp = 8,
+	WaterStanceElementXp = 4,
+
+	-- Element level XP curve (XP required to advance FROM each level)
+	ElementLevelData = {
+		[1]=50, [2]=100, [3]=175, [4]=275, [5]=400,
+		[6]=550, [7]=725, [8]=950, [9]=1200, [10]=1500,
+		[11]=1850, [12]=2250, [13]=2700, [14]=3200, [15]=3750,
+		[16]=4400, [17]=5100, [18]=5900, [19]=6800, [20]=8000,
+	},
+	MaxElementLevel = 20,
+
+	-- Damage scaling constants
+	PlayerLevelDamageScale = 0.02,  -- +2% per player level
+	ElementLevelDamageScale = 0.03, -- +3% per element level
+
+	-- Stamina scaling constants
+	BaseMaxStamina = 100,
+	MaxStaminaPerLevel = 2,          -- +2 per player level above 1
+	BaseStaminaRegen = 0.05,
+	StaminaRegenPerLevel = 0.0005,   -- +0.0005 per player level above 1
 }

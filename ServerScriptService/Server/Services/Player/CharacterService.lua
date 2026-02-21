@@ -13,6 +13,7 @@ local VFXHandler = require(RS.Modules.Custom.VFXHandler)
 local CT = require(RS.Modules.Custom.CustomTypes)
 local CF = require(RS.Modules.Custom.CommonFunctions)
 local SFXHandler = require(RS.Modules.Custom.SFXHandler)
+local Costs = require(RS.Modules.Custom.Costs)
 
 local CharacterService = Knit.CreateService {
 	Name = "CharacterService",
@@ -40,6 +41,14 @@ local PlayerDataService
 
 --------------->>>>>>>>>>>>>>>>>>>>>>>>>>> Private Methods <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<---------------------------
 
+local function getScaledMaxStamina(playerLevel: number): number
+	return Costs.BaseMaxStamina + Costs.MaxStaminaPerLevel * (playerLevel - 1)
+end
+
+local function getScaledStaminaRegen(playerLevel: number): number
+	return Costs.BaseStaminaRegen + Costs.StaminaRegenPerLevel * (playerLevel - 1)
+end
+
 local Container = {}
 local RefillHealthCooldowns = {}
 local function HeartBeat(dt) -- Calling in .heartBeat
@@ -63,13 +72,17 @@ local function OnStateChanged(Player, State, Data : CT.StatsDataType)
 	if StateType == Constants.StateTypes.Move then
 		Player.CombatStats.Stamina.Value = Data.Current or Player.CombatStats.Stamina.Value
 
+		local playerLevel = Player.Progression and Player.Progression:FindFirstChild("LEVEL") and Player.Progression.LEVEL.Value or 1
+		local scaledMax = getScaledMaxStamina(playerLevel)
+		local scaledRegen = getScaledStaminaRegen(playerLevel)
+
 		if NewState == Constants.MoveStates.Running then
 			local _data = {}
 			_data.Stat = Player.CombatStats.Stamina
 			_data.Factor = Data.Factor or -0.025
-			_data.Max = Data.Max or 100
+			_data.Max = Data.Max or scaledMax
 			_data.Min = Data.Min or 0
-			
+
 			if not Container[Key] then
 				Container[Key] = {}
 			end
@@ -77,8 +90,8 @@ local function OnStateChanged(Player, State, Data : CT.StatsDataType)
 		else
 			local _data = {}
 			_data.Stat = Player.CombatStats.Stamina
-			_data.Factor = Data.Factor or .05
-			_data.Max = Data.Max or 100
+			_data.Factor = Data.Factor or scaledRegen
+			_data.Max = Data.Max or scaledMax
 			_data.Min = Data.Min or 0
 
 			if not Container[Key] then
@@ -422,8 +435,8 @@ function _onCharacterAdded(character, player, firstTime)
 	local player = Players:GetPlayerFromCharacter(character)
 	SetupCharacter(player, true)
 	if player:WaitForChild("CombatStats") then
-
-		player.CombatStats.Stamina.Value = 100
+		local playerLevel = player.Progression and player.Progression:FindFirstChild("LEVEL") and player.Progression.LEVEL.Value or 1
+		player.CombatStats.Stamina.Value = getScaledMaxStamina(playerLevel)
 		player.CombatStats.Strength.Value = 100
 	end
 

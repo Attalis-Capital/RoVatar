@@ -467,13 +467,27 @@ export type ProfileSlotDataType = {
 	Data : SlotDataType,
 }
 
+export type ElementLevelData = {
+	Level : number,
+	XP : number,
+	TotalXP : number,
+}
+
+export type ElementLevelsType = {
+	Air : ElementLevelData,
+	Fire : ElementLevelData,
+	Earth : ElementLevelData,
+	Water : ElementLevelData,
+}
+
 export type SlotDataType = {
 	Settings : SettingsDataType,
 	EquippedInventory : InventoryType,
-	
+
 	CombatStats : CombatStats,
 	PlayerStats : PlayerStats,
 	Quests : AllQuestsType,
+	ElementLevels : ElementLevelsType,
 }
 
 

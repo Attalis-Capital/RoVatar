@@ -17,6 +17,8 @@ local SFXHandler = require(script.Parent.Parent.SFXHandler)
 local Hitboxes = RS.Hitboxes
 local Replicate = RS.Remotes.Replicate
 
+local DamageCalc = require(script.Parent.Parent.CommonFunctions.Utils.DamageCalc)
+
 ----- Values
 local MeteoriteSwordStamina = Costs.MeteoriteSwordStamina
 local MeteoriteSwordXP = Costs.MeteoriteSwordXP
@@ -36,7 +38,8 @@ return function(Player, Action, isHoldingSpace)
 	local pStrength = Player.CombatStats.Strength.Value
 	local isBlocking = Player:WaitForChild("isBlocking")
 
-	local M1Damage = 7.1 * (1 + (pStrength * 0.015))
+	local baseM1 = 7.1 * (1 + (pStrength * 0.015))
+	local M1Damage = DamageCalc.Calculate(baseM1, DamageCalc.GetPlayerLevel(Player), 0)
 	local M1StunDuration = 1
 
 	local Disabled = false --Character:FindFirstChild("Disabled")

@@ -11,15 +11,19 @@ local AirThrust = RS.Assets.VFXs.Air.AirThrust
 local Costs = require(script.Parent.Parent.Costs)
 local Constants = require(RS.Modules.Custom.Constants)
 
+local DamageCalc = require(RS.Modules.Custom.CommonFunctions.Utils.DamageCalc)
+local ElementXp = require(RS.Modules.Custom.CommonFunctions.Utils.ElementXp)
+
 local AirKickCost = Costs.AirKickStamina
 local AirKickXp = Costs.AirKickXp
 local AirKickLvl = Costs.AirKickLvl
 local AirKickDamageRange = Costs.AirKickDamageRange
+local AirKickElementXp = Costs.AirKickElementXp
 
 return function(plr, direction, mouseaim)
 
 	if plr.Character:FindFirstChild("Stamina").Value < AirKickCost then return end
-	if plr.CombatStats.Level.Value < AirKickLvl then return end
+	if plr.Progression.LEVEL.Value < AirKickLvl then return end
 	plr.Character:FindFirstChild("Stamina").Value -= AirKickCost
 
 	local OnHit = false
@@ -94,14 +98,15 @@ return function(plr, direction, mouseaim)
 				if Exp then
 					Exp.Value += AirKickXp
 				end
-				
-				--hrp.CFrame = CFrame.lookAt(hrp.Position, airThrust.Position) * CFrame.Angles(0, math.pi, 0)
+				ElementXp.Award(plr, "Air", AirKickElementXp)
+
 				misc.Ragdoll(char, 1.5)
-				
+
 				misc.StrongKnockback(hrp, 35, 45, 0.15, airThrust)
 				misc.UpKnockback(hrp, 35, 65, 0.15, airThrust)
-				
-				local Damage = math.random(AirKickDamageRange.X, AirKickDamageRange.Y)
+
+				local baseDamage = math.random(AirKickDamageRange.X, AirKickDamageRange.Y)
+				local Damage = DamageCalc.Calculate(baseDamage, DamageCalc.GetPlayerLevel(plr), DamageCalc.GetElementLevel(plr, "Air"))
 				hum:TakeDamage(Damage)
 				
 				local LastDamage = hum.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', hum.Parent)
