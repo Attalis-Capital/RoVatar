@@ -33,13 +33,13 @@ function IsSameDay(StartTime)
 
 	if not StartTime then return false end
 
-	warn("Time at server:",os.date("*t",workspace:GetServerTimeNow()))
-	local currentYear = tonumber(os.date("%Y",workspace:GetServerTimeNow()))
-	local currentDay = tonumber(os.date("%j",workspace:GetServerTimeNow()))
+	warn("Time at server:",os.date("!*t",workspace:GetServerTimeNow()))
+	local currentYear = tonumber(os.date("!%Y",workspace:GetServerTimeNow()))
+	local currentDay = tonumber(os.date("!%j",workspace:GetServerTimeNow()))
 	local currentDateTime = os.date("!*t",workspace:GetServerTimeNow())
 
-	local savedYear = tonumber(os.date("%Y",StartTime))
-	local savedDay = tonumber(os.date("%j", StartTime))
+	local savedYear = tonumber(os.date("!%Y",StartTime))
+	local savedDay = tonumber(os.date("!%j", StartTime))
 	local savedDateTime = os.date("!*t", StartTime)
 
 	print(currentDay,currentYear, savedDay, savedYear)
@@ -47,8 +47,8 @@ function IsSameDay(StartTime)
 	print("in previousDay:",previousDay)
 
 	-->>Special check for last day of year and current date is 1 jan
-	if(currentDateTime.yday == "1") then
-		if(savedDateTime.month == "12" and savedDateTime.day == "31" and savedDateTime.year == tostring((currentDateTime.year - 1))) then
+	if (currentDateTime.yday == 1) then
+		if (savedDateTime.month == 12 and savedDateTime.day == 31 and savedDateTime.year == (currentYear - 1)) then
 			return true
 		end
 	end
@@ -138,11 +138,15 @@ end
 local function DailyQuest(plrData:CT.PlayerDataModel): boolean
 	local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(plrData)
 	local changed = false
-	if not IsSameDay(activeProfile.LastUpdatedOn) or not activeProfile.Data.Quests.DailyQuestData.Id then
+	local dailyQuest = activeProfile.Data.Quests.DailyQuestData
+	local needsNewQuest = not IsSameDay(activeProfile.LastUpdatedOn)
+		or not dailyQuest.Id
+		or (dailyQuest.IsCompleted and dailyQuest.IsClaimed)
+	if needsNewQuest then
 		--Karna: * Check for old quest if Completed and not claimed then credit reward
 
 		--* Assign Daily Quest to player
-		local QuestData : CT.QuestDataType = GetQuest()
+		local QuestData : CT.QuestDataType = CF.Tables.CloneTable(GetQuest())
 		QuestData.StartTime = workspace.ServerTime.Value
 		QuestData.Type = CD.QuestType.DailyQuest
 
@@ -155,16 +159,21 @@ local function DailyQuest(plrData:CT.PlayerDataModel): boolean
 	return changed
 end
 
+local refreshCooldowns = {}
+
 local function RefreshDailyQuest(player)
+	local now = workspace:GetServerTimeNow()
+	if refreshCooldowns[player] and (now - refreshCooldowns[player]) < 60 then
+		return
+	end
+	refreshCooldowns[player] = now
 
 	_G.PlayerDataStore:GetData(player, function(plrData:CT.PlayerDataModel)
-
-		DailyQuest(plrData)
-
-		_G.PlayerDataStore:UpdateData(player, plrData)
-		-- Karna: Refresh Quest GUI Event....
+		local changed = DailyQuest(plrData)
+		if changed then
+			_G.PlayerDataStore:UpdateData(player, plrData)
+		end
 	end)
-
 end
 
 -------------------- Quests>>>>>>>>>>>>>
@@ -194,6 +203,9 @@ function QuestDataService:KnitInit()
 
 	self.Client.RefreshDailyQuest:Connect(RefreshDailyQuest)
 
+	Players.PlayerRemoving:Connect(function(player)
+		refreshCooldowns[player] = nil
+	end)
 end
 
 function QuestDataService:KnitStart()
