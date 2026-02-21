@@ -1,28 +1,37 @@
 # PROGRESS.md — RoVatar
 
-## Current Sprint: #3 — Combat Critical Bugs and Balance
-**Branch:** `sprint-3-combat-fixes`
-**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/3
+## Current Sprint: #4b — Progression Foundation
+**Branch:** `sprint-4b-progression-foundation`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/4
 
 ### Tasks
-- [x] S3.1 — Fix damage indicators not binding to respawned NPCs (DamageIndication.lua, PlayerController.lua)
-- [x] S3.2 — Reset Strength (mana) alongside Stamina on death (CharacterService.lua)
-- [x] S3.3 — Tune stamina regen (0.1→0.2) and sprint cooldown (0→3s) (Costs.lua)
-- [x] S3.4 — Increase enemy AI attack cooldowns ~2.5x at low levels (Helper.lua)
-- [x] S3.5 — Fix sword holster race condition in task.delay callback (CharacterService.lua)
+- [x] S4b.1 — Add ElementLevels to data model (CustomTypes.lua, PlayerData.lua, Costs.lua)
+- [x] S4b.2 — Create ElementXp + DamageCalc helpers, wire into all 7 VFXHandler abilities
+- [x] S4b.3 — XP rate tuning — increase rates, reduce early level thresholds (issue #16)
+- [x] S4b.4 — Stamina scaling with player level (CharacterService.lua, Combats.lua, PlayerDataService.lua)
 
 ### Commits
-- `d2674e2` feat(combat): sprint 3 — combat critical bugs and balance
-- `cf326db` learn: extract lessons from sprint 3 combat fixes
+- `9e4ea18` feat(progression): sprint 4b — progression foundation
+- `4513d7c` learn: extract lessons from sprint 4b progression foundation
 
 ### PR
-- https://github.com/Attalis-Capital/RoVatar/pull/22
+- https://github.com/Attalis-Capital/RoVatar/pull/24 (merged)
 
 ### Next Action
-- Merge PR #22 after in-game testing
-- Start Sprint 4 (Issue #4 — Progression and quest overhaul)
+- Start next sprint (issue #5 UI/UX polish, or remaining #4 progression tasks)
+- Add safe-zone PvP guards to element bending abilities
+- Consider disabling legacy Bending scripts
 
 ## Previous Sprints
+### Sprint #4a — Quest Fixes
+- Branch: `sprint-4a-quest-fixes`
+- Fixes to QuestDataService (IsSameDay, GetQuest cloning, RefreshDailyQuest rate-limit)
+
+### Sprint #3 — Combat Critical Bugs and Balance
+- Branch: `sprint-3-combat-fixes`
+- PR: https://github.com/Attalis-Capital/RoVatar/pull/22
+- Commits: `d2674e2`, `cf326db`
+
 ### Sprint #2 — First-Session Onboarding Blockers
 - Branch: `sprint-2-onboarding-blockers`
 - PR: https://github.com/Attalis-Capital/RoVatar/pull/21
