@@ -92,6 +92,8 @@ After changes, check:
 - When adding early-return guards (SafeZone, auth) to existing hit handlers, check for duplicate state assignments downstream — e.g. `Hits[char] = true` may appear both at the dedup gate and after damage
 - `Has_*Bending` player attributes must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ListenSpecChange("AllProfiles")` callback (on data change) — mirrors the `ElementLevel_*` dual-write pattern
 - `validateClientData` Abilities check must allow level-gated unlocks via `curProfile.PlayerLevel >= ABILITY_LEVELS[abilityId]` — pure rejection breaks BendingSelectionGui unlock flow
+- ~~DataClient.lua had warn/print no-op overrides identical to DataServer~~ — FIXED in sprint 5c: always check BOTH client and server DataReplicator modules for diagnostic suppression
+- OwnedInventory validation must handle nested subcategories (e.g. `Styling.Hair = {id = true}`) — single-level key check misses sub-category item spoofing
 
 
 ## Sprint workflow
