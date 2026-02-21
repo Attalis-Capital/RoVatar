@@ -35,11 +35,14 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 - [x] S5c.3 — Abilities validation in validateClientData (reject new keys below level gate)
 
 ### Commits
-- `d6dd90b` S5c: data validation hardening — bending ownership, ElementLevels, Abilities
+- `54e8e55` S5c: data validation hardening (#27)
+
+### PR
+- https://github.com/Attalis-Capital/RoVatar/pull/27 (merged)
 
 ### Next Action
-- Create PR for sprint 5c
 - Plan next sprint: issue #5 UI/UX polish, issue #4 remaining progression, or issue #6 audio system
+- Quick win: fix QuestController.lua:58 wrong-arity UpdateData call
 
 ---
 
