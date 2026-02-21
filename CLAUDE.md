@@ -76,15 +76,20 @@ After changes, check:
 - ~~`LevelUpService.lua` and `EffectsController.lua` watched `CombatStats.Level` which does NOT exist~~ — FIXED in sprint 5a: both now watch `Progression.LEVEL`
 - `validateClientData` in DataServer.lua now guards 7 fields + GamePurchases.Passes (sprint 5a) — but `Abilities`, `Inventory`, and `ElementLevels` can still be spoofed by the client via `UpdateDataRqst`
 - VFXHandler (`VFXHandler.lua:52`) validates effect name via `VALID_EFFECTS` whitelist but never checks bending-type ownership — any player can fire any ability regardless of their selected element
-- Boomerang and MeteoriteSword server handlers have NO GamePass ownership check — any player can use them via `CastEffect:FireServer("Boomerang", ...)` without purchasing
-- 5 of 7 ability handlers in VFXHandler have NO SafeZone PvP check — only Boomerang and MeteoriteSword check `InSafeZone` attribute (and MeteoriteSword awards XP before the check)
-- Duplicate `DialogueGui.lua` exists in both `ReplicatedFirst/` and `StarterPlayer/.../Components/GUIs/` with the same Component tag `"DialogueGui"` — the ReplicatedFirst copy lacks SkipAll() and has a stale button template path; delete it
+- ~~Boomerang and MeteoriteSword server handlers have NO GamePass ownership check~~ — FIXED in sprint 5b: `UserOwnsGamePassAsync` check added in VFXHandler server dispatch
+- ~~5 of 7 ability handlers in VFXHandler have NO SafeZone PvP check~~ — FIXED in sprint 5b: all 7 abilities now check `InSafeZone` before XP/damage/knockback
+- ~~Duplicate `DialogueGui.lua` exists in both `ReplicatedFirst/` and `StarterPlayer/.../Components/GUIs/`~~ — FIXED in sprint 5b: ReplicatedFirst copy deleted
 - `QuestController.lua:58` calls `_G.PlayerDataStore:UpdateData(plrData)` with wrong arity (missing player arg) — all client-side quest progress updates silently fail
 - `Calculations.lua:53` calls `_G.Warn(...)` which is never assigned — any code path hitting this crashes
 - In Roblox Luau, bare `Talking` and `_G.Talking` are different variables — `_G` is the shared cross-script table, bare globals are script-scoped only. Always use the `_G.` prefix for cross-script state
 - `GetPlayerDataModel()` and `GetSlotDataModel()` access `workspace.ServerTime.Value` — calling on client at require-time crashes if ServerTime doesn't exist yet. Always pcall or guard with `FindFirstChild`
 - `OnPlayerLeaving` cleanup must be unconditional — never gate `_plrsInfo` cleanup on `Save()` success or player state leaks permanently on DataStore outages
 - `EffectsController.lua` XP listener still watches `CombatStats.EXP` (not Progression) — verify `CombatStats` folder still exists and contains EXP; if removed, the 10s WaitForChild silently times out and XP popups are dead
+- SafeZone PvP checks must go before ALL victim effects (ragdoll, knockback, CFrame, VFX) not just before `TakeDamage` — otherwise players still get flung/stunned in safe zones
+- VFXHandler ability modules live as children of the VFXHandler ModuleScript (`ReplicatedStorage/Modules/Custom/VFXHandler/`), not the old Bendings `_S.lua` scripts which are disabled with `if true then return end`
+- `Hits[target]` debounce set before a SafeZone early-return is never cleared by the delayed nil-setter — low impact for short-lived hitboxes but a structural leak pattern to watch
+- `UserOwnsGamePassAsync` can throw on network errors — always pcall and default to deny; log the error for diagnostics
+- When adding early-return guards (SafeZone, auth) to existing hit handlers, check for duplicate state assignments downstream — e.g. `Hits[char] = true` may appear both at the dedup gate and after damage
 
 
 ## Sprint workflow
