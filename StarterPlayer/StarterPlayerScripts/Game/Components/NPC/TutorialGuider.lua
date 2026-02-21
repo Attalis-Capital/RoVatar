@@ -41,6 +41,13 @@ _G.Talking = false
 local char = player.Character or player.CharacterAdded:Wait()
 local function OnCharacterAdded(newChar:Model)
 	char = newChar or player.CharacterAdded:Wait()
+	-- Reset tutorial dialogue state on respawn (fixes death deadlock)
+	if _G.Talking then
+		_G.Talking = false
+		if DialogueGui then
+			DialogueGui:Finish(true)
+		end
+	end
 end
 
 player.CharacterAdded:Connect(OnCharacterAdded)
@@ -94,7 +101,7 @@ local function CreatePendingQuestDialogue(self, QuestData :CustomTypes.QuestData
 	DialogueButton.Image = "rbxassetid://17575066019"
 
 	DialogueButton.OnAction = function()
-		Talking = false
+		_G.Talking = false
 		self.Prompt.Enabled = true
 		DialogueGui:Finish()
 	end
@@ -124,7 +131,7 @@ local function CreateDialogue(self, Conversation :CustomTypes.ConversationsDataT
 
 		if optData.ClickAction.Assign then
 			DialogueButton.OnAction = function()
-				Talking = false
+				_G.Talking = false
 				self.Prompt.Enabled = true
 				AssignQuest(optData.ClickAction.Assign)
 				DialogueGui:Finish()
@@ -139,7 +146,7 @@ local function CreateDialogue(self, Conversation :CustomTypes.ConversationsDataT
 			end
 		else
 			DialogueButton.OnAction = function()
-				Talking = false
+				_G.Talking = false
 				self.Prompt.Enabled = true
 				DialogueGui:Finish()
 			end
@@ -213,7 +220,7 @@ function TutorialGuider:SetupPrompt()
 	self.Prompt = self.Instance:FindFirstChild("Prompt") do
 		self.Prompt.Parent = PlayerGui
 		self.Prompt.Talk.MouseButton1Click:Connect(function()
-			Talking = true
+			_G.Talking = true
 			self.Prompt.Enabled = false
 			self:StartConversation()
 		end)
@@ -222,7 +229,7 @@ function TutorialGuider:SetupPrompt()
 	local Proximity:ProximityPrompt = self.Instance:FindFirstChild("Proximity")
 	Proximity.PromptShown:Connect(function()
 		-- Stop NPC from moving and Enable Prompt to talk
-		if not Talking then
+		if not _G.Talking then
 			self.Humanoid.WalkSpeed = 0
 			self.Prompt.Enabled = true
 			--self.Root.CFrame = CFrame.lookAt(self.Root.Position, char.PrimaryPart.Position)
@@ -231,16 +238,16 @@ function TutorialGuider:SetupPrompt()
 	
 	self.Humanoid.WalkSpeed = 10
 	Proximity.PromptHidden:Connect(function()
-		if not Talking then
+		if not _G.Talking then
 			self.Humanoid.WalkSpeed = 10
 			self.Prompt.Enabled = false
-			
+
 			-- Restore UI when player walks away from tutorial NPC
 			self:ToggleTutorialUI(true)
 		end
-		
-		if Talking then
-			Talking = false
+
+		if _G.Talking then
+			_G.Talking = false
 			task.wait(.6)
 			DialogueGui:Finish(true)
 			

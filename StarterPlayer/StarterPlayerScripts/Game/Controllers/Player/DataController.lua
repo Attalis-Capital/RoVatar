@@ -14,7 +14,31 @@ DR.SetupAll()
 _G.PlayerDataStore = DR.GetStore(Constants.DataStores.PlayerData.Name)
 --_G.QuestsDataStore = DR.GetStore(Constants.DataStores.QuestsStore.Name)
 
-
+-- Ready-gate: initialise with defaults so consumers never see nil before
+-- the ListenChange callback fires. pcall guards against workspace.ServerTime
+-- not existing yet on the client at require-time.
+local ok, defaultModel = pcall(CF.PlayerData.GetPlayerDataModel)
+if ok and defaultModel then
+	_G.PlayerData = CF.Tables.CloneTable(defaultModel)
+	local activeProfile = defaultModel.ActiveProfile
+	if activeProfile and defaultModel.AllProfiles and defaultModel.AllProfiles[activeProfile] then
+		_G.QuestsData = CF.Tables.CloneTable(defaultModel.AllProfiles[activeProfile].Data.Quests)
+	else
+		_G.QuestsData = { TutorialQuestData = {}, LevelQuestData = {}, DailyQuestData = {}, NPCQuestData = {} }
+	end
+else
+	-- Minimal stub so nil-index crashes are avoided until real data arrives
+	_G.PlayerData = {
+		ActiveProfile = "",
+		AllProfiles = {},
+		LoginData = {},
+		GamePurchases = { Passes = {}, Subscriptions = {} },
+		OwnedInventory = {},
+		PersonalProfile = {},
+		CoupansData = {},
+	}
+	_G.QuestsData = { TutorialQuestData = {}, LevelQuestData = {}, DailyQuestData = {}, NPCQuestData = {} }
+end
 
 ---------> Helper references
 local HelperF = script.Parent.Parent.Parent.Helpers

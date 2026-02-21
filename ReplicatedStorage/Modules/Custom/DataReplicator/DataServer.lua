@@ -1,11 +1,7 @@
 -- @ScriptType: ModuleScript
 ------------------------------->>>>>>>******
--- Intentionally overriding Roblox's global warn and print functions.
--- These no-op (do nothing) replacements are used to easily disable all debug output (warnings or prints)
--- across this script without removing the original calls.
--- This is a deliberate design choice for toggling debug output during development.
-local warn = function() end
-local print = function() end
+-- warn/print overrides REMOVED (sprint 5a) — silenced save failures and security rejections.
+-- Original no-ops disabled all diagnostics; now uses Roblox's built-in warn/print.
 ------------------------------->>>>>>>******
 
 --[[--------------------------------------------------------------------------------------------------
@@ -119,15 +115,14 @@ end
 function OnPlayerLeaving(self, plr: Player)
 	local key = plr.UserId..self._keySuffix
 	if(self._plrsInfo[key]) then
-		if(self:Save(plr)) then
-			--Player's data saved
-			self._plrsInfo[key].Listeners.WholeData:Destroy()
-			self._plrsInfo[key] = nil
+		self:Save(plr)
+		-- Always clean up player state, even if save failed (prevents memory leak)
+		self._plrsInfo[key].Listeners.WholeData:Destroy()
+		self._plrsInfo[key] = nil
 
-			local i = table.find(self._setupPlrs, plr.UserId)
-			if(i) then
-				table.remove(self._setupPlrs, i)
-			end
+		local i = table.find(self._setupPlrs, plr.UserId)
+		if(i) then
+			table.remove(self._setupPlrs, i)
 		end
 	end
 end
@@ -402,17 +397,26 @@ function DataServer:Save(plr:Player?, dataToSave:any?)
 			return
 		end
 		
-		local s, r = pcall(function()
-			return self._StoreObj:SetAsync(key, dataToSave)
-		end)
+		local MAX_RETRIES = 3
+		local s, r
+		for attempt = 1, MAX_RETRIES do
+			s, r = pcall(function()
+				return self._StoreObj:SetAsync(key, dataToSave)
+			end)
+			if s then break end
+			if attempt < MAX_RETRIES then
+				warn("[DataSave] Attempt", attempt, "failed for", key, ":", r, "— retrying...")
+				task.wait(2 ^ attempt)
+			end
+		end
 
-		if(not s) then
-			warn("[DataSave] failed for plrKey:",s, r)
+		if not s then
+			warn("[DataSave] FAILED after", MAX_RETRIES, "attempts for", key, ":", r)
 		else
-			warn("[DataSave] Successfully for plrKey:",key, r)
+			warn("[DataSave] Successfully for plrKey:", key, r)
 			self._lastSavedData[key] = dataToSave
 		end
-		
+
 		return s
 	end 
 	
@@ -456,14 +460,29 @@ function DataServer:GetData(player: Player | number, callback:(any, boolean)->()
 	if(not self._plrsInfo[key]) then
 		--Fetch player's Data from STORE
 		warn(self._storeName, "Fetching data from R_Server for plr:", player)
-		local s, result = pcall(function()
-			return self._StoreObj:GetAsync(key)
-		end)
+		local MAX_RETRIES = 3
+		local s, result
+		for attempt = 1, MAX_RETRIES do
+			s, result = pcall(function()
+				return self._StoreObj:GetAsync(key)
+			end)
+			if s then break end
+			if attempt < MAX_RETRIES then
+				warn(self._storeName, "GetAsync attempt", attempt, "failed:", result, "— retrying...")
+				task.wait(2 ^ attempt)
+			end
+		end
 
-		print(self._storeName, "Getdata:",s, result)
+		if not s then
+			warn("[DataServer] GetAsync FAILED after", MAX_RETRIES, "attempts for", key, ":", result)
+			if callback then callback(nil, false) end
+			return
+		end
+
+		print(self._storeName, "Getdata:", s, result)
 		local isFirstTime = false
 		local data = nil
-		
+
 		if(s and result) then
 			warn(self._storeName, "PlayerData FOUND result:", result)
 			data = result
@@ -649,6 +668,18 @@ local function validateClientData(currentData, incomingData, plrName)
 		if fieldIncreased(currentData[field], incomingData[field]) then
 			warn("[SECURITY] Rejected: " .. field .. " increased for " .. tostring(plrName))
 			return false
+		end
+	end
+
+	-- Protect GamePass purchases — passes can never be added by client
+	local curPasses = currentData.GamePurchases and currentData.GamePurchases.Passes
+	local incPasses = incomingData.GamePurchases and incomingData.GamePurchases.Passes
+	if typeof(curPasses) == "table" and typeof(incPasses) == "table" then
+		for passId, owned in pairs(incPasses) do
+			if owned and not curPasses[passId] then
+				warn("[SECURITY] Rejected: GamePass", passId, "spoofed for", tostring(plrName))
+				return false
+			end
 		end
 	end
 
