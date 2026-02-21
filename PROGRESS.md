@@ -23,12 +23,35 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 - `state/SWARM_STATE.md` — swarm coordination
 - `state/AGENT{1-6}_*.md` — per-agent detailed findings
 
+---
+
+## Current Sprint: #5a — Audit Critical Fixes
+**Branch:** `sprint-5a-audit-critical-fixes`
+**Issue:** Top 5 from full audit (2026-02-22)
+
+### Tasks
+- [x] S5a.1 — Guard _G.PlayerData with ready-gate (pcall + fallback stub)
+- [x] S5a.2 — Fix tutorial death deadlock (reset _G.Talking on respawn, fix bare refs)
+- [x] S5a.3 — Restore DataServer diagnostics + add retry (3 attempts, exponential backoff)
+- [x] S5a.4 — Validate GamePurchases.Passes in validateClientData
+- [x] S5a.5 — Fix LevelUpService + EffectsController stat path (Progression.LEVEL)
+- [x] Review fix: pcall guard for workspace.ServerTime crash in ready-gate
+- [x] Review fix: unconditional OnPlayerLeaving cleanup (memory leak)
+
+### Commits
+- `e84ad66` S5a: fix top 5 audit critical items — session crashes, data loss, revenue leak
+- `d6748e9` fix: nil-guard ListenChange callback for missing profile data
+
+### PR
+- https://github.com/Attalis-Capital/RoVatar/pull/25 (merged)
+
 ### Next Action
-- Sprint 5: Fix top 10 audit items (see ROVATAR_AUDIT_REPORT.md § Recommended Sprint Priority)
+- Create PR for sprint-5a-audit-critical-fixes → main
+- Plan sprint 5b: remaining audit items (SafeZone PvP guards, Boomerang/Sword validation, duplicate DialogueGui)
 
 ---
 
-## Current Sprint: #4b — Progression Foundation
+## Previous Sprint: #4b — Progression Foundation
 **Branch:** `sprint-4b-progression-foundation`
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/4
 
