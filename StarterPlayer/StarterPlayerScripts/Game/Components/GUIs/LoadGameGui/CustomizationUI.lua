@@ -196,7 +196,7 @@ end
 local function onBuyButtonClick()
 	local itemData = selectedItem
 	if itemData and itemData.ProductId then
-		warn("[123]Request for Customization purchase ID:", itemData.Id)
+		--warn("[123]Request for Customization purchase ID:", itemData.Id)
 		local conn 
 		conn = IAPController.onPurchaseCompleted:Connect(function(_itemData :CT.ItemDataType)
 			--print("[123]Customization purchase successfull: COMPARING ", _itemData)
@@ -359,7 +359,7 @@ function CustomizationUI:Construct()
 end
 
 function CustomizationUI:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 
 
 	if(self.active) then

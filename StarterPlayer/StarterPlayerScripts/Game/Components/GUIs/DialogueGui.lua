@@ -128,7 +128,7 @@ function DialogueGui:Start()
 	TWController:SubsTween(ui.OptionsFrame, Constants.TweenDir.Bottom, Constants.EasingStyle.Quad)
 	
 	--self:Toggle(false)
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 -- Initialize references for the UI elements
@@ -292,7 +292,7 @@ function DialogueGui:Welcome()
 	d.TypeSpeed = .025
 	d.AllowSkip = true
 	d.OnComplete = function()
-		warn("On dialogue completed!!")
+		--warn("On dialogue completed!!")
 	end
 
 	local bb :CT.DialogueButtonType = {}

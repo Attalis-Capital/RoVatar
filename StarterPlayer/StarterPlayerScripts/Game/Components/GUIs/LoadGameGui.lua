@@ -512,7 +512,7 @@ function LoadGameGui:InitButtons()
 				workspace:SetAttribute("GameLoaded", true)
 			end
 
-			print("Loaded Properly : ")
+			--print("Loaded Properly : ")
 
 			if not ui.Base.Visible then
 				self:Toggle(true)
@@ -544,7 +544,7 @@ function LoadGameGui:Construct()
 end
 
 function LoadGameGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 
 	LoadingGui = UIController:GetGui(Constants.UiScreenTags.LoadingGui, 2)
 	DialogueGui = UIController:GetGui(Constants.UiScreenTags.DialogueGui, 2)

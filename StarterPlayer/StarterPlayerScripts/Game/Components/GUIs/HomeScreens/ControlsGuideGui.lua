@@ -57,7 +57,7 @@ function ControlsGuideGui:Construct()
 end
 
 function ControlsGuideGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 
 	if(not self.active) then
 		return
@@ -67,7 +67,7 @@ function ControlsGuideGui:Start()
 	self:BindEvents()
 	self:ShowOnFirstSpawn()
 
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 function ControlsGuideGui:ShowOnFirstSpawn()

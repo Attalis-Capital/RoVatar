@@ -56,7 +56,7 @@ local NotificationGui
 ----------------------***************** Private Methods **********************----------------------
 function OnLevelChanged(_plrData)
 	local myData :CT.PlayerDataModel = _plrData or _G.PlayerData
-	print("[BendingSelectionGui] this is _plrData", _plrData)
+	--print("[BendingSelectionGui] this is _plrData", _plrData)
 	if not myData  then
 		warn("No Data found in AbilitySelection[]");
 		return
@@ -65,16 +65,16 @@ function OnLevelChanged(_plrData)
 	do --check unlocked abilities
 		local activeProfile :CT.ProfileSlotDataType = CF.PlayerQuestData.GetPlayerActiveProfile(myData)
 		local level = activeProfile.PlayerLevel
-		print("[BendingSelectionGui] activeProfile is", activeProfile, "level is", level)
+		--print("[BendingSelectionGui] activeProfile is", activeProfile, "level is", level)
 
 		local requiredLevel, itemId = GetNextAbilityRequiredLevel(level-1)
 		
-		print("[BendingSelectionGui] requiredLevel is", requiredLevel, "itemId is", itemId)
-		print("[BendingSelectionGui] Constants are", Constants.LevelAbilities, "and Constants.LevelAbilities[level]",Constants.LevelAbilities[level])
+		--print("[BendingSelectionGui] requiredLevel is", requiredLevel, "itemId is", itemId)
+		--print("[BendingSelectionGui] Constants are", Constants.LevelAbilities, "and Constants.LevelAbilities[level]",Constants.LevelAbilities[level])
 
 		if requiredLevel then
 			local abilities = CF.Tables.TableLength(activeProfile.Data.EquippedInventory.Abilities)
-			print("[BendingSelectionGui] abilities are", abilities)
+			--print("[BendingSelectionGui] abilities are", abilities)
 			
 			--print(`SlotId: {activeProfile}, currentAb: {abilities}, requdLvl: {requiredLevel}, currLvl: {level}, abiliCount: {Constants.LevelAbilities[level]}`)
 			if requiredLevel and ((Constants.LevelAbilities[requiredLevel] - 1 > abilities) or (level <= requiredLevel and Constants.LevelAbilities[level] and abilities < Constants.LevelAbilities[level])) then
@@ -94,7 +94,7 @@ function OnBendingSelected(itemData :CT.ItemDataType)
 	local abilities = CF.Tables.TableLength(activeProfile.Data.EquippedInventory.Abilities)
 	local requiredLevel, itemId = GetNextAbilityRequiredLevel(level-1)
 	
-	print("[BendingSelectionGui] inside onBendingSelected", Constants.LevelAbilities, requiredLevel,Constants.LevelAbilities[requiredLevel])
+	--print("[BendingSelectionGui] inside onBendingSelected", Constants.LevelAbilities, requiredLevel,Constants.LevelAbilities[requiredLevel])
 	
 	--as requiredLevel nil comes when player has maxedout the level and need to have all the 4 bending abilities so we bypass the checks
 	if requiredLevel and ((Constants.LevelAbilities[requiredLevel] - 1 > abilities) or (level <= requiredLevel and Constants.LevelAbilities[level] and abilities < Constants.LevelAbilities[level])) then
@@ -208,7 +208,7 @@ function BendingSelectionGui:Construct()
 end
 
 function BendingSelectionGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	--Check Module "active" validation with UIController
 	do

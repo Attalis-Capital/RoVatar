@@ -69,7 +69,7 @@ function GamePassCloseButton()
 end
 
 function BuyGamePass(iData:CT.ItemDataType)
-	warn("Request for GamePass purchase ID:", iData.Id)
+	--warn("Request for GamePass purchase ID:", iData.Id)
 	local conn = nil
 	conn = IAPController.onPurchaseCompleted:Connect(function(itemData)
 		if(itemData.Id == iData.Id) then
@@ -171,7 +171,7 @@ function GamePassGui:Construct()
 end
 
 function GamePassGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	--Check Module "active" validation with UIController
 	do
@@ -202,7 +202,7 @@ function GamePassGui:Start()
 		UpdateGamePasses()
 	end)
 	self:Toggle(false)
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 function GamePassGui:InitReferences()

@@ -101,7 +101,7 @@ function MainMenuGui:Construct()
 end
 
 function MainMenuGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	if(self.active) then
 		self:InitReferences()

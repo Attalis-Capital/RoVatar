@@ -72,7 +72,7 @@ function CoolDownGui:StartCoolDown(timer, name)
 end
 ----------------------***************** Public Methods **********************----------------------
 function CoolDownGui:Construct()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	UIController = Knit.GetController("UIController")
 	TWController = Knit.GetController("TweenController")
 
@@ -88,7 +88,7 @@ function CoolDownGui:Start()
 	TWController:SubsHover(ui.BaseFrame)
 	
 	self:Toggle(true)
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 function CoolDownGui:InitReferences()

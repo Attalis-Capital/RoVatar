@@ -57,7 +57,7 @@ function ShopCloseButton()
 end
 
 function BuyButtonClick(iData :CT.ItemDataType)
-	warn("Pack purchase in shop:", iData)
+	--warn("Pack purchase in shop:", iData)
 	
 	local plrData :CT.PlayerDataModel = _G.PlayerData
 	if plrData.OwnedInventory.Transports[iData.Id] then
@@ -101,7 +101,7 @@ function ShopGui:Construct()
 end
 
 function ShopGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	if(self.active) then
 		self:InitReferences()
@@ -131,7 +131,7 @@ function ShopGui:Start()
 	end
 	
 	self:Toggle(false)
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 function ShopGui:InitReferences()

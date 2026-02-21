@@ -408,7 +408,7 @@ function PlayerMenuGui:Construct()
 end
 
 function PlayerMenuGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	if(not self.active) then
 		return

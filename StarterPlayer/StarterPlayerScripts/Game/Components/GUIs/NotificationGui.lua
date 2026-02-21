@@ -151,7 +151,7 @@ function TogglePopup(Popup :PopupT, visible: BoolValue, _caller, _autoHideTime)
 		if isPopup then
 			local FinalSize = UDim2.new(0.4, 0,0.3, 0)
 			local startSize = UDim2.new(0, 0, 0, 0)
-			print("[[notificationGui]]")
+			--print("[[notificationGui]]")
 			Toggler.ShowPopup(Main, startSize, FinalSize,  function()
 				
 				if _autoHideTime then

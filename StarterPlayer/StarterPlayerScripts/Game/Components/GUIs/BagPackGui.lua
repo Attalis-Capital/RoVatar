@@ -125,7 +125,7 @@ end
 
 ----------------------***************** Public Methods **********************----------------------
 function BagPackGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	UIController = Knit.GetController("UIController")
 	TWController = Knit.GetController("TweenController")
 	TransportService = Knit.GetService("TransportService")

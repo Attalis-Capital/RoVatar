@@ -84,7 +84,7 @@ function MapGui:Construct()
 end
 
 function MapGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	if(self.active) then
 		self:InitReferences()
@@ -103,7 +103,7 @@ function MapGui:Start()
 		self:BindEvents()
 	end)
 	
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 function MapGui:InitReferences()

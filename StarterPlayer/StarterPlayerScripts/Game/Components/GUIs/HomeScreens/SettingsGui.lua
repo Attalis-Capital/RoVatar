@@ -173,7 +173,7 @@ function SettingsGui:Construct()
 end
 
 function SettingsGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	if(self.active) then
 		self:InitReferences()
@@ -202,7 +202,7 @@ function SettingsGui:Start()
 	TWController:SubsClick(ui.CloseButton)
 	
 	--self:Toggle(false)
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 	
 	task.delay(2, function()
 		_refresh()

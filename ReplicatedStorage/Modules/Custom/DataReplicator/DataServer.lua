@@ -683,6 +683,31 @@ local function validateClientData(currentData, incomingData, plrName)
 		end
 	end
 
+	-- Protect OwnedInventory — only server adds items (purchases, rewards)
+	local curOwned = currentData.OwnedInventory
+	local incOwned = incomingData.OwnedInventory
+	if typeof(curOwned) == "table" and typeof(incOwned) == "table" then
+		for category, incItems in pairs(incOwned) do
+			local curItems = curOwned[category]
+			if typeof(incItems) == "table" and typeof(curItems) == "table" then
+				for itemKey, itemVal in pairs(incItems) do
+					if typeof(itemVal) == "table" and typeof(curItems[itemKey]) == "table" then
+						-- Nested category (e.g. Styling.Hair = {id = true})
+						for subId, _ in pairs(itemVal) do
+							if not curItems[itemKey][subId] then
+								warn("[SECURITY] Rejected: OwnedInventory." .. tostring(category) .. "." .. tostring(itemKey) .. " item spoofed for " .. tostring(plrName))
+								return false
+							end
+						end
+					elseif not curItems[itemKey] then
+						warn("[SECURITY] Rejected: OwnedInventory." .. tostring(category) .. " item spoofed for " .. tostring(plrName))
+						return false
+					end
+				end
+			end
+		end
+	end
+
 	-- Per-profile protected fields
 	if typeof(currentData.AllProfiles) ~= "table" or typeof(incomingData.AllProfiles) ~= "table" then return true end
 	for profileKey, curProfile in pairs(currentData.AllProfiles) do

@@ -61,7 +61,7 @@ function ShopCloseButton()
 end
 
 function BuyButtonClick(packF:ImageLabel)
-	warn("Pack purchase in shop:",packF)
+	--warn("Pack purchase in shop:",packF)
 	local pId = packF:GetAttribute("ProductId")
 	if(not pId) then warn("ProductId not found on pack.") return end
 	
@@ -102,7 +102,7 @@ function StoreGui:Construct()
 end
 
 function StoreGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	if(self.active) then
 		self:InitReferences()
@@ -127,7 +127,7 @@ function StoreGui:Start()
 	end
 	
 	self:Toggle(false)
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 function StoreGui:InitTrigger()

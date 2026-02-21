@@ -119,7 +119,7 @@ function LoadingGui:Construct()
 end
 
 function LoadingGui:Start()
-	warn(self," Starting...")
+	--warn(self," Starting...")
 	
 	--LoadSlotGui = UIController:GetGui(Constants.UiScreenTags.LoadSlotGui, 2)
 	
@@ -139,7 +139,7 @@ function LoadingGui:Start()
 	--	CameraController:HandHeldView(true)
 	--end)
 	
-	print(self," started:", self.active)
+	--print(self," started:", self.active)
 end
 
 function LoadingGui:InitReferences()

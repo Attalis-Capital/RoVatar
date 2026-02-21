@@ -59,7 +59,7 @@ After changes, check:
 - ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ — FIXED in sprint 5a: overrides removed, diagnostics now visible
 - VFXHandler.lua runs in both client and server contexts — server-side security code must go in the `else` (IsServer) block only
 - Old Bendings `_S.lua` scripts are a parallel combat system to VFXHandler — disabling one without the other leaves duplicate exploit paths
-- DataServer `DataReceivedFromClient` accepts raw full-data overwrites — any field not explicitly validated can be spoofed by the client
+- DataServer `DataReceivedFromClient` accepts raw full-data overwrites — most fields now validated (Gold, Gems, TotalXP, GamePasses, ElementLevels, Abilities, OwnedInventory, per-profile PlayerLevel/XP/Kills)
 - WaterStance has two-phase dispatch (`typ == "Weld"` = activation, `else` = deactivation) — stamina/level gates belong only in the Weld branch
 - `RemovePlrData` was exposed as a client RemoteEvent — always audit RemoteEvent creation for destructive operations before shipping
 - New persistent data fields must be added to BOTH `GetSlotDataModel()` defaults (PlayerData.lua) AND the type definition (CustomTypes.lua) — `CheckAndUpdatePlayerData` Sync/remove strips undeclared fields on migration
@@ -79,7 +79,7 @@ After changes, check:
 - ~~Boomerang and MeteoriteSword server handlers have NO GamePass ownership check~~ — FIXED in sprint 5b: `UserOwnsGamePassAsync` check added in VFXHandler server dispatch
 - ~~5 of 7 ability handlers in VFXHandler have NO SafeZone PvP check~~ — FIXED in sprint 5b: all 7 abilities now check `InSafeZone` before XP/damage/knockback
 - ~~Duplicate `DialogueGui.lua` exists in both `ReplicatedFirst/` and `StarterPlayer/.../Components/GUIs/`~~ — FIXED in sprint 5b: ReplicatedFirst copy deleted
-- `QuestController.lua:58` calls `_G.PlayerDataStore:UpdateData(plrData)` with wrong arity (missing player arg) — all client-side quest progress updates silently fail
+- ~~`QuestController.lua:58` — quest progress updates silently fail~~ — FIXED in sprint 5c: DataClient.lua had warn/print no-ops (same as DataServer sprint 5a); arity was actually correct for client-side API
 - ~~`Calculations.lua:53` calls `_G.Warn(...)` which is never assigned — any code path hitting this crashes~~ — FIXED: replaced with `warn(...)` (standard Luau)
 - In Roblox Luau, bare `Talking` and `_G.Talking` are different variables — `_G` is the shared cross-script table, bare globals are script-scoped only. Always use the `_G.` prefix for cross-script state
 - `GetPlayerDataModel()` and `GetSlotDataModel()` access `workspace.ServerTime.Value` — calling on client at require-time crashes if ServerTime doesn't exist yet. Always pcall or guard with `FindFirstChild`
