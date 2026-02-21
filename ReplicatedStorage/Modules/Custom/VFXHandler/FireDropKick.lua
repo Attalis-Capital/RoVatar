@@ -4,6 +4,7 @@ local Tween = game:GetService("TweenService")
 local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
+local Players = game:GetService("Players")
 
 local Modules = RS.Modules
 local misc = require(Modules.Packages.Misc)
@@ -138,7 +139,12 @@ return function(plr, direction, mouseaim)
 					--print("FireDROP Returning")
 					return
 				end
-				
+				Hits[char] = true
+
+				-- SafeZone: block PvP if either player is in safe zone
+				local victimPlayer = Players:GetPlayerFromCharacter(char)
+				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or char:GetAttribute("InSafeZone")) then return end
+
 				local Exp = plr.Progression:FindFirstChild("EXP")
 				if Exp then
 					Exp.Value += FireDropKickXp
@@ -150,7 +156,6 @@ return function(plr, direction, mouseaim)
 
 				misc.StrongKnockback(hrp, 35, 45, 0.15, h)
 				misc.UpKnockback(hrp, 35, 41, 0.15, h)
-				Hits[char] = true
 
 				local baseDamage = math.random(FireDropKickDamageRange.X, FireDropKickDamageRange.Y)
 				local Damage = DamageCalc.Calculate(baseDamage, DamageCalc.GetPlayerLevel(plr), DamageCalc.GetElementLevel(plr, "Fire"))

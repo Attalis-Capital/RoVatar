@@ -146,6 +146,9 @@ return function(plr :Player, action, isHoldingSpace)
 											end
 
 										elseif v.Parent.Humanoid.Health > 0 then
+											-- SafeZone: block PvP if either player is in safe zone
+											if isPlayer and (Char:GetAttribute("InSafeZone") or v.Parent:GetAttribute("InSafeZone")) then return end
+
 											local eHum = v.Parent.Humanoid
 
 											local Exp = plr.Progression:FindFirstChild("EXP")

@@ -25,7 +25,26 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ---
 
-## Current Sprint: #5a — Audit Critical Fixes
+## Current Sprint: #5b — Combat Security & Cleanup
+**Branch:** `sprint-5b-combat-security`
+**Issue:** Remaining combat security items from full audit (2026-02-22)
+
+### Tasks
+- [x] S5b.1 — SafeZone PvP guards for all 7 abilities (before XP + damage)
+- [x] S5b.2 — GamePass ownership check for Boomerang/MeteoriteSword in VFXHandler
+- [x] S5b.3 — Delete duplicate ReplicatedFirst/DialogueGui.lua (tag collision)
+- [x] Bonus — Add scripts/verify.sh for Luau/Roblox project verification
+
+### Commits
+- `81c663d` S5b: combat security — SafeZone PvP guards, GamePass checks, cleanup
+
+### Next Action
+- Create PR for sprint-5b-combat-security → main
+- Plan sprint 5c or 6: remaining audit items (bending-type ownership validation, Abilities/Inventory/ElementLevels spoofing, duplicate DialogueGui in ReplicatedFirst)
+
+---
+
+## Previous Sprint: #5a — Audit Critical Fixes
 **Branch:** `sprint-5a-audit-critical-fixes`
 **Issue:** Top 5 from full audit (2026-02-22)
 
@@ -44,10 +63,6 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ### PR
 - https://github.com/Attalis-Capital/RoVatar/pull/25 (merged)
-
-### Next Action
-- Create PR for sprint-5a-audit-critical-fixes → main
-- Plan sprint 5b: remaining audit items (SafeZone PvP guards, Boomerang/Sword validation, duplicate DialogueGui)
 
 ---
 
