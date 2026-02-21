@@ -1,7 +1,7 @@
 -- @ScriptType: ModuleScript
 -- LevelUpService.lua
 -- Sprint 3 (#17): Server-side level-up handler.
--- Listens for CombatStats.Level changes on each player and fires the Replicate
+-- Listens for Progression.LEVEL changes on each player and fires the Replicate
 -- remote to all OTHER clients so they can see the level-up VFX.
 
 local Players = game:GetService("Players")
@@ -25,10 +25,10 @@ local function onPlayerAdded(plr)
 			playerLevelConns[plr.UserId] = nil
 		end
 
-		local combatStats = plr:WaitForChild("CombatStats", 10)
-		if not combatStats then return end
+		local progression = plr:WaitForChild("Progression", 10)
+		if not progression then return end
 
-		local levelValue = combatStats:WaitForChild("Level", 10)
+		local levelValue = progression:WaitForChild("LEVEL", 10)
 		if not levelValue then return end
 
 		local lastLevel = levelValue.Value

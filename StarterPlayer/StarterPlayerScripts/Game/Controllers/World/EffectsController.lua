@@ -79,10 +79,10 @@ local function InitLevelUpListener()
 		end
 
 		local plr = game.Players.LocalPlayer
-		local combatStats = plr:WaitForChild("CombatStats", 10)
-		if not combatStats then return end
+		local progression = plr:WaitForChild("Progression", 10)
+		if not progression then return end
 
-		local levelValue = combatStats:WaitForChild("Level", 10)
+		local levelValue = progression:WaitForChild("LEVEL", 10)
 		if not levelValue then return end
 
 		local lastLevel = levelValue.Value
