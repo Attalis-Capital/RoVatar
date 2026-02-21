@@ -36,13 +36,15 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ### Commits
 - `54e8e55` S5c: data validation hardening (#27)
+- `0fcc449` fix: _G.Warn crash + stale CombatStats.EXP in EffectsController
+- `ecf5d5f` fix: DataClient diagnostics, OwnedInventory validation, GUI debug cleanup
 
 ### PR
 - https://github.com/Attalis-Capital/RoVatar/pull/27 (merged)
 
 ### Next Action
-- Plan next sprint: issue #5 UI/UX polish, issue #4 remaining progression, or issue #6 audio system
-- Quick win: fix QuestController.lua:58 wrong-arity UpdateData call
+- Plan next sprint: issue #5 UI/UX polish or issue #6 audio system
+- All 2026-02-22 audit items are now closed
 
 ---
 
