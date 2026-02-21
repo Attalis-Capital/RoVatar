@@ -14,6 +14,8 @@ local SpinBlade = script.Boomerang
 local Costs = require(script.Parent.Parent.Costs)
 local Constants = require(RS.Modules.Custom.Constants)
 
+local DamageCalc = require(RS.Modules.Custom.CommonFunctions.Utils.DamageCalc)
+
 local BoomerangDamageRange = Costs.BoomerangDamageRange
 local BoomerangXP = Costs.BoomerangXP
 
@@ -107,7 +109,8 @@ return function(plr, direction, mouseaim)
 					Exp.Value += BoomerangXP
 				end
 				
-				local Damage = math.random(BoomerangDamageRange.X, BoomerangDamageRange.Y)
+				local baseDamage = math.random(BoomerangDamageRange.X, BoomerangDamageRange.Y)
+				local Damage = DamageCalc.Calculate(baseDamage, DamageCalc.GetPlayerLevel(plr), 0)
 				-- SafeZone: block PvP if either player is in safe zone
 				local victimPlayer = Players:GetPlayerFromCharacter(hit.Parent)
 				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or hit.Parent:GetAttribute("InSafeZone")) then return end

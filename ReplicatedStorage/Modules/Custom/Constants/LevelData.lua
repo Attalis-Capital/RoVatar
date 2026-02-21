@@ -1,19 +1,19 @@
 -- @ScriptType: ModuleScript
 return function(LevelUpRewardType)
 	return {
-		[1] = {MinXp = 0, MaxXp = 499, XpRequired = 500, 
+		[1] = {MinXp = 0, MaxXp = 299, XpRequired = 300,
 			Reward = {Type = LevelUpRewardType.Gold, Amount = 200}
 		},
-		[2] = {MinXp = 500, MaxXp = 1499, XpRequired = 1000, 
+		[2] = {MinXp = 300, MaxXp = 899, XpRequired = 600,
 			Reward = {Type = LevelUpRewardType.Gold, Amount = 300}
 		},
-		[3] = {MinXp = 1500, MaxXp = 2999, XpRequired = 1500, 
+		[3] = {MinXp = 900, MaxXp = 1899, XpRequired = 1000,
 			Reward = {Type = LevelUpRewardType.Gold, Amount = 400}
 		},
-		[4] = {MinXp = 3000, MaxXp = 4999, XpRequired = 2000, 
+		[4] = {MinXp = 1900, MaxXp = 3399, XpRequired = 1500,
 			Reward = {Type = LevelUpRewardType.Gold, Amount = 500}
 		},
-		[5] = {MinXp = 5000, MaxXp = 7499, XpRequired = 2500, 
+		[5] = {MinXp = 3400, MaxXp = 5399, XpRequired = 2000,
 			Reward = {Type = LevelUpRewardType.Gold, Amount = 600}
 		},
 		[6] = {MinXp = 7500, MaxXp = 9999, XpRequired = 2500, 

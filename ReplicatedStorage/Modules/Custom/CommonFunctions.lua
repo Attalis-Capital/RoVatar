@@ -50,6 +50,8 @@ CommonFunctions.PlayerData = require(utils.Player.PlayerData)
 --------**** Player Quest Data
 CommonFunctions.PlayerQuestData = require(utils.Player.PlayerQuestData)
 
-
+--------**** Element XP & Damage Scaling
+CommonFunctions.ElementXp = require(utils.ElementXp)
+CommonFunctions.DamageCalc = require(utils.DamageCalc)
 
 return CommonFunctions

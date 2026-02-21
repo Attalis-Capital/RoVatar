@@ -17,11 +17,15 @@ local Effect4 = RS.Assets.VFXs.Water.Shock3
 local Effect2 = RS.Assets.VFXs.Water.Ground
 local HitBox = RS.Assets.VFXs.Water.HitBox
 
+local DamageCalc = require(RS.Modules.Custom.CommonFunctions.Utils.DamageCalc)
+local ElementXp = require(RS.Modules.Custom.CommonFunctions.Utils.ElementXp)
+
 ----Costs
 local WaterStanceStamina = Costs.WaterStanceStamina
 local WaterStanceXp = Costs.WaterStanceXp
 local WaterStanceLvl = Costs.WaterStanceLvl
 local WaterStanceDamageRange = Costs.WaterStanceDamageRange
+local WaterStanceElementXp = Costs.WaterStanceElementXp
 
 
 return function(plr, typ, direction, mouseaim)
@@ -29,7 +33,7 @@ return function(plr, typ, direction, mouseaim)
 	if(typ == "Weld") then
 		-- Server-side stamina + level check
 		if plr.Character:FindFirstChild("Stamina").Value < WaterStanceStamina then return end
-		if plr.CombatStats.Level.Value < WaterStanceLvl then return end
+		if plr.Progression.LEVEL.Value < WaterStanceLvl then return end
 		plr.Character:FindFirstChild("Stamina").Value -= WaterStanceStamina
 
 		--Weld
@@ -168,6 +172,7 @@ return function(plr, typ, direction, mouseaim)
 						if Exp then
 							Exp.Value += WaterStanceXp
 						end
+						ElementXp.Award(plr, "Water", WaterStanceElementXp)
 
 						hrp2.CFrame = CFrame.lookAt(hrp2.Position, _hitBox.Position) * CFrame.Angles(0, math.pi, 0)
 						misc.Ragdoll(eChar, 1.5)
@@ -175,7 +180,8 @@ return function(plr, typ, direction, mouseaim)
 						misc.StrongKnockback(hrp2, 35, 45, 0.15, _hitBox)
 						misc.UpKnockback(hrp2, 35, 65, 0.15, _hitBox)
 
-						local Damage = math.random(WaterStanceDamageRange.X, WaterStanceDamageRange.Y)
+						local baseDamage = math.random(WaterStanceDamageRange.X, WaterStanceDamageRange.Y)
+						local Damage = DamageCalc.Calculate(baseDamage, DamageCalc.GetPlayerLevel(plr), DamageCalc.GetElementLevel(plr, "Water"))
 						hum2:TakeDamage(Damage)
 
 						local LastDamage = hum2.Parent:FindFirstChild("DamageBy") or Instance.new('ObjectValue', hum2.Parent)

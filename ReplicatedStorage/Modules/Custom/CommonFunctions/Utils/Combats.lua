@@ -12,7 +12,7 @@ return {
 		-- Whitelist of allowed stat names with expected types and constraints
 		local ALLOWED_STATS = {
 			Strength = { type = "number", min = 0, max = 100, maxDelta = 30 },
-			Stamina  = { type = "number", min = 0, max = 100, maxDelta = 30 },
+			Stamina  = { type = "number", min = 0, max = 300, maxDelta = 30 },
 			EXP      = { type = "number", min = 0, onlyIncrease = true },
 		}
 

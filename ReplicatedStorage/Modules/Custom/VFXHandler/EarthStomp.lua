@@ -13,17 +13,21 @@ local Constants = require(RS.Modules.Custom.Constants)
 local EarthSpike = RS.Assets.VFXs.Earth.Spike
 local EarthSpikeHit = RS.Assets.VFXs.Earth.SpikeHit
 
+local DamageCalc = require(RS.Modules.Custom.CommonFunctions.Utils.DamageCalc)
+local ElementXp = require(RS.Modules.Custom.CommonFunctions.Utils.ElementXp)
+
 local EarthStompStamina = Costs.EarthStompStamina
 local EarthStompXp = Costs.EarthStompXp
 local EarthStompLvl = Costs.EarthStompLvl
 local EarthStompDamageRange = Costs.EarthStompDamageRange
+local EarthStompElementXp = Costs.EarthStompElementXp
 local EarthStompMaxDistance = 200
 
 
 return function(plr, direction, mouseaim)
 
 	if plr.Character:FindFirstChild("Stamina").Value < EarthStompStamina then return end
-	if plr.CombatStats.Level.Value < EarthStompLvl then return end
+	if plr.Progression.LEVEL.Value < EarthStompLvl then return end
 
 	plr.Character:FindFirstChild("Stamina").Value -= EarthStompStamina
 
@@ -113,12 +117,15 @@ return function(plr, direction, mouseaim)
 				if Exp then
 					Exp.Value += EarthStompXp
 				end
+				ElementXp.Award(plr, "Earth", EarthStompElementXp)
+
 				hrp.CFrame = CFrame.lookAt(hrp.Position, Kick.Position) * CFrame.Angles(0, math.pi, 0)
 				misc.Ragdoll(char, 1.5)
 
 				misc.UpKnockback(hrp, 56, 125, 0.15, hitbox)
 
-				local Damage = math.random(EarthStompDamageRange.X, EarthStompDamageRange.Y)
+				local baseDamage = math.random(EarthStompDamageRange.X, EarthStompDamageRange.Y)
+				local Damage = DamageCalc.Calculate(baseDamage, DamageCalc.GetPlayerLevel(plr), DamageCalc.GetElementLevel(plr, "Earth"))
 				char.Humanoid:TakeDamage(Damage)
 				
 				local LastDamage = char:FindFirstChild("DamageBy") or Instance.new('ObjectValue', char)
