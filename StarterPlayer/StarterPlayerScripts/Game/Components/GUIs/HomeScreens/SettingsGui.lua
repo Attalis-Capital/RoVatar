@@ -59,7 +59,7 @@ local function ToggleBtn(btn:TextButton, enable)
 		btn.Image = btn.Label.Text == OnTxt and OnImage or OffImage
 	else
 		btn.Label.Text = enable and OnTxt or OffTxt
-		btn.BackgroundColor3 = enable and OffColor or OnColor
+		btn.BackgroundColor3 = enable and OnColor or OffColor
 		btn.Image = enable and OnImage or OffImage
 	end
 end

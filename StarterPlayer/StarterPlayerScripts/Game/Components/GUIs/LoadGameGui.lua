@@ -75,7 +75,9 @@ _G.SelectedSlotData = CF.Value({})
 
 local function textBoxFocusLost()
 	local profileSlotData :CT.ProfileSlotDataType = _G.SelectedSlotData:Get()
-	profileSlotData.SlotName = ui.CreateF.Container.TextBox.Text
+	local trimmed = ui.CreateF.Container.TextBox.Text:gsub("^%s+", ""):gsub("%s+$", "")
+	ui.CreateF.Container.TextBox.Text = trimmed
+	profileSlotData.SlotName = trimmed
 	_G.SelectedSlotData:Set(profileSlotData, true)
 end
 

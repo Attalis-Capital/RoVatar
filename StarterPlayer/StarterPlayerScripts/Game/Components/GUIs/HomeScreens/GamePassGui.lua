@@ -137,16 +137,10 @@ function UpdateGamePasses()
 				item.BuyButton.Price.Text = "OWNED"
 				item.BuyButton.Price.ImageLabel.Visible = false
 			else
-				if(player.Progression.LEVEL.Value >= data.RequiredLevel) then
-					item.Shadow.Visible = false
-					--Let purchase
-					item.BuyButton.Activated:Connect(function()
-						BuyGamePass(data)
-					end)
-				else
-					item.Shadow.Visible = true
-					item.Shadow.Label.Text = "Requires Lvl "..data.RequiredLevel
-				end
+				item.Shadow.Visible = false
+				item.BuyButton.Activated:Connect(function()
+					BuyGamePass(data)
+				end)
 			end
 
 			item.Visible = true
