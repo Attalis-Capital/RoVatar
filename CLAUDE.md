@@ -90,6 +90,8 @@ After changes, check:
 - `Hits[target]` debounce set before a SafeZone early-return is never cleared by the delayed nil-setter — low impact for short-lived hitboxes but a structural leak pattern to watch
 - `UserOwnsGamePassAsync` can throw on network errors — always pcall and default to deny; log the error for diagnostics
 - When adding early-return guards (SafeZone, auth) to existing hit handlers, check for duplicate state assignments downstream — e.g. `Hits[char] = true` may appear both at the dedup gate and after damage
+- `Has_*Bending` player attributes must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ListenSpecChange("AllProfiles")` callback (on data change) — mirrors the `ElementLevel_*` dual-write pattern
+- `validateClientData` Abilities check must allow level-gated unlocks via `curProfile.PlayerLevel >= ABILITY_LEVELS[abilityId]` — pure rejection breaks BendingSelectionGui unlock flow
 
 
 ## Sprint workflow
