@@ -54,6 +54,12 @@ else --Else Server side
 		Boomerang = 111701633,
 		MeteoriteSword = 113435663,
 	}
+	local ELEMENT_ABILITIES = {
+		AirKick = "AirBending",
+		EarthStomp = "EarthBending",
+		FireDropKick = "FireBending",
+		WaterStance = "WaterBending",
+	}
 
 	remoteEvent.OnServerEvent:Connect(function(plr, typ, ...)
 		if not VALID_EFFECTS[typ] then return end
@@ -70,6 +76,15 @@ else --Else Server side
 			end
 			if not ownsPass then
 				warn("[SECURITY] Rejected:", typ, "— player", plr.Name, "does not own GamePass", requiredPass)
+				return
+			end
+		end
+
+		-- Bending-type ownership check for elemental abilities
+		local requiredAbility = ELEMENT_ABILITIES[typ]
+		if requiredAbility then
+			if not plr:GetAttribute("Has_" .. requiredAbility) then
+				warn("[SECURITY] Rejected:", typ, "— player", plr.Name, "does not own", requiredAbility)
 				return
 			end
 		end

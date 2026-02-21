@@ -4,3 +4,8 @@
 keys.env
 !*.env.template
 !*.env.example
+
+# Synced Claude Code config (managed by sync-to-repos.ps1)
+.claude/skills/
+.claude/agents/
+

@@ -126,6 +126,12 @@ function onPlayerAdded(player:Player)
 				player:SetAttribute("ElementLevel_" .. element, elData.Level)
 			end
 		end
+
+		-- Set ability ownership attributes for VFXHandler validation
+		local abilities = playerData.AllProfiles[playerData.ActiveProfile].Data.EquippedInventory.Abilities
+		for _, abilityId in ipairs({"AirBending", "FireBending", "EarthBending", "WaterBending"}) do
+			player:SetAttribute("Has_" .. abilityId, abilities[abilityId] ~= nil)
+		end
 		-- Profile Data
 		
 		local GamePurchases = IAPService:RefreshPurchaseDataUpdates(player, playerData)
@@ -162,6 +168,15 @@ function onPlayerAdded(player:Player)
 			local staminaVal = player:FindFirstChild("CombatStats") and player.CombatStats:FindFirstChild("Stamina")
 			if staminaVal then
 				staminaVal.Value = scaledMax
+			end
+
+			-- Sync ability ownership attributes on profile data change
+			local newAbilities = newActiveProfile.Data and newActiveProfile.Data.EquippedInventory
+				and newActiveProfile.Data.EquippedInventory.Abilities
+			if typeof(newAbilities) == "table" then
+				for _, abilityId in ipairs({"AirBending", "FireBending", "EarthBending", "WaterBending"}) do
+					player:SetAttribute("Has_" .. abilityId, newAbilities[abilityId] ~= nil)
+				end
 			end
 		end
 	end)
