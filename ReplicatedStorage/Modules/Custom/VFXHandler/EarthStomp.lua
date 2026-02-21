@@ -4,6 +4,7 @@ local Tween = game:GetService("TweenService")
 local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
+local Players = game:GetService("Players")
 
 local Modules = RS.Modules
 local misc = require(Modules.Packages.Misc)
@@ -113,6 +114,11 @@ return function(plr, direction, mouseaim)
 					return
 				end
 				Hits[char] = true
+
+				-- SafeZone: block PvP if either player is in safe zone
+				local victimPlayer = Players:GetPlayerFromCharacter(char)
+				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or char:GetAttribute("InSafeZone")) then return end
+
 				local Exp = plr.Progression:FindFirstChild("EXP")
 				if Exp then
 					Exp.Value += EarthStompXp

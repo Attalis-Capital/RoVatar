@@ -96,24 +96,25 @@ return function(plr, direction, mouseaim)
 				if Hits[char.Name] then
 					return
 				end
+				Hits[hit.Parent.Name] = true
+
+				-- SafeZone: block PvP if either player is in safe zone
+				local victimPlayer = Players:GetPlayerFromCharacter(hit.Parent)
+				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or hit.Parent:GetAttribute("InSafeZone")) then return end
 
 				hit.Parent.HumanoidRootPart.CFrame = CFrame.lookAt(hit.Parent.HumanoidRootPart.Position, beam.Position) * CFrame.Angles(0, math.pi, 0)
 				misc.Ragdoll(char, 1.5)
 
 				misc.UpKnockback(hit.Parent.HumanoidRootPart, 35, 65, 0.15, beam)
 				Replicate:FireAllClients("Combat", "HitFX", hit.Parent.HumanoidRootPart, "Blade Hit")
-				Hits[hit.Parent.Name] = true
-				
+
 				local Exp = plr.Progression:FindFirstChild("EXP")
 				if Exp then
 					Exp.Value += BoomerangXP
 				end
-				
+
 				local baseDamage = math.random(BoomerangDamageRange.X, BoomerangDamageRange.Y)
 				local Damage = DamageCalc.Calculate(baseDamage, DamageCalc.GetPlayerLevel(plr), 0)
-				-- SafeZone: block PvP if either player is in safe zone
-				local victimPlayer = Players:GetPlayerFromCharacter(hit.Parent)
-				if victimPlayer and (plr.Character:GetAttribute("InSafeZone") or hit.Parent:GetAttribute("InSafeZone")) then return end
 				hum:TakeDamage(Damage)
 				
 				local color1 = Color3.fromRGB(187, 0, 5)

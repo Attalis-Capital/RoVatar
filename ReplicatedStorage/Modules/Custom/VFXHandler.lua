@@ -49,8 +49,30 @@ else --Else Server side
 	local FIST_MIN_GAP = 0.3
 	local lastFist = {}
 
+	local MarketplaceService = game:GetService("MarketplaceService")
+	local GAMEPASS_ABILITIES = {
+		Boomerang = 111701633,
+		MeteoriteSword = 113435663,
+	}
+
 	remoteEvent.OnServerEvent:Connect(function(plr, typ, ...)
 		if not VALID_EFFECTS[typ] then return end
+
+		-- GamePass ownership check for premium abilities
+		local requiredPass = GAMEPASS_ABILITIES[typ]
+		if requiredPass then
+			local ownsPass = false
+			local ok, err = pcall(function()
+				ownsPass = MarketplaceService:UserOwnsGamePassAsync(plr.UserId, requiredPass)
+			end)
+			if not ok then
+				warn("[SECURITY] GamePass check failed for", plr.Name, ":", err)
+			end
+			if not ownsPass then
+				warn("[SECURITY] Rejected:", typ, "— player", plr.Name, "does not own GamePass", requiredPass)
+				return
+			end
+		end
 
 		-- Fist rate limiting (M1 spam prevention)
 		if typ == "Fist" then
