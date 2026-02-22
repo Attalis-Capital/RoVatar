@@ -56,7 +56,7 @@ After changes, check:
 
 ## Gotchas
 
-- ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ — FIXED in sprint 5a: overrides removed, diagnostics now visible
+- ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ — FIXED in sprint 5a: overrides removed, diagnostics now visible; QuestGuy.lua was the last remaining instance, FIXED in sprint 10
 - VFXHandler.lua runs in both client and server contexts — server-side security code must go in the `else` (IsServer) block only
 - Old Bendings `_S.lua` scripts are a parallel combat system to VFXHandler — disabling one without the other leaves duplicate exploit paths
 - DataServer `DataReceivedFromClient` accepts raw full-data overwrites — most fields now validated (Gold, Gems, TotalXP, GamePasses, ElementLevels, Abilities, OwnedInventory, per-profile PlayerLevel/XP/Kills)
