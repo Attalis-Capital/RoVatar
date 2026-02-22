@@ -21,10 +21,10 @@ local MapGui = Component.new({Tag = "MapGui", Ancestors = {player}})
 type UI = {
 	Gui : ScreenGui,
 	BaseFrame :TextButton,
-	
+
 	Background :ImageLabel,
 	CloseBtn :ImageButton,
-	
+
 	Map : ImageButton
 }
 
@@ -48,7 +48,7 @@ end
 local function MapButtonClick(MapId)
 	--print("Map Button Click ", MapId)
 	MapGui:Toggle()
-	
+
 	---- Teleport directly to that location
 	local Character = player.Character
 	if Character then
@@ -64,7 +64,7 @@ local function Tween(sound, targetVolume, initialVolume, callback:()->())
 	tween:Play()
 	tween.Completed:Wait()
 	tween:Destroy()
-	
+
 	if callback then
 		callback()
 	end
@@ -78,42 +78,42 @@ function MapGui:Construct()
 	UIController = Knit.GetController("UIController")
 	TWController = Knit.GetController("TweenController")
 	QuestController = Knit.GetController("QuestController")
-	
+
 	self.active = UIController:SubsUI(Constants.UiScreenTags.MapGui, self)
-	
+
 end
 
 function MapGui:Start()
 	--warn(self," Starting...")
-	
+
 	if(self.active) then
 		self:InitReferences()
 		self:InitButtons()
 	end
-	
+
 	TWController:SubsTween(ui.BaseFrame, Constants.TweenDir.Left)
-	
+
 	TWController:SubsHover(ui.Background)
 	TWController:SubsHover(ui.CloseBtn)
 	TWController:SubsClick(ui.CloseBtn)
-	
+
 	self:Toggle(false)
-	
+
 	task.delay(2, function()
 		self:BindEvents()
 	end)
-	
+
 	--print(self," started:", self.active)
 end
 
 function MapGui:InitReferences()
 	ui.Gui = self.Instance
 	ui.BaseFrame = ui.Gui.BaseFrame
-	
+
 	ui.Background = ui.BaseFrame.Background
-	
+
 	ui.CloseBtn = ui.Background.CloseButton
-	
+
 	ui.Map = ui.Background.Map
 end
 
@@ -122,42 +122,42 @@ function MapGui:InitButtons()
 	ui.CloseBtn.Activated:Connect(function()
 		CloseButton()
 	end)
-	
+
 	----- All maps button bindings
 	for _, Button in pairs(ui.Map:GetChildren()) do
 		if Button:IsA("TextButton") then
-			
+
 			Button.Text = Constants.Items[Button.Name].Name
-			
+
 			Button.Activated:Connect(function()
 				MapButtonClick(Button.Name)
 			end)
-			
+
 			---- TWEEN BINDINGS
 			TWController:SubsHover(Button)
 			TWController:SubsClick(Button)
 		end
 	end
-	
+
 end
 
 function MapGui:BindEvents()
-	
+
 	local EnvironmentSound = nil
 	local lastActiveMapId = nil
 	local function _refresh()
 		local plrData :CT.PlayerDataModel = _G.PlayerData
-		
+
 		if not plrData or not plrData.ActiveProfile then
 			return
 		end
-		
+
 		local MapData = CF.PlayerQuestData.GetPlayerActiveProfile(plrData).Data.EquippedInventory.Maps
 		local ActiveMapID = CF.PlayerQuestData.GetPlayerActiveProfile(plrData).LastVisitedMap
-		
+
 		for _, Button:TextButton in pairs(ui.Map:GetChildren()) do
 			local ID = Button.Name
-			
+
 			if MapData and MapData[ID] then
 				Button.Active = true
 				Button.TextTransparency = 0
@@ -167,32 +167,45 @@ function MapGui:BindEvents()
 				Button.TextTransparency = .5
 				Button.TextColor3 = Color3.fromRGB(206, 205, 207)
 			end
-			
+
 			if ActiveMapID == ID then
 				Button.TextTransparency = 0
 				Button.TextColor3 = Color3.fromRGB(67, 249, 93)
-				
+
 				if not lastActiveMapId or lastActiveMapId ~= ID then
 					lastActiveMapId = ID
 					if EnvironmentSound then
 						Tween(EnvironmentSound, 0, EnvironmentSound.Volume, function()
-							
 							EnvironmentSound:Destroy()
 							EnvironmentSound = SFXHandler:Play(Constants.SFXs[ID], true)
-							Tween(EnvironmentSound, 1, 0)
+							if EnvironmentSound then
+								Tween(EnvironmentSound, 1, 0)
+							end
 						end)
 					else
 						EnvironmentSound = SFXHandler:Play(Constants.SFXs[ID], true)
-						Tween(EnvironmentSound, 1, 0)
+						if EnvironmentSound then
+							Tween(EnvironmentSound, 1, 0)
+						end
 					end
 				end
 			end
 		end
-		
+
 	end
-	
+
+	-- Clean up environment sound on respawn to prevent overlapping music
+	player.CharacterAdded:Connect(function()
+		if EnvironmentSound then
+			pcall(function() EnvironmentSound:Destroy() end)
+			EnvironmentSound = nil
+		end
+		lastActiveMapId = nil
+		task.delay(1, _refresh)
+	end)
+
 	_refresh()
-	
+
 	----- Update explored maps buttons
 	_G.PlayerDataStore:ListenSpecChange("AllProfiles", function(newData)
 		if newData then
@@ -215,11 +228,11 @@ function MapGui:Toggle(enable:boolean)
 		enable = (not ui.BaseFrame.Visible)
 	end
 	ui.BaseFrame.Visible = enable
-	
+
 	if enable then
 		QuestController.UpdateQuest:Fire(Constants.QuestObjectives.Combined, Constants.QuestTargetIds.OpenMap)
 	end
-	
+
 end
 
 return MapGui

@@ -60,10 +60,6 @@ local function UpdateMapData(MapName:string, SpawnCF)
 				}
 
 				CF.PlayerData.UpdateActiveProfile(plrData, D)
-				if not ActiveProfile.Data.EquippedInventory.Maps[lastVistedMap] then
-					CF.PlayerData.UpdateInventory(plrData, Constants.GameInventory.Maps[lastVistedMap], true)
-					NotificationGui:ShowMessage(NotificationData.NewIsland)
-				end
 
 				if not ActiveProfile.Data.EquippedInventory.Maps[MapName] then
 					CF.PlayerData.UpdateInventory(plrData, Constants.GameInventory.Maps[MapName], true)
@@ -120,7 +116,10 @@ local function BindEvents(ExceptMapName)
 					local Char = part.Parent
 					local Player = game.Players:GetPlayerFromCharacter(Char)
 					if Player and Player == myPlayer then
-						UpdateMapData(MapName, SI_Maps[MapName].Spawn:FindFirstChild("Spawn").CFrame)
+						local spawnPart = SI_Maps[MapName].Spawn:FindFirstChild("Spawn")
+						if spawnPart then
+							UpdateMapData(MapName, spawnPart.CFrame)
+						end
 					end
 				end
 			end)
@@ -130,7 +129,7 @@ local function BindEvents(ExceptMapName)
 			end
 
 			table.insert(Connections[MapName], Conn)
-		end 
+		end
 	end
 
 	for _, MapData in pairs(Constants.GameInventory.Maps) do
@@ -143,8 +142,8 @@ end
 
 ---------------- Component functions
 --[[
-This script handles character spawning Data -- -- when player changes their place via glider, boat or other vehicle. 
-It will update the character active profile map data and last position. 
+This script handles character spawning Data -- -- when player changes their place via glider, boat or other vehicle.
+It will update the character active profile map data and last position.
 	]]
 function UpdateMap:Start()
 	local Maps = self.Instance
@@ -156,9 +155,12 @@ function UpdateMap:Start()
 	task.delay(2, function()
 
 		local plrDat: CustomTypes.PlayerDataModel = _G.PlayerData
-		local LastMap = plrDat.ActiveProfile.LastVisitedMap
+		local activeProfile = CF.PlayerQuestData.GetPlayerActiveProfile(plrDat)
+		local LastMap = activeProfile and activeProfile.LastVisitedMap
 
-		--BindEvents(LastMap)
+		if LastMap then
+			BindEvents(LastMap)
+		end
 
 		local LastUpdated = workspace.ServerTime.Value --tick()
 
@@ -175,7 +177,7 @@ function UpdateMap:Start()
 			end
 		end)
 
-		UpdateMapNames()	
+		UpdateMapNames()
 	end)
 
 end
