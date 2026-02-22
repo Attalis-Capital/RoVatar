@@ -202,7 +202,7 @@ function play()
 		workspace:SetAttribute("GameStarted", true)
 		
 		CharacterService.Setup:Fire()
-		wait(.1)
+		task.wait(.1)
 		CharacterService.RedirectToMap:Fire()
 
 		CharacterController:ToggleControls(true)
@@ -487,9 +487,9 @@ function LoadGameGui:InitButtons()
 
 		if not _G.IsHub then
 			CharacterService.Setup:Fire()
-			wait(.1)
+			task.wait(.1)
 			CharacterService.RedirectToMap:Fire()
-			wait(.1)
+			task.wait(.1)
 			CharacterController:ToggleControls(true)
 			PlayerController:ToggleControls(true)
 			
@@ -506,7 +506,7 @@ function LoadGameGui:InitButtons()
 		task.spawn(function()
 			local startTime = tick()
 			repeat 
-				wait(0.1)
+				task.wait(0.1)
 			until workspace:GetAttribute("GameLoaded") or tick() - startTime >= 20
 
 			if not workspace:GetAttribute("GameLoaded") then

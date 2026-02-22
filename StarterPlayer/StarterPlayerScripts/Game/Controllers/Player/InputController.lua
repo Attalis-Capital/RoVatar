@@ -51,7 +51,7 @@ local function setButtonPosition(Button : ImageButton, funName, inputData : CT.I
 		game.Debris:AddItem(TweenC, tweenInfo.Time + .1)
 		
 	else
-		wait("[Controls] Button couldn't place ", funName, Button, inputData)
+		warn("[Controls] Button couldn't place ", funName, Button, inputData)
 	end
 
 end

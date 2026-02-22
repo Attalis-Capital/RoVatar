@@ -109,6 +109,8 @@ After changes, check:
 - `Constants.NPCsType` values cascade to ~30 quest descriptions via `{Constants.NPCsType.AirBender}` interpolation — changing these 4-5 values is the single point for NPC display name updates
 - `Assigner` fields in Conversation.lua and `QuestTargetIds` values must match workspace NPC `Instance.Name` — these are functional identifiers for quest progression, not display text; renaming requires a Studio rename first
 - Quest target entries have both `Id` (functional, matched against workspace) and `Title` (display, shown to player) — you can safely hardcode new display names in Title without touching the Id
+- `wait()` in Luau silently ignores any string arguments — `wait("log message")` yields briefly and discards the strings without error, making misuse as a logging function a silent bug; always use `warn()` for diagnostic output
+- Workspace NPC Animate.lua copies under `Workspace/Scripted_Items/NPCs/` are Studio-managed duplicates of `ServerScriptService/Server/Components/NPCAI/Templates/Animate.lua` — changes to the template don't auto-propagate to workspace copies
 
 
 ## Sprint workflow

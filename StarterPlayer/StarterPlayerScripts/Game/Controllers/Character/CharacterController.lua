@@ -913,7 +913,7 @@ function AirBending(enable:boolean)
 
 		local mousepos = Mouse.Hit
 		local targetPosition = GetTargetPosition()
-		wait(0.25)
+		task.wait(0.25)
 		if (targetPosition - char.PrimaryPart.Position).Magnitude < RayCastLength and humanoid.Health ~= 0 then
 			VFXHandler:PlayOnServer(Constants.VFXs.AirKick, mousepos, targetPosition)
 			UpdateStrengthOnServer(StrengthValue.Value - Costs.AirKickStrength)
@@ -1097,7 +1097,7 @@ function FireBending(enable:boolean)
 		--Play sound
 		local _sound = SFXHandler:Play(Constants.SFXs.FireDropKick_Launch, true)
 		game.Debris:AddItem(_sound, 3)
-		wait(0.5)
+		task.wait(0.5)
 		--Fire on Server
 		local mousepos = Mouse.Hit
 		local targetPosition = GetTargetPosition()
@@ -1233,7 +1233,7 @@ function WaterBending(enable:boolean) ---- Blocking
 			NotificationGui:ShowMessage(data)
 		end
 
-		repeat wait(.5) until waterIC == false
+		repeat task.wait(.5) until waterIC == false
 		waterDebounce = 3
 
 		--print("[Water] WaterDebounce FALSE")
@@ -1242,7 +1242,7 @@ function WaterBending(enable:boolean) ---- Blocking
 		AnimationController:GetTrack(Constants.AvatarAnimtions.WaterStance):AdjustSpeed(1)
 		char.PrimaryPart.Anchored = false
 		
-		wait(1)
+		task.wait(1)
 		--print("[Water] PlayOnServer")
 		--Send event on Server
 		local mousepos = Mouse.Hit
@@ -1345,7 +1345,7 @@ function Boomerang(enable)
 		SFXHandler:Play(Constants.SFXs.Boomerang)
 		AnimationController:GetTrack(Constants.AvatarAnimtions.BoomerangHold):AdjustSpeed(1)
 
-		wait(0.25)
+		task.wait(0.25)
 		local mousepos = Mouse.Hit
 		local targetPosition = GetTargetPosition()
 		VFXHandler:PlayOnServer(Constants.VFXs.Boomerang, mousepos, targetPosition)
