@@ -3,6 +3,7 @@ local CollectionService = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
 local RS = game:GetService("ReplicatedStorage")
 local RunS = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
 local Packages = RS.Packages
 local Knit = require(Packages.Knit)
@@ -44,10 +45,9 @@ local TWController
 
 ------------- Helper ------------
 local includeList = {
-	Constants.UiScreenTags.QuestGui, 
-	Constants.UiScreenTags.SettingsGui, 
-	Constants.UiScreenTags.StoreGui,
-	Constants.UiScreenTags.GamePassGui, 
+	Constants.UiScreenTags.QuestGui,
+	Constants.UiScreenTags.SettingsGui,
+	Constants.UiScreenTags.GamePassGui,
 	Constants.UiScreenTags.MapGui,
 	Constants.UiScreenTags.ShopGui,
 	Constants.UiScreenTags.ControlsGuideGui,
@@ -112,19 +112,16 @@ function MainMenuGui:Start()
 	TWController:SubsTween(ui.BaseFrame, Constants.TweenDir.Left, Constants.EasingStyle.Quad)
 	
 	TWController:SubsHover(ui.MapBtn, .02)
-	TWController:SubsHover(ui.StoreButton, .02)
 	TWController:SubsHover(ui.GamePassBtn, .02)
 	TWController:SubsHover(ui.QuestsBtn, .02)
-	TWController:SubsHover(ui.ProfileBtn, .02)
 	TWController:SubsHover(ui.SettingsBtn, .02)
-	
-	
+	TWController:SubsHover(ui.ToggleBtn, .02)
+
 	TWController:SubsClick(ui.MapBtn)
-	TWController:SubsClick(ui.StoreButton)
 	TWController:SubsClick(ui.GamePassBtn)
 	TWController:SubsClick(ui.QuestsBtn)
-	TWController:SubsClick(ui.ProfileBtn)
 	TWController:SubsClick(ui.SettingsBtn)
+	TWController:SubsClick(ui.ToggleBtn)
 	
 	self:Toggle(false)
 	--print("MainMenuGui started:", self.active)
@@ -133,9 +130,9 @@ end
 function MainMenuGui:InitReferences()
 	ui.Gui = self.Instance
 	ui.BaseFrame = ui.Gui.BaseFrame
-	
+
 	ui.LeftButtons = ui.BaseFrame.LeftButtons
-	
+
 	ui.QuestsBtn = ui.LeftButtons.QuestsButton
 	ui.SettingsBtn = ui.LeftButtons.SettingsButton
 	ui.StoreButton = ui.LeftButtons.StoreButton
@@ -143,6 +140,10 @@ function MainMenuGui:InitReferences()
 	ui.MapBtn = ui.LeftButtons.MapButton
 	ui.ProfileBtn = ui.LeftButtons.ProfileButton
 	ui.ToggleBtn = ui.LeftButtons.ToggleButton
+
+	-- Hide merged/unused buttons — Store merged into GamePasses, Profile deferred
+	ui.StoreButton.Visible = false
+	ui.ProfileBtn.Visible = false
 end
 
 function MainMenuGui:InitButtons()
@@ -172,29 +173,21 @@ function MainMenuGui:InitButtons()
 	end)
 	
 	ui.ToggleBtn.Activated:Connect(function()
+		local buttons = {ui.SettingsBtn, ui.QuestsBtn, ui.MapBtn, ui.GamePassBtn}
+		local tweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 		if ui.ToggleBtn.Icon.Rotation == 180 then
-			ui.ToggleBtn.Icon.Rotation = 0
-			ui.MapBtn.Visible = false
-			task.wait(.015)
-			ui.QuestsBtn.Visible = false
-			task.wait(.015)
-			ui.SettingsBtn.Visible = false
-			task.wait(.015)
-			ui.GamePassBtn.Visible = false
-			task.wait(.015)
-			ui.StoreButton.Visible = false
+			TweenService:Create(ui.ToggleBtn.Icon, tweenInfo, {Rotation = 0}):Play()
+			for _, btn in ipairs(buttons) do
+				btn.Visible = false
+				task.wait(.015)
+			end
 		else
-			ui.ToggleBtn.Icon.Rotation = 180
-			ui.StoreButton.Visible = true
-			task.wait(.015)
-			ui.GamePassBtn.Visible = true
-			task.wait(.015)
-			ui.SettingsBtn.Visible = true
-			task.wait(.015)
-			ui.QuestsBtn.Visible = true
-			task.wait(.015)
-			ui.MapBtn.Visible = true
-		end	
+			TweenService:Create(ui.ToggleBtn.Icon, tweenInfo, {Rotation = 180}):Play()
+			for i = #buttons, 1, -1 do
+				buttons[i].Visible = true
+				task.wait(.015)
+			end
+		end
 	end)
 	
 	game.UserInputService.InputBegan:Connect(function(input :InputObject, gameProcessed)
@@ -246,7 +239,7 @@ function MainMenuGui:InitTrigger()
 	bind(shopTrigger, Constants.UiScreenTags.ShopGui)
 	
 	local storeTrigger = workspace.Scripted_Items.Store:WaitForChild("Trigger")
-	bind(storeTrigger, Constants.UiScreenTags.StoreGui)
+	bind(storeTrigger, Constants.UiScreenTags.GamePassGui)
 end
 
 function MainMenuGui:ToggleQuestMarker(enable)
