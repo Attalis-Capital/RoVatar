@@ -25,8 +25,8 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ---
 
-## Current Sprint: #7 — Audio System (Issue #6)
-**Branch:** `sprint-7-audio`
+## Previous Sprint: #7 — Audio System (Issue #6) — COMPLETE
+**Branch:** `sprint-7-audio` (merged via PR #29)
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/6
 
 ### Tasks
@@ -48,11 +48,13 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 - Appa/Nalu spawn + travel sounds (no asset IDs in issue)
 - Bending ability sounds (old _L.lua LocalScripts still active — adding to VFXHandler would duplicate)
 
+### PR
+- https://github.com/Attalis-Capital/RoVatar/pull/29 (merged)
+
 ### Next Action
-- Create PR for sprint 7
+- Plan next sprint: issue #7 (pets), #8 (NPC renaming), or #9 (feature backlog)
 - Tag LavaZone parts in Roblox Studio
 - Add real music asset IDs to SFXs.lua (6 placeholder entries)
-- Plan next sprint: issue #7 (pets), #8 (NPC renaming), or #9 (feature backlog)
 
 ---
 
