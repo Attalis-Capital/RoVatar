@@ -102,7 +102,7 @@ Combat.Perform = function(Action, Variable2, Variable3)
 				
 				
 				local TweenService = game:GetService("TweenService")
-				spawn(function()
+				task.spawn(function()
 					local willTween = bh.PB:TweenSize(
 						UDim2.new(0, 500, 0, 55),  -- endSize (required)
 						Enum.EasingDirection.Out,    -- easingDirection (default Out)
@@ -111,7 +111,7 @@ Combat.Perform = function(Action, Variable2, Variable3)
 						false,                       -- should this tween override ones in-progress? (default: false)
 						nil                    -- a function to call when the tween completes (default: nil)
 					)
-					wait(0.8)
+					task.wait(0.8)
 					local willTween2 = bh.PB:TweenSize(
 						UDim2.new(0, 500, 0, 0),  -- endSize (required)
 						Enum.EasingDirection.In,    -- easingDirection (default Out)
@@ -151,7 +151,7 @@ Combat.Perform = function(Action, Variable2, Variable3)
 				
 				bh.Parent = Target
 				local TweenService = game:GetService("TweenService")
-				spawn(function()
+				task.spawn(function()
 					local willTween = bh.PB:TweenSize(
 						UDim2.new(0, 500, 0, 25),  -- endSize (required)
 						Enum.EasingDirection.Out,    -- easingDirection (default Out)
@@ -160,7 +160,7 @@ Combat.Perform = function(Action, Variable2, Variable3)
 						false,                       -- should this tween override ones in-progress? (default: false)
 						nil                    -- a function to call when the tween completes (default: nil)
 					)
-					wait(0.4)
+					task.wait(0.4)
 					local willTween2 = bh.PB:TweenSize(
 						UDim2.new(0, 500, 0, 0),  -- endSize (required)
 						Enum.EasingDirection.In,    -- easingDirection (default Out)
