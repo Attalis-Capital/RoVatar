@@ -98,6 +98,8 @@ After changes, check:
 - `MainMenuGui` has 6 buttons in Studio but hides StoreButton and ProfileBtn at runtime via `Visible = false` — visible sidebar is 4 buttons (Quests, Settings, Map, GamePass) + collapsible toggle
 - `SettingsGui` VfxToggle is repurposed for overhead visibility — Studio label still reads "VFX" but Luau code controls `OverheadGui.Enabled` on all player characters
 - `OverheadService.lua` (server Knit service) creates BillboardGui above player heads — `SlotName` player attribute set in PlayerDataService follows the same dual-write pattern as `Has_*Bending` and `ElementLevel_*`
+- `plrData.AllProfiles[plrData.ActiveProfile]` can return nil early in session before profile data is fully loaded — always nil-guard before indexing into the result (affects DialogueGui Welcome, UpdateMap, and any client code using this accessor)
+- `UpdateMap` Component fires `.Touched` events and `ListenChange` callbacks on startup — these can race with GUI initialisation causing duplicate notifications or nil crashes; guard with `_G.PlayerData` readiness checks and dedup flags
 
 
 ## Sprint workflow
