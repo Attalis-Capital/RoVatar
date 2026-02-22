@@ -8,6 +8,7 @@ RoVatar (Roblox elemental-combat game). Sprint 7 implemented audio system featur
 - Fixed nil profile guard in `DialogueGui:Welcome()` (S7.6)
 - PR #29 created, updated with full description, and squash-merged to main
 - Branch `sprint-7-audio` cleaned up
+- Lessons extracted and synced to Supabase (2 repo-specific gotchas)
 
 ## Prior sessions (sprint 7)
 - S7.1 — Shop purchase error sound
@@ -20,6 +21,10 @@ RoVatar (Roblox elemental-combat game). Sprint 7 implemented audio system featur
 - Pre-PR audit found only 1 real bug across all systems (DialogueGui nil guard) — server services and combat were clean
 - 4 low-impact issues noted but intentionally not fixed (commented-out loading code, fire-and-forget SFX call, glider death cleanup already handled, environment audio brief during death)
 
+## Learnings
+- `plrData.AllProfiles[plrData.ActiveProfile]` can return nil early in session — always nil-guard before indexing (added to CLAUDE.md)
+- `UpdateMap` Component fires `.Touched` and `ListenChange` on startup — can race with GUI init, causing duplicate notifications or nil crashes (added to CLAUDE.md)
+
 ## Open questions / blockers
 - None for code — sprint 7 is fully merged
 
@@ -31,8 +36,7 @@ RoVatar (Roblox elemental-combat game). Sprint 7 implemented audio system featur
 
 ## Next actions
 1. Plan next sprint: issue #7 (pets), #8 (NPC renaming), or #9 (feature backlog)
-2. Update PROGRESS.md to mark sprint 7 as complete and set next sprint
-3. Studio-dependent audio items from issue #6
+2. Studio-dependent audio items from issue #6
 
 ## Files to review
 - `StarterPlayer/.../GUIs/DialogueGui.lua` — nil guard fix (lines 284-288)
