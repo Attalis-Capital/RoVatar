@@ -93,6 +93,7 @@ Constants.Tags = {
 	["LevelGuider"] = "LevelGuider",
 	["PlayerAvatar"] = "PlayerAvatar",
 	["TutorialGuider"] = "TutorialGuider",
+	["LavaZone"] = "LavaZone",
 }
 table.freeze(Constants.Tags)
 
@@ -279,6 +280,10 @@ Constants.SFXs = {
 	["IAP_Purchase"] = "IAP_Purchase",
 	["Printing"] = "Printing",
 	["Reward"] = "Reward",
+
+	-- Environment Proximity
+	["Env_Lava"] = "Env_Lava",
+	["Env_WindHeight"] = "Env_WindHeight",
 
 	-- Environments Sound [Maps]
 	["RoVatarLand"] = "RoVatarLand",
