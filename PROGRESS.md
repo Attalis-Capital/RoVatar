@@ -34,9 +34,11 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 - [x] S7.2 — Glider wind sound (PlayAlong/Stop Glider_Wind in Begin/End)
 - [x] S7.3 — Register environmental sound assets (Env_Lava, Env_WindHeight, LavaZone tag)
 - [x] S7.4 — EnvironmentAudioController (proximity lava + altitude wind, 0.5s poll)
+- [x] S7.5 — Map system bug fixes (startup triggers, duplicate notifications, nil crashes)
 
 ### Commits
 - `1d0355c` S7: audio system — shop error sound, glider wind, environment audio
+- `e37f819` S7.5: fix map system bugs — startup triggers, duplicate notifications, nil crashes
 
 ### Studio-Dependent Items (out of scope)
 - Tag lava-area parts with "LavaZone" in workspace via CollectionService
@@ -47,6 +49,7 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 ### Next Action
 - Create PR for sprint 7
 - Tag LavaZone parts in Roblox Studio
+- Add real music asset IDs to SFXs.lua (6 placeholder entries)
 - Plan next sprint: issue #7 (pets), #8 (NPC renaming), or #9 (feature backlog)
 
 ---
