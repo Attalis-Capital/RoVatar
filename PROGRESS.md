@@ -1,6 +1,34 @@
 # PROGRESS.md — RoVatar
 
-## Current Sprint: #9 — NPC/Location Renaming (Issue #8) — COMPLETE
+## Current Sprint: #10 — Bug Fixes & Code Quality (Issue #9 subset)
+**Branch:** `sprint-10-bugfixes`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/9
+
+### Tasks
+- [x] S10.0 — Merge PR #23 (sprint 4a quest fixes) — squash-merged into main, PR closed
+- [x] S10.1 — Close issue #19 (XP listener duplicate connection) — already fixed, issue closed
+- [x] S10.2 — Replace deprecated `spawn()` → `task.spawn()` (WindController, Combat, CharacterController)
+- [x] S10.3 — Replace deprecated `delay()` → `task.delay()` (Glider, Appa)
+- [x] S10.4 — Remove warn/print no-op overrides in QuestGuy.lua
+- [x] S10.5 — Add `_G.PlayerData` nil-guards (DialogueGui, LevelGuider)
+
+### Commits
+- `dea0acc` (main) feat(quests): sprint 4a quest fixes — IsSameDay, deep clone, rate-limit, re-assignment (#23)
+- `9b98dde` fix: S10 bug fixes — modernise deprecated APIs, remove debug no-ops, add nil-guards
+
+### Files Modified
+- `WindController.lua` — spawn→task.spawn, wait→task.wait
+- `Helpers/Effects/Combat.lua` — 2x spawn→task.spawn, 2x wait→task.wait
+- `Controllers/Character/CharacterController.lua` — 3x spawn→task.spawn, 3x wait→task.wait
+- `Components/Vehicles/Glider.lua` — delay→task.delay
+- `Components/Vehicles/Appa.lua` — delay→task.delay
+- `Components/NPC/QuestGuy.lua` — removed warn/print no-ops (9 lines)
+- `Components/GUIs/DialogueGui.lua` — _G.PlayerData nil-guard
+- `Components/NPC/LevelGuider.lua` — _G.PlayerData nil-guard
+
+---
+
+## Previous Sprint: #9 — NPC/Location Renaming (Issue #8) — COMPLETE
 **Branch:** `sprint-9-npc-rename`
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/8
 
