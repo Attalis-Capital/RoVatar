@@ -25,7 +25,33 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ---
 
-## Current Sprint: #6 — UI/UX Polish (Issue #5)
+## Current Sprint: #7 — Audio System (Issue #6)
+**Branch:** `sprint-7-audio`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/6
+
+### Tasks
+- [x] S7.1 — Shop purchase error sound (Purchased_Error SFX on already-owned item)
+- [x] S7.2 — Glider wind sound (PlayAlong/Stop Glider_Wind in Begin/End)
+- [x] S7.3 — Register environmental sound assets (Env_Lava, Env_WindHeight, LavaZone tag)
+- [x] S7.4 — EnvironmentAudioController (proximity lava + altitude wind, 0.5s poll)
+
+### Commits
+- `1d0355c` S7: audio system — shop error sound, glider wind, environment audio
+
+### Studio-Dependent Items (out of scope)
+- Tag lava-area parts with "LavaZone" in workspace via CollectionService
+- Area music for maps with TBD IDs (Green Tribe, Southern Air Temple, Western Temple)
+- Appa/Nalu spawn + travel sounds (no asset IDs in issue)
+- Bending ability sounds (old _L.lua LocalScripts still active — adding to VFXHandler would duplicate)
+
+### Next Action
+- Create PR for sprint 7
+- Tag LavaZone parts in Roblox Studio
+- Plan next sprint: issue #7 (pets), #8 (NPC renaming), or #9 (feature backlog)
+
+---
+
+## Previous Sprint: #6 — UI/UX Polish (Issue #5)
 **Branch:** `sprint-6a-ui-quick-fixes`
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/5
 
