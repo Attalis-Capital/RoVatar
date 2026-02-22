@@ -7,7 +7,7 @@ return{
 	Tutorial = {
 		[1] = {
 			-- Quest 1: Tutorial
-			Title = "Welcome to RoVatar! I'm Guru Pathik, your guide on this grand journey. It's a pleasure to meet you!",
+			Title = "Welcome to RoVatar! I'm Kaen, your guide on this grand journey. It's a pleasure to meet you!",
 			Options = {
 				[1] = {
 					Text = "Nice to meet you too!",
@@ -233,7 +233,7 @@ return{
 			}
 		},
 		[4] = {
-			-- Quest 4: DefendVillage (Defeat 10 Earth Benders)
+			-- Quest 4: DefendVillage (Defeat 10 Stoneguards)
 			Title = `Our village is under attack! Can you help us by defeating 10 {Constant.NPCsType.EarthBender}?`,
 			Objective = QuestsModule.QuestObjectives.Kill,
 			Options = {
@@ -654,7 +654,7 @@ return{
 						Image = "rbxassetid://17575066019",
 						ClickAction = {
 							Dialogue = {
-								Title = "Exactly. There’s a relic from the old Water Tribe — lost during the Great Crossing. I want you to retrieve it. It’s submerged not far from here.",
+								Title = "Exactly. There’s a relic from the old Tidecaller clan — lost during the Great Crossing. I want you to retrieve it. It’s submerged not far from here.",
 								Options = {
 									[1] = {
 										Text = "Underwater?",
@@ -779,7 +779,7 @@ return{
 
 			[3] = {
 				-- Quest 12: The_Bloom_of_Power
-				Title = `Legends speak of a rare blossom hidden at the peak of the {Constant.Items.WesternTemple.Name}. Its power can awaken strength in any bender.`,
+				Title = `Legends speak of a rare blossom hidden at the peak of the {Constant.Items.WesternTemple.Name}. Its power can awaken strength in any warrior.`,
 				Assigner = "Journey Master",
 				Objective = QuestsModule.QuestObjectives.Combined,
 				Options = {

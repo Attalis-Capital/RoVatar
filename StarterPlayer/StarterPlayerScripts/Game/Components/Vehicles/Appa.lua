@@ -317,7 +317,7 @@ function Appa:BindTouchEvent()
 	local Trigger = self.Instance:WaitForChild("Handle")
 	local Filter = {Character, self.Instance}
 
-	--print("[APPA] Touch EVENT BINDED! ")
+	--print("[NALU] Touch EVENT BINDED! ")
 	---- Binding touch connection
 	Conn = Trigger.Touched:Connect(function(part)
 		for _, Exception in pairs(Filter) do
@@ -325,8 +325,8 @@ function Appa:BindTouchEvent()
 				--print("Touched with ", part)
 				Disconnect(Conn)
 				---- Fire Event for DeSpawning Glider
-				--print("[APPA] DeSpawning Vehicle ", self.Instance)
-				local name = self.Instance.Name or "Appa"
+				--print("[NALU] DeSpawning Vehicle ", self.Instance)
+				local name = self.Instance.Name or "Nalu"
 				TransportService.DeSpawnVehicle:Fire(name)
 			end
 		end
@@ -337,7 +337,7 @@ end
 ----------------------***************** Public Methods **********************----------------------
 
 function Appa:Start()
-	warn(self," [APPA] Starting...")
+	warn(self," [NALU] Starting...")
 	
 	_G.Flying = Constants.VehiclesType.Appa
 	
@@ -373,14 +373,14 @@ function Appa:Start()
 	end)
 	
 	task.delay(10, function()
-		-- Player Not Sitting on APPA, will Despawn Automatically...
+		-- Player Not Sitting on NALU, will Despawn Automatically...
 		if not Flying then
-			local name = self.Instance.Name or "Appa"
+			local name = self.Instance.Name or "Nalu"
 			TransportService.DeSpawnVehicle:Fire(name)
 		end
 	end)
-	
-	warn(self," [APPA] ALL DONE")
+
+	warn(self," [NALU] ALL DONE")
 end
 
 function Appa:Stop()
