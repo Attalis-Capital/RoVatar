@@ -1179,19 +1179,19 @@ function WaterBending(enable:boolean) ---- Blocking
 		data.AnimState = Constants.AvatarAnimtions.WaterStance
 		local track :AnimationTrack = AnimationController:PlayAnimation(data)
 
-		spawn(function()
-			wait(1)
+		task.spawn(function()
+			task.wait(1)
 
 			VFXHandler:PlayOnServer(Constants.VFXs.WaterStance, "Weld")
 			SFXHandler:Play(Constants.SFXs.WaterBend_Stand, true)
 		end)
-		spawn(function()
-			wait(1.55)
+		task.spawn(function()
+			task.wait(1.55)
 
 			SFXHandler:Play(Constants.SFXs.WaterBend_GroundSlam, true)
 		end)
-		spawn(function()
-			wait(1.6) 
+		task.spawn(function()
+			task.wait(1.6)
 			track:AdjustSpeed(0)
 		end)
 

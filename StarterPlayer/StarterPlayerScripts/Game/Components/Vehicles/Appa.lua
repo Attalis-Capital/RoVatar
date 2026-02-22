@@ -385,7 +385,7 @@ end
 
 function Appa:Stop()
 	CoolDownGui:StartCoolDown(Costs.VehicleCoolDown, Constants.Items.Appa.Name)
-	delay(Costs.VehicleCoolDown, function()
+	task.delay(Costs.VehicleCoolDown, function()
 		_G.Flying = nil
 	end)
 	

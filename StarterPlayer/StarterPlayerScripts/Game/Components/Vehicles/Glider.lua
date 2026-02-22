@@ -370,7 +370,7 @@ function Glider:Stop()
 	
 	-- Show Cooldown timer for ReEquip Glider
 	CoolDownGui:StartCoolDown(Costs.VehicleCoolDown, Constants.Items.Glider.Name)
-	delay(Costs.VehicleCoolDown, function()
+	task.delay(Costs.VehicleCoolDown, function()
 		_G.Flying = nil
 	end)
 	

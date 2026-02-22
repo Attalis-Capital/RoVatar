@@ -56,6 +56,7 @@ end
 
 function Claim(QData:CT.QuestDataType)
 	local plrData :CT.PlayerDataModel = _G.PlayerData
+	if not plrData then return end
 	local plrQuestData :CT.PlayerQuestDataModel = _G.QuestsData
 
 	--print('[Quest] Claiming...', QData, plrQuestData, plrData)

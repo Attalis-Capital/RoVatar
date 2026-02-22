@@ -280,7 +280,8 @@ end
 -- Testing
 function DialogueGui:Welcome()
 	local plrData :CT.PlayerDataModel = _G.PlayerData
-	
+	if not plrData then return end
+
 	local activeProfileData = plrData.AllProfiles[plrData.ActiveProfile]
 	if not activeProfileData then return end
 	local mapEntry = Constants.GameInventory.Maps[activeProfileData.LastVisitedMap]
