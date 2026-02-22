@@ -213,8 +213,8 @@ function Glider:Begin()
 	Character = game.Players.LocalPlayer.Character
 	Humanoid = Character:FindFirstChild("Humanoid")
 
-	wait(0.2)
-	
+	task.wait(0.2)
+
 	Humanoid.Jump = true
 	Flying = true
 	Humanoid.Sit = true

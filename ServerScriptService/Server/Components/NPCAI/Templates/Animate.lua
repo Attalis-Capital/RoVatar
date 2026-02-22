@@ -758,7 +758,7 @@ pose = "Standing"
 
 -- loop to handle timed state transitions and tool animations
 while Character.Parent ~= nil do
-	local _, currentGameTime = wait(0.1)
+	local _, currentGameTime = task.wait(0.1)
 	stepAnimate(currentGameTime)
 end
 

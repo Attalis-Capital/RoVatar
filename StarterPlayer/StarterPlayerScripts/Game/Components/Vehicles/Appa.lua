@@ -228,8 +228,8 @@ function Appa:Begin()
 	self.Seat:Sit(Humanoid)
 	Humanoid.JumpPower = 0
 	
-	wait(0.2)
-	
+	task.wait(0.2)
+
 	ThrustPart.Anchored = false
 	
 	self.CharAnimTracks.Fly:Play()
