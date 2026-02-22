@@ -1,7 +1,34 @@
 # PROGRESS.md — RoVatar
 
-## Current Sprint: #11 — Modernise Remaining Deprecated APIs (Issue #9 subset) — COMPLETE
-**Branch:** `sprint-11-deprecated-apis`
+## Current Sprint: #12 — Housekeeping + Quest Tracker HUD + Glider Polish — COMPLETE
+**Branch:** `sprint-12-quest-tracker-glider`
+**Issues:** #14 (Quest Tracker HUD), #9 (Glider polish), #15/#17/#18 (closed stale)
+
+### Tasks
+- [x] S12.0 — Merge PR #33 (sprint 11), close stale issues #15/#17/#18, create branch
+- [x] S12.1 — Wire QuestTrackerHUD.Init() into DataController after _G.QuestsData ready
+- [x] S12.2 — Fix QuestTrackerHUD bugs: `#targets` sparse table → CF.Tables.TableLength, add SetVisible() for QuestGui overlap
+- [x] S12.3 — Move glider Acceleration/BasePower/SprintPower to Costs.lua
+
+### Commits
+- `a6452c5` (main) S11: Modernise remaining deprecated wait() calls (#33)
+- `3a4e5e3` S12: wire QuestTrackerHUD, fix sparse table bug, glider constants to Costs
+
+### Files Modified
+- `Controllers/Player/DataController.lua` — require + Init() for QuestTrackerHUD
+- `Modules/Custom/QuestTrackerHUD.lua` — fix #targets sparse table bug, add SetVisible(), remove unused TweenService import
+- `Components/GUIs/HomeScreens/QuestGui.lua` — toggle QuestTrackerHUD visibility on open/close
+- `Modules/Custom/Costs.lua` — add GliderAcceleration/GliderBasePower/GliderSprintPower
+- `Components/Vehicles/Glider.lua` — replace hardcoded values with Costs references
+
+### Next Action
+- Create PR for sprint-12-quest-tracker-glider → main
+- Plan next sprint: remaining #9 feature backlog items, or #14 close after PR merge
+
+---
+
+## Previous Sprint: #11 — Modernise Remaining Deprecated APIs (Issue #9 subset) — COMPLETE
+**Branch:** `sprint-11-deprecated-apis` (merged via PR #33)
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/9
 
 ### Tasks
