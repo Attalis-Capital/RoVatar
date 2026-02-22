@@ -25,7 +25,46 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ---
 
-## Current Sprint: #5c — Data Validation Hardening
+## Current Sprint: #6 — UI/UX Polish (Issue #5)
+**Branch:** `sprint-6a-ui-quick-fixes`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/5
+
+### Tasks
+- [x] S6a.1 — ShopGui purchase bug: `>` to `>=` (exact gold purchase)
+- [x] S6a.2 — Remove GamePass level gates (all passes purchasable at any level)
+- [x] S6a.3 — Save-name whitespace trim + validation
+- [x] S6a.4 — SettingsGui fix inverted toggle colour
+- [x] S6b.1 — Player overhead BillboardGui (DisplayName + slot name + level)
+- [x] S6b.2 — Toggle overheads in SettingsGui (repurposed VFX toggle)
+- [x] S6b.3 — Welcome-back message for returning players
+- [x] S6c.1 — Button consolidation: merge Store into Gamepasses, 4-button sidebar
+- [x] S6c.2 — Investigate unknown top-right button (ControlsGuideBtn — functional, needs Studio label)
+- [x] S6c.3 — Collapsible panel: smooth rotation tween + hover/click feedback
+
+### Commits
+- `3ea0055` S6a: UI quick fixes — shop purchase, gamepass gates, name trim, toggle colour
+- `79633c7` S6b: player overheads, overhead toggle, welcome-back message
+- `b7f2431` S6c: menu restructure — merge Store into GamePasses, collapsible tween
+
+### PR
+- https://github.com/Attalis-Capital/RoVatar/pull/28
+
+### Studio-Dependent Items (out of scope)
+- Loading screen camera + progress bar
+- Character selection label + animations 3-5
+- Character customisation (skin colour + face)
+- Store UI editable module + 2x gems gamepass
+- Profile UI restructure
+- Delay bars centering
+- Glider animation transfer
+
+### Next Action
+- Merge PR #28
+- Plan next sprint: issue #6 (audio system) or remaining gotchas
+
+---
+
+## Previous Sprint: #5c — Data Validation Hardening
 **Branch:** `sprint-5c-data-validation`
 **Issue:** Final two security gaps from 2026-02-22 audit
 
@@ -41,10 +80,6 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 
 ### PR
 - https://github.com/Attalis-Capital/RoVatar/pull/27 (merged)
-
-### Next Action
-- Plan next sprint: issue #5 UI/UX polish or issue #6 audio system
-- All 2026-02-22 audit items are now closed
 
 ---
 
