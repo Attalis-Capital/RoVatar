@@ -286,8 +286,13 @@ function DialogueGui:Welcome()
 	local mapName = Constants.GameInventory.Maps[activeProfileData.LastVisitedMap].Name
 	local d :CT.DialogueDataType = {}
 	
-	d.Message = "Hello ".. activeProfileData.SlotName .."! Welcome to "..mapName.."... \n"
-	
+	local isReturning = activeProfileData.PlayerLevel and activeProfileData.PlayerLevel > 1
+	if isReturning then
+		d.Message = "Hello " .. activeProfileData.SlotName .. "! Welcome back to " .. mapName .. "!\n"
+	else
+		d.Message = "Hello " .. activeProfileData.SlotName .. "! Welcome to " .. mapName .. "...\n"
+	end
+
 	d.Narrator = "John"
 	d.TypeSpeed = .025
 	d.AllowSkip = true

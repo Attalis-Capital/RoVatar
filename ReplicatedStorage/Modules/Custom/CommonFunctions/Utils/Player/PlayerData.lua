@@ -304,6 +304,8 @@ PlayerData = {
 	ValidateSlotName = function(data:{[string] : CT.ProfileSlotDataType}, slotName:string, id)
 		--print("[Debug New Slot] Validate Slot Name ", data, slotName)
 
+		slotName = slotName:gsub("^%s+", ""):gsub("%s+$", "")
+
 		if(slotName == "") then
 			return false, "Cannot be empty"
 		end
@@ -311,7 +313,7 @@ PlayerData = {
 		local minLength = 4
 		local maxLength = game.ReplicatedStorage.GameElements.Configs.MaxSlotNameLength.Value
 
-		local length = slotName:len() 
+		local length = slotName:len()
 		if(length < minLength) then
 			return false, `Name too short (min {minLength} letters)`
 		end

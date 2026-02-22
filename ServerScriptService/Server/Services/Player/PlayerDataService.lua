@@ -132,6 +132,12 @@ function onPlayerAdded(player:Player)
 		for _, abilityId in ipairs({"AirBending", "FireBending", "EarthBending", "WaterBending"}) do
 			player:SetAttribute("Has_" .. abilityId, abilities[abilityId] ~= nil)
 		end
+
+		-- Set SlotName attribute for overhead display
+		local activeSlot = playerData.AllProfiles[playerData.ActiveProfile]
+		if activeSlot and activeSlot.SlotName then
+			player:SetAttribute("SlotName", activeSlot.SlotName)
+		end
 		-- Profile Data
 		
 		local GamePurchases = IAPService:RefreshPurchaseDataUpdates(player, playerData)
@@ -177,6 +183,11 @@ function onPlayerAdded(player:Player)
 				for _, abilityId in ipairs({"AirBending", "FireBending", "EarthBending", "WaterBending"}) do
 					player:SetAttribute("Has_" .. abilityId, newAbilities[abilityId] ~= nil)
 				end
+			end
+
+			-- Sync SlotName attribute on profile data change
+			if newActiveProfile.SlotName then
+				player:SetAttribute("SlotName", newActiveProfile.SlotName)
 			end
 		end
 	end)

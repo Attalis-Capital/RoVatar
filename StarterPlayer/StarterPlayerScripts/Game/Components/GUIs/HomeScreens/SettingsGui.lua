@@ -59,7 +59,7 @@ local function ToggleBtn(btn:TextButton, enable)
 		btn.Image = btn.Label.Text == OnTxt and OnImage or OffImage
 	else
 		btn.Label.Text = enable and OnTxt or OffTxt
-		btn.BackgroundColor3 = enable and OffColor or OnColor
+		btn.BackgroundColor3 = enable and OnColor or OffColor
 		btn.Image = enable and OnImage or OffImage
 	end
 end
@@ -91,6 +91,7 @@ SettingData.SFX = true
 SettingData.Music = true
 SettingData.Shadow = false
 SettingData.UI = true
+SettingData.Overhead = true
 
 
 
@@ -136,8 +137,24 @@ function MusicToggle(refresh:boolean)
 	ToggleBtn(ui.MusicToggle, SettingData.Music)
 end
 
-function VfxToggle()
-	ToggleBtn(ui.VfxToggle)
+function OverheadToggle(refresh:boolean)
+	if not refresh then SettingData.Overhead = not SettingData.Overhead end
+
+	-- Toggle BillboardGui visibility on all player characters
+	for _, otherPlayer in ipairs(game.Players:GetPlayers()) do
+		local char = otherPlayer.Character
+		if char then
+			local head = char:FindFirstChild("Head")
+			if head then
+				local billboard = head:FindFirstChild("OverheadGui")
+				if billboard then
+					billboard.Enabled = SettingData.Overhead
+				end
+			end
+		end
+	end
+
+	ToggleBtn(ui.VfxToggle, SettingData.Overhead)
 end
 
 function UIToggle(refresh:boolean)
@@ -161,6 +178,7 @@ local function _refresh(Data:CT.SettingsDataType)
 	ShadowToggle(true)
 	MusicToggle(true)
 	UIToggle(true)
+	OverheadToggle(true)
 end
 
 ----------------------***************** Public Methods **********************----------------------
@@ -266,7 +284,7 @@ function SettingsGui:InitButtons()
 	end)
 	
 	ui.VfxToggle.Activated:Connect(function()
-		VfxToggle()
+		OverheadToggle()
 	end)
 
 end

@@ -196,7 +196,7 @@ function ShopGui:BindEvents()
 						if saving then
 							ButtonCont.BuyButton.Icon.Visible = true
 							ButtonCont.BuyButton.Price.Text = itemData.Price
-							if saving > itemData.Price then
+							if saving >= itemData.Price then
 								ButtonCont.BuyButton.Active = true
 								ButtonCont.BuyButton.Image = "rbxassetid://17575066019"
 								ButtonCont.BuyButton.Gradiant.Enabled = false

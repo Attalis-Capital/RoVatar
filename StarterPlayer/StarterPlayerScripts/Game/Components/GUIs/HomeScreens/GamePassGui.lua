@@ -75,15 +75,20 @@ function BuyGamePass(iData:CT.ItemDataType)
 		if(itemData.Id == iData.Id) then
 			conn:Disconnect()
 			local pDat = _G.PlayerData
-			--print("[TESTING PASSES] - ", _G.PlayerData.GamePurchases.Passes)
-			--print("GamePass purchase successfull:", iData.Name, pDat)
-			CF.PlayerData.UpdateInventory(pDat, iData, true)
+
+			if iData.ProductCategory == Constants.ProductCategories.Gems then
+				CF.PlayerData.UpateGemsInPlayerData(pDat, iData.Amount)
+			elseif iData.ProductCategory == Constants.ProductCategories.Gold then
+				CF.PlayerData.UpdateGoldInPlayerData(pDat, iData.Amount)
+			else
+				CF.PlayerData.UpdateInventory(pDat, iData, true)
+			end
+
 			_G.PlayerDataStore:UpdateData(pDat)
-			
 			UpdateGamePasses()
 		end
 	end)
-	
+
 	IAPController:PurchaseItem(iData)
 end
 
@@ -97,10 +102,15 @@ function UpdateGamePasses()
 	
 	local plrData :CT.PlayerDataModel = _G.PlayerData
 	
-	--Spawn Passes
+	--Spawn Passes and Store items (GamePass + Gems + Gold)
+	local validCategories = {
+		[Constants.ProductCategories.GamePass] = true,
+		[Constants.ProductCategories.Gems] = true,
+		[Constants.ProductCategories.Gold] = true,
+	}
 	for i, data :CT.ItemDataType in pairs(Constants.IAPItems) do
-		
-		if(data.ProductCategory == Constants.ProductCategories.GamePass) then
+
+		if data.ProductCategory and validCategories[data.ProductCategory] then
 			local item = ui.GamePassTemplate:Clone()
 			
 			TWController:SubsHover(item.BuyButton)
@@ -131,22 +141,17 @@ function UpdateGamePasses()
 			item.BuyButton.Price.ImageLabel.Visible = true
 			item.Parent = ui.GamePassFrame.Background.ElementsFrame
 			
-			--Purchaes validation and UI update
-			if(plrData.GamePurchases.Passes[data.Id]) then
-				--Already owns
+			--Purchase validation and UI update
+			local isGamePass = data.ProductCategory == Constants.ProductCategories.GamePass
+			if isGamePass and plrData.GamePurchases.Passes[data.Id] then
+				--Already owns this GamePass
 				item.BuyButton.Price.Text = "OWNED"
 				item.BuyButton.Price.ImageLabel.Visible = false
 			else
-				if(player.Progression.LEVEL.Value >= data.RequiredLevel) then
-					item.Shadow.Visible = false
-					--Let purchase
-					item.BuyButton.Activated:Connect(function()
-						BuyGamePass(data)
-					end)
-				else
-					item.Shadow.Visible = true
-					item.Shadow.Label.Text = "Requires Lvl "..data.RequiredLevel
-				end
+				item.Shadow.Visible = false
+				item.BuyButton.Activated:Connect(function()
+					BuyGamePass(data)
+				end)
 			end
 
 			item.Visible = true
