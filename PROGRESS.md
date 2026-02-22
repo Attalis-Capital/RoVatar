@@ -1,6 +1,43 @@
 # PROGRESS.md — RoVatar
 
-## Current Sprint: #8 — Pet System (Issue #7)
+## Current Sprint: #9 — NPC/Location Renaming (Issue #8) — COMPLETE
+**Branch:** `sprint-9-npc-rename`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/8
+
+### Tasks
+- [x] S9.1 — Update NPCsType display values (Skystrider, Infernalist, Aquamancer, Stoneguard)
+- [x] S9.2 — Rename "Guru Pathik" → "Kaen" in dialogue
+- [x] S9.3 — Rename "Journey Master" → "Oryn" in display text
+- [x] S9.4 — Rename "Zephir Guide" → "Sael" in display text
+- [x] S9.5 — Clean remaining IP strings (Water Tribe, Earth Benders, any bender)
+- [x] S9.6 — Clean "Appa" fallback strings → "Nalu"
+
+### Commits
+- `d26aee1` S9: NPC/location renaming — IP de-risk display text
+
+### Files Modified
+- `ReplicatedStorage/Modules/Custom/Constants.lua` — 4 NPCsType value changes + Water Tribe description
+- `ReplicatedStorage/Modules/Custom/QuestsModule.lua` — 4 display text replacements
+- `ReplicatedStorage/Modules/Custom/QuestsModule/Conversation.lua` — 4 string replacements
+- `StarterPlayer/.../NPC/QuestGuy.lua` — Guru Pathik→Kaen, Journey Master→Oryn
+- `StarterPlayer/.../NPC/LevelGuider.lua` — Journey Master→Oryn
+- `StarterPlayer/.../Vehicles/Appa.lua` — APPA→NALU fallback strings
+
+### Studio-Dependent Items (out of scope)
+- Rename workspace NPC instances: "Journey Master" → "Oryn", "Zephir Guide" → "Sael", "Guru Pathik" → "Kaen"
+- After Studio rename: update QuestTargetIds, Assigner fields, and specialNPCName to match
+- Rename Appa workspace model to "Nalu"
+- Rename NPC overhead BillboardGui display names
+- "Item Guide" → "Ryng" — Studio-only NPC
+
+### Next Action
+- Create PR for sprint-9-npc-rename → main
+- Plan next sprint: issue #9 (feature backlog)
+- Do Studio-dependent NPC renames in Roblox Studio
+
+---
+
+## Previous Sprint: #8 — Pet System (Issue #7) — COMPLETE
 **Branch:** `sprint-8-pet-system`
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/7
 
