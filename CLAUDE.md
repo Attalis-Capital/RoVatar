@@ -100,6 +100,9 @@ After changes, check:
 - `OverheadService.lua` (server Knit service) creates BillboardGui above player heads — `SlotName` player attribute set in PlayerDataService follows the same dual-write pattern as `Has_*Bending` and `ElementLevel_*`
 - `plrData.AllProfiles[plrData.ActiveProfile]` can return nil early in session before profile data is fully loaded — always nil-guard before indexing into the result (affects DialogueGui Welcome, UpdateMap, and any client code using this accessor)
 - `UpdateMap` Component fires `.Touched` events and `ListenChange` callbacks on startup — these can race with GUI initialisation causing duplicate notifications or nil crashes; guard with `_G.PlayerData` readiness checks and dedup flags
+- Momo.lua pet obstacle raycast (checking for walls near pet) is fundamentally broken — terrain/buildings near the player always trigger hits causing constant despawn flicker; use distance-based teleport (>80 studs → warp to player) instead
+- `BindToRenderStep` names are global across all scripts — always namespace (e.g. `"PetFollow"` not `"Follow"`) to avoid silent collisions
+- `Has_Momo` attribute follows the dual-write pattern (`onPlayerAdded` + `ListenSpecChange("GamePurchases.Passes")`) but must be set AFTER `IAPService:RefreshPurchaseDataUpdates` — setting before uses stale save data, missing purchases since last login
 
 
 ## Sprint workflow

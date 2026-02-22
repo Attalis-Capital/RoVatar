@@ -3,10 +3,10 @@ local Momo = {}
 
 local RunS = game:GetService("RunService")
 local RS = game:GetService("ReplicatedStorage")
-local PFS = game:GetService("PathfindingService")
 local CT = require(RS.Modules.Custom.CustomTypes)
 local Constants = require(RS.Modules.Custom.Constants)
 local CF = require(RS.Modules.Custom.CommonFunctions)
+local SwimController = require(RS.Modules.Packages.SwimController)
 
 local Packages = RS.Packages
 local Knit = require(Packages.Knit)
@@ -14,6 +14,9 @@ local Component = require(Packages.Component)
 
 local player = game.Players.LocalPlayer
 local Momo = Component.new({Tag = player.UserId.."Momo", Ancestors = {workspace}})
+
+local MAX_TELEPORT_DIST = 80
+local ORBIT_SPEED = 0.3
 
 function Momo:UpdateState()
 	self.State.Changed:Connect(function(value)
@@ -34,6 +37,23 @@ function Momo:Setup()
 	self.AnimationTrack.Walk = self.Hum:LoadAnimation(walk)
 	self.AnimationTrack.Jump = self.Hum:LoadAnimation(jump)
 	self.AnimationTrack.Idle = self.Hum:LoadAnimation(idle)
+
+	self.currentAnim = nil
+end
+
+function Momo:PlayAnim(animName: string)
+	if self.currentAnim == animName then
+		return
+	end
+	-- Stop current animation
+	if self.currentAnim and self.AnimationTrack and self.AnimationTrack[self.currentAnim] then
+		self.AnimationTrack[self.currentAnim]:Stop()
+	end
+	-- Play new animation
+	self.currentAnim = animName
+	if self.AnimationTrack and self.AnimationTrack[animName] then
+		self.AnimationTrack[animName]:Play()
+	end
 end
 
 function Momo:Despawn()
@@ -41,53 +61,63 @@ function Momo:Despawn()
 		self.Body.Transparency = 1
 		self.Smoke:Emit(10)
 		self.State.Value = "Hide"
+		-- Stop animation while hidden
+		if self.currentAnim and self.AnimationTrack and self.AnimationTrack[self.currentAnim] then
+			self.AnimationTrack[self.currentAnim]:Stop()
+		end
+		self.currentAnim = nil
 	end
 end
 
 function Momo:Spawn()
 	if self.Body.Transparency == 1 then
 		self.Body.Transparency = 0
-		--self.Instance:SetPrimaryPartCFrame(CFrame.new(player.Character.PrimaryPart.Position) * CFrame.new(0, 0, -20))
 		self.Smoke:Emit(10)
 		self.State.Value = "Show"
+		-- Restart idle animation
+		self:PlayAnim("Idle")
 	end
 end
 
 function Momo:Follow()
-	local circleRadius = 10 
+	local circleRadius = 10
 	local baseHeight = 2.5
-	local offset = 0.3
 
-	local targetCircleRadius = 15 -- Starting target radius
-	local minRadius = 10 -- Minimum allowed radius
-	local maxRadius = 20 -- Maximum allowed radius
-	local radiusChangeSpeed = 0.05 -- How quickly to interpolate towards the target radius
-	local radiusChangeInterval = 3 -- Time (in seconds) before a new target radius is picked
+	local targetCircleRadius = 15
+	local minRadius = 10
+	local maxRadius = 20
+	local radiusChangeSpeed = 0.05
+	local radiusChangeInterval = 3
 	local timeSinceLastChange = 0
 
-	local lastActionTime = 0
-
-	self:Spawn() -- Spawn initially
+	self:Spawn()
 
 	local function Lerp(num, goal, i)
 		return num + (goal-num)*i
 	end
 
-	local lastHide = tick()
-	local lastShow = tick()
-	
 	local Target
-	RunS:BindToRenderStep("Follow", Enum.RenderPriority.Character.Value, function(dt)
+	RunS:BindToRenderStep("PetFollow", Enum.RenderPriority.Character.Value, function(dt)
 		if player.Character then
 			Target = player.Character.PrimaryPart
 		end
-		
+
 		if not Target then
 			return
 		end
-		
+
+		-- Despawn during flight or swimming, respawn on ground
+		if _G.Flying then
+			self:Despawn()
+			return
+		end
+		if SwimController.Swimming then
+			self:Despawn()
+			return
+		end
+		self:Spawn()
+
 		timeSinceLastChange = timeSinceLastChange + dt
-		lastActionTime = lastActionTime + dt
 
 		-- Smoothly adjust circle radius towards target
 		circleRadius = Lerp(circleRadius, targetCircleRadius, radiusChangeSpeed)
@@ -98,8 +128,9 @@ function Momo:Follow()
 			timeSinceLastChange = 0
 		end
 
-		-- Adjust circle offset position
-		local offsetPos = CFrame.Angles(0, 8, 0) * Vector3.new(circleRadius, 0, 0)
+		-- Circular orbit using tick()
+		local angle = tick() * ORBIT_SPEED
+		local offsetPos = CFrame.Angles(0, angle, 0) * Vector3.new(circleRadius, 0, 0)
 		local targetPos = Target.Position + offsetPos
 
 		local rayParams = RaycastParams.new()
@@ -112,6 +143,13 @@ function Momo:Follow()
 			targetPos = Vector3.new(targetPos.X, groundRayResult.Position.Y + baseHeight, targetPos.Z)
 		end
 
+		-- Distance-based teleport if pet strays too far
+		local dist = (self.Body.Position - Target.Position).Magnitude
+		if dist > MAX_TELEPORT_DIST then
+			local behind = Target.Position - Target.CFrame.LookVector * 5 + Vector3.new(0, baseHeight, 0)
+			self.Body.CFrame = CFrame.new(behind)
+		end
+
 		-- Move the pet smoothly to the target position
 		self.Body.BodyPosition.Position = targetPos
 
@@ -119,53 +157,51 @@ function Momo:Follow()
 		local lookVector = (not _G.Flying or _G.Flying == Constants.VehiclesType.Appa) and Target.CFrame.LookVector or Target.CFrame.UpVector
 		self.Body.BodyGyro.CFrame = CFrame.lookAlong(self.Body.Position, lookVector)
 
-		------ Spawning and despawning logic based on front raycast
-		--local hipRay = Ray.new(self.Body.Position, Vector3.new(0,15,0) + self.Body.CFrame.LookVector * 10)
-		--local backRay = Ray.new(self.Body.Position, Vector3.new(0,15,0) + self.Body.CFrame.LookVector * -10)
-		--local hipPart = workspace:FindPartOnRay(hipRay, self.Instance)
-		--local backPart = workspace:FindPartOnRay(hipRay, self.Instance)
-		
-		-- Precompute constant values
-		
-		local raycastParams = RaycastParams.new()
-		raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-		raycastParams.FilterDescendantsInstances = {workspace.Scripted_Items.Maps}
-		raycastParams.RespectCanCollide = true
-
-		local hipPartResult = workspace:Raycast(self.Body.Position, Vector3.new(0,15,0) + self.Body.CFrame.LookVector * 10, raycastParams)
-		local backPartResult = workspace:Raycast(self.Body.Position, Vector3.new(0,15,0) + self.Body.CFrame.LookVector * -10, raycastParams)
-
-		local frontPart = hipPartResult and hipPartResult.Instance or nil
-		local backPart = hipPartResult and hipPartResult.Instance or nil
-		
-		if frontPart or backPart then
-			self:Despawn()
-		elseif not frontPart and not backPart then
-			self:Spawn()
+		-- Animation state machine
+		local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			local state = humanoid:GetState()
+			if state == Enum.HumanoidStateType.Jumping or state == Enum.HumanoidStateType.Freefall then
+				self:PlayAnim("Jump")
+			elseif humanoid.MoveDirection.Magnitude > 0.1 then
+				self:PlayAnim("Walk")
+			else
+				self:PlayAnim("Idle")
+			end
 		end
 	end)
 end
 
 function Momo:Start()
-	
-	local Pet :MeshPart = self.Instance
+	local Pet = self.Instance
+
+	-- Nil-guard PrimaryPart
+	if not Pet.PrimaryPart then
+		warn("[Momo] PrimaryPart missing on pet instance, aborting")
+		return
+	end
+
 	self.Hum = Pet:WaitForChild("Humanoid")
 	self.State = Pet.State
 	self.Body = Pet.PrimaryPart
 	self.Smoke = Pet.PrimaryPart.Smoke
-	
-	self:Spawn()
+
 	self:Setup()
+	self:PlayAnim("Idle")
 	self:Follow()
 	self:UpdateState()
-	
-	
-	--_G.Flying
-	
 end
 
 function Momo:Stop()
-	RunS:UnbindFromRenderStep("Follow")
+	RunS:UnbindFromRenderStep("PetFollow")
+	-- Stop all animation tracks and clean up
+	if self.AnimationTrack then
+		for _, track in pairs(self.AnimationTrack) do
+			track:Stop()
+		end
+		self.AnimationTrack = nil
+	end
+	self.currentAnim = nil
 end
 
 return Momo

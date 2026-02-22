@@ -83,4 +83,7 @@ return {
 	MaxStaminaPerLevel = 2,          -- +2 per player level above 1
 	BaseStaminaRegen = 0.05,
 	StaminaRegenPerLevel = 0.0005,   -- +0.0005 per player level above 1
+
+	-- Pet bonuses
+	MomoPetMultiplier = 2,           -- 2x kill rewards with Momo pet
 }

@@ -138,14 +138,18 @@ function onPlayerAdded(player:Player)
 		if activeSlot and activeSlot.SlotName then
 			player:SetAttribute("SlotName", activeSlot.SlotName)
 		end
+
 		-- Profile Data
-		
+
 		local GamePurchases = IAPService:RefreshPurchaseDataUpdates(player, playerData)
 		playerData.GamePurchases = GamePurchases
-		
+
 		-- Refresh Inventory for Gamepass Items
-		CF.PlayerData.UpdateInventory(playerData, Constants.GameInventory.Transports.BlueGlider, 
+		CF.PlayerData.UpdateInventory(playerData, Constants.GameInventory.Transports.BlueGlider,
 			playerData.GamePurchases.Passes[Constants.GameInventory.Transports.BlueGlider.Id])
+
+		-- Set Momo pet ownership attribute (after RefreshPurchaseDataUpdates)
+		player:SetAttribute("Has_Momo", playerData.GamePurchases.Passes[Constants.IAPItems.Momo.Id] ~= nil)
 		
 		playerData.LoginData.LastLogin = workspace.ServerTime.Value --workspace:GetServerTimeNow()
 		
@@ -196,6 +200,8 @@ function onPlayerAdded(player:Player)
 	_G.PlayerDataStore:ListenSpecChange(player, "GamePurchases.Passes", function(newData)
 
 		if newData then
+			-- Sync Momo pet ownership attribute on purchase
+			player:SetAttribute("Has_Momo", newData[Constants.IAPItems.Momo.Id] ~= nil)
 
 			CharacterService:OnGamePassStatusChange(player, newData)
 		end
@@ -260,16 +266,17 @@ function PlayerDataService:UpdateKills(Player)
 			}
 			CF.PlayerData.UpdateActiveProfile(playerData, U)
 			
+			local momoMult = Player:GetAttribute("Has_Momo") and Costs.MomoPetMultiplier or 1
 			if (Kills+1) == 1 then
-				CF.PlayerData.UpdateGoldInPlayerData(playerData, 100)		
+				CF.PlayerData.UpdateGoldInPlayerData(playerData, 100 * momoMult)
 				VFXHandler:PlayOnClient(Player, Constants.VFXs.RewardCoin)
 				SFXHandler.Client.PlayAlong(Player, Constants.SFXs.Reward, Player.Character)
 			elseif (Kills+1) == 2 then
-				CF.PlayerData.UpdateXpInPlayerData(playerData, 50)
+				CF.PlayerData.UpdateXpInPlayerData(playerData, 50 * momoMult)
 				VFXHandler:PlayOnClient(Player, Constants.VFXs.RewardXP)
 				SFXHandler.Client.PlayAlong(Player, Constants.SFXs.Reward, Player.Character)
 			elseif (Kills+1) == 3 then
-				CF.PlayerData.UpdateGoldInPlayerData(playerData, 100)
+				CF.PlayerData.UpdateGoldInPlayerData(playerData, 100 * momoMult)
 				VFXHandler:PlayOnClient(Player, Constants.VFXs.RewardCoin)
 				SFXHandler.Client.PlayAlong(Player, Constants.SFXs.Reward, Player.Character)
 			end
