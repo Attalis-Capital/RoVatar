@@ -1,5 +1,30 @@
 # PROGRESS.md — RoVatar
 
+## Current Sprint: #8 — Pet System (Issue #7)
+**Branch:** `sprint-8-pet-system`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/7
+
+### Tasks
+- [x] S8.1 — Fix core follow logic (backPart copy-paste bug, remove broken obstacle raycast, circular orbit)
+- [x] S8.2 — Add animation state machine (Idle/Walk/Jump based on player Humanoid state)
+- [x] S8.3 — Despawn on glider/Appa/water, respawn on ground
+- [x] S8.4 — Set `Has_Momo` attribute (dual-write) + 2x kill rewards via Costs.MomoPetMultiplier
+- [x] S8.5 — Server state handler ownership validation
+- [x] S8.6 — Momo.lua cleanup and nil safety (PrimaryPart guard, Stop() cleanup)
+
+### Files Modified
+- `StarterPlayer/.../Components/Pet/Momo.lua` — rewritten: follow logic, animations, despawn, cleanup
+- `ReplicatedStorage/Modules/Custom/Costs.lua` — added MomoPetMultiplier = 2
+- `ServerScriptService/.../PlayerDataService.lua` — Has_Momo dual-write + 2x kill reward multiplier
+- `ReplicatedStorage/.../Pets/Momo/State/Handler.lua` — ownership validation
+
+### Studio-Dependent Items (out of scope)
+- Create Idle/Walk/Jump animations in Moon Animator and set AnimationIds
+- Verify Momo model has Humanoid, PrimaryPart, State (StringValue), and Smoke (ParticleEmitter)
+- Test BodyPosition/BodyGyro physics tuning in-game
+
+---
+
 ## Full Audit — 2026-02-22
 **Type:** First-principles audit (7 agents, 2 waves)
 **Report:** `ROVATAR_AUDIT_REPORT.md`
