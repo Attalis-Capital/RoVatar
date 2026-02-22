@@ -35,10 +35,12 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 - [x] S7.3 — Register environmental sound assets (Env_Lava, Env_WindHeight, LavaZone tag)
 - [x] S7.4 — EnvironmentAudioController (proximity lava + altitude wind, 0.5s poll)
 - [x] S7.5 — Map system bug fixes (startup triggers, duplicate notifications, nil crashes)
+- [x] S7.6 — Pre-PR audit fix: nil profile guard in DialogueGui Welcome message
 
 ### Commits
 - `1d0355c` S7: audio system — shop error sound, glider wind, environment audio
 - `e37f819` S7.5: fix map system bugs — startup triggers, duplicate notifications, nil crashes
+- `f27b2ef` S7.6: fix nil profile guard in DialogueGui Welcome message
 
 ### Studio-Dependent Items (out of scope)
 - Tag lava-area parts with "LavaZone" in workspace via CollectionService
