@@ -9,6 +9,8 @@ local Constants = require(RS.Modules.Custom.Constants)
 local CF = require(RS.Modules.Custom.CommonFunctions)
 local CT = require(RS.Modules.Custom.CustomTypes)
 
+local QuestTrackerHUD = require(RS.Modules.Custom.QuestTrackerHUD)
+
 local DR = require(RS.Modules.Custom.DataReplicator)
 DR.SetupAll()
 _G.PlayerDataStore = DR.GetStore(Constants.DataStores.PlayerData.Name)
@@ -73,6 +75,10 @@ local function Init()
 end
 
 Init()
+
+-- Initialise the always-visible quest tracker HUD after _G.PlayerDataStore
+-- and _G.QuestsData are ready so the panel can populate immediately.
+QuestTrackerHUD.Init()
 
 function DataController:KnitInit()
 

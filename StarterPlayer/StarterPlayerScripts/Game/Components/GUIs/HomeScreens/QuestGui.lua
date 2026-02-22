@@ -15,6 +15,7 @@ local CT = require(CustomModules.CustomTypes)
 local CF = require(CustomModules.CommonFunctions)
 local Constants = require(CustomModules.Constants)
 local SFXHandler = require(CustomModules.SFXHandler)
+local QuestTrackerHUD = require(CustomModules.QuestTrackerHUD)
 
 local player = game.Players.LocalPlayer
 
@@ -604,8 +605,11 @@ function QuestGui:Toggle(enable:boolean)
 	end
 	ui.BaseFrame.Visible = enable
 
+	-- Hide the always-on tracker HUD while the full quest panel is open
+	QuestTrackerHUD.SetVisible(not enable)
+
 	if enable then
-		Refresh() -- Karna: Call with Quest Data Update Event. 
+		Refresh() -- Karna: Call with Quest Data Update Event.
 	end
 
 end

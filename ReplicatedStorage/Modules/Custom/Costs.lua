@@ -86,4 +86,9 @@ return {
 
 	-- Pet bonuses
 	MomoPetMultiplier = 2,           -- 2x kill rewards with Momo pet
+
+	-- Glider tuning
+	GliderAcceleration = 5,          -- speed ramp-up/down rate per second
+	GliderBasePower = 1,             -- normal flight power multiplier
+	GliderSprintPower = 2,           -- sprint flight power multiplier
 }

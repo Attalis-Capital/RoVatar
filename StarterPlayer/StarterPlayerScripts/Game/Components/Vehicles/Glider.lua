@@ -66,14 +66,14 @@ local Speed = 0
 local MinSpeed = 1
 local MaxSpeed = 500
 
-local BasePower = 1
-local SprintPower = 2
+local BasePower = Costs.GliderBasePower
+local SprintPower = Costs.GliderSprintPower
 
 local Power = BasePower
 
 -- To manage slowly acceleration at start.
 local CurrentSpeed = 0
-local Acceleration = 5 -- adjust for faster/slower ramp-up
+local Acceleration = Costs.GliderAcceleration
 
 ------------- Helper ------------
 

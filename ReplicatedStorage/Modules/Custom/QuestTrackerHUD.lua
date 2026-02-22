@@ -4,8 +4,9 @@
 -- Reads active quests from _G.QuestsData and updates on data changes.
 
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local RS = game:GetService("ReplicatedStorage")
+
+local CF = require(RS.Modules.Custom.CommonFunctions)
 
 local player = Players.LocalPlayer
 
@@ -13,6 +14,8 @@ local QuestTrackerHUD = {}
 
 local trackerGui = nil
 local questContainer = nil
+-- When false, the HUD is suppressed (e.g. while QuestGui modal is open)
+local externalVisible = true
 
 -- Colour palette
 local COLORS = {
@@ -142,7 +145,8 @@ local function createQuestEntry(questData, questType, layoutOrder)
 	-- Current target description
 	local achieved = questData.Achieved or 0
 	local targets = questData.Targets
-	local totalTargets = targets and #targets or 0
+	-- Use pairs-based count; Targets may be sparse after DataStore round-trip
+	local totalTargets = targets and CF.Tables.TableLength(targets) or 0
 	local currentTarget = targets and targets[achieved + 1]
 
 	local desc = Instance.new("TextLabel")
@@ -253,10 +257,16 @@ function QuestTrackerHUD.Refresh()
 		end
 	end
 
-	-- Show/hide panel based on active quests
+	-- Show/hide panel based on active quests AND external visibility flag
 	if trackerGui then
-		trackerGui.Enabled = hasActiveQuest
+		trackerGui.Enabled = hasActiveQuest and externalVisible
 	end
+end
+
+--- Hide or show the tracker HUD externally (e.g. when QuestGui modal is open).
+function QuestTrackerHUD.SetVisible(visible: boolean)
+	externalVisible = visible
+	QuestTrackerHUD.Refresh()
 end
 
 function QuestTrackerHUD.Init()
