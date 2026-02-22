@@ -59,8 +59,8 @@ Alexander cannot have 30 continuous minutes of fun — session crashes or softlo
 - Glider animation transfer
 
 ### Next Action
-- Merge PR #28
-- Plan next sprint: issue #6 (audio system) or remaining gotchas
+- Plan next sprint: issue #6 (audio system), #7 (pets), or #8 (NPC renaming)
+- Address Studio-dependent items from Issue #5 (requires Roblox Studio)
 
 ---
 
