@@ -103,6 +103,9 @@ After changes, check:
 - Momo.lua pet obstacle raycast (checking for walls near pet) is fundamentally broken — terrain/buildings near the player always trigger hits causing constant despawn flicker; use distance-based teleport (>80 studs → warp to player) instead
 - `BindToRenderStep` names are global across all scripts — always namespace (e.g. `"PetFollow"` not `"Follow"`) to avoid silent collisions
 - `Has_Momo` attribute follows the dual-write pattern (`onPlayerAdded` + `ListenSpecChange("GamePurchases.Passes")`) but must be set AFTER `IAPService:RefreshPurchaseDataUpdates` — setting before uses stale save data, missing purchases since last login
+- `Constants.NPCsType` values cascade to ~30 quest descriptions via `{Constants.NPCsType.AirBender}` interpolation — changing these 4-5 values is the single point for NPC display name updates
+- `Assigner` fields in Conversation.lua and `QuestTargetIds` values must match workspace NPC `Instance.Name` — these are functional identifiers for quest progression, not display text; renaming requires a Studio rename first
+- Quest target entries have both `Id` (functional, matched against workspace) and `Title` (display, shown to player) — you can safely hardcode new display names in Title without touching the Id
 
 
 ## Sprint workflow
