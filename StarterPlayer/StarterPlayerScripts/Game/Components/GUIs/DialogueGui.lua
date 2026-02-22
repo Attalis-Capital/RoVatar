@@ -282,8 +282,10 @@ function DialogueGui:Welcome()
 	local plrData :CT.PlayerDataModel = _G.PlayerData
 	
 	local activeProfileData = plrData.AllProfiles[plrData.ActiveProfile]
-	
-	local mapName = Constants.GameInventory.Maps[activeProfileData.LastVisitedMap].Name
+	if not activeProfileData then return end
+	local mapEntry = Constants.GameInventory.Maps[activeProfileData.LastVisitedMap]
+	if not mapEntry then return end
+	local mapName = mapEntry.Name
 	local d :CT.DialogueDataType = {}
 	
 	local isReturning = activeProfileData.PlayerLevel and activeProfileData.PlayerLevel > 1

@@ -61,7 +61,7 @@ function BuyButtonClick(iData :CT.ItemDataType)
 	
 	local plrData :CT.PlayerDataModel = _G.PlayerData
 	if plrData.OwnedInventory.Transports[iData.Id] then
-		---- 
+		SFXHandler:Play(Constants.SFXs.Purchased_Error, true)
 		warn("Item already Exist!!")
 		return
 	end

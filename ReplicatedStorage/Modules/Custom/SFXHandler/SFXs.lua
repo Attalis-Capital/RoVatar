@@ -240,6 +240,19 @@ local Data = {
 		SoundGroup = Constants.SoundGroups.SFXGroup,
 	},
 	
+	--**** Environment Proximity
+	[Constants.SFXs.Env_Lava] = {
+		Name = Constants.SFXs.Env_Lava, ID = prefix.."9095809158",
+		Volume = 1, Loop = true, PlaybackSpeed = 1,
+		RollEmitter = { RollMaxDist = 80, RollMinDist = 5, RollOffMode = Enum.RollOffMode.InverseTapered },
+		SoundGroup = Constants.SoundGroups.SFXGroup,
+	},
+	[Constants.SFXs.Env_WindHeight] = {
+		Name = Constants.SFXs.Env_WindHeight, ID = prefix.."6455667685",
+		Volume = 0.5, Loop = true, PlaybackSpeed = 1,
+		SoundGroup = Constants.SoundGroups.SFXGroup,
+	},
+
 	--**** Environment MapWise
 	
 	----- DUMMY ASSETS -----

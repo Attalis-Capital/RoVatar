@@ -14,6 +14,7 @@ local Costs = require(CustomModules.Costs)
 local CT = require(CustomModules.CustomTypes)
 local CF = require(CustomModules.CommonFunctions)
 local Constants = require(CustomModules.Constants)
+local SFXHandler = require(CustomModules.SFXHandler)
 
 local GameElements = RS.GameElements
 local DefaultCameraFOV = GameElements.Configs.CameraFOV
@@ -228,6 +229,7 @@ function Glider:Begin()
 	
 	-- Play Animations Tracks
 	self.AnimationTrack:Play()
+	SFXHandler:PlayAlong(Constants.SFXs.Glider_Wind, self.Focus)
 	
 	---- Creating Gyros Align
 	FlyingGyro = Instance.new("AlignOrientation")
@@ -268,6 +270,7 @@ function Glider:End()
 	end)
 
 
+	SFXHandler:Stop(Constants.SFXs.Glider_Wind, self.Focus)
 	self.AnimationTrack:Stop()
 	self.AnimationTrack:Destroy()
 	

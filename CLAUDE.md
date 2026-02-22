@@ -94,6 +94,10 @@ After changes, check:
 - `validateClientData` Abilities check must allow level-gated unlocks via `curProfile.PlayerLevel >= ABILITY_LEVELS[abilityId]` — pure rejection breaks BendingSelectionGui unlock flow
 - ~~DataClient.lua had warn/print no-op overrides identical to DataServer~~ — FIXED in sprint 5c: always check BOTH client and server DataReplicator modules for diagnostic suppression
 - OwnedInventory validation must handle nested subcategories (e.g. `Styling.Hair = {id = true}`) — single-level key check misses sub-category item spoofing
+- Store→GamePass merge (sprint 6c): `GamePassGui.UpdateGamePasses()` now shows GamePass + Gems + Gold via `validCategories` filter; Store proximity trigger (`workspace.Scripted_Items.Store`) redirects to GamePassGui
+- `MainMenuGui` has 6 buttons in Studio but hides StoreButton and ProfileBtn at runtime via `Visible = false` — visible sidebar is 4 buttons (Quests, Settings, Map, GamePass) + collapsible toggle
+- `SettingsGui` VfxToggle is repurposed for overhead visibility — Studio label still reads "VFX" but Luau code controls `OverheadGui.Enabled` on all player characters
+- `OverheadService.lua` (server Knit service) creates BillboardGui above player heads — `SlotName` player attribute set in PlayerDataService follows the same dual-write pattern as `Has_*Bending` and `ElementLevel_*`
 
 
 ## Sprint workflow
