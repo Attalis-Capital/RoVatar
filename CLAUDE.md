@@ -65,7 +65,10 @@ After changes, check:
 - New persistent data fields must be added to BOTH `GetSlotDataModel()` defaults (PlayerData.lua) AND the type definition (CustomTypes.lua) — `CheckAndUpdatePlayerData` Sync/remove strips undeclared fields on migration
 - `QuestDataService:OnPlayerAdded` mutates `plrData` in memory without saving — any data changes in OnPlayerAdded must explicitly call `UpdateData` or they're lost on quick disconnect (before 30s auto-save)
 - `Constants.GameInventory.Abilities[id].RequiredLevel` is the canonical level-gate source — values flow from Costs.lua → Constants.Items → Constants.GameInventory; never hardcode level thresholds
-- `IsSameDay()` in QuestDataService compares `os.date("!*t")` numeric fields against strings (`yday == "1"`) — always false in Luau; daily quest New Year rollover is broken (pre-existing)
+- `IsSameDay()` in QuestDataService — fixed in sprint 4a: was comparing `os.date("!*t")` numeric fields against strings, and mixing local/UTC date calls; all `os.date` calls must use `!` prefix consistently
+- `GetQuest()` returns a direct reference to cached `today_Quest` — callers must deep-clone via `CF.Tables.CloneTable(GetQuest())` before mutating (shallow `table.clone` leaves nested frozen sub-tables exposed)
+- `RefreshDailyQuest` is a client-callable signal — always rate-limit client-triggered data-write signals; cooldown table must be cleaned up on `PlayerRemoving`
+- `DailyQuest()` guard must check `IsCompleted and IsClaimed` in addition to `IsSameDay` and missing `Id` — otherwise completed+claimed quests block new assignment for the rest of the day
 - `_onCharacterAdded` shadows its `player` parameter with `Players:GetPlayerFromCharacter(character)` on line 419 — the re-declaration can return nil; use the original parameter
 - `SetupCharacter` is async (callback inside `_G.PlayerDataStore:GetData`) and replaces `player.Character` — code after `SetupCharacter()` in `_onCharacterAdded` references the stale original character, not the replacement model
 - `ToggleWeapon` sword equip uses `task.delay(.25)` to hide the holstered model — if the player unequips within 0.25s the delayed callback races; always guard with a state check (`Char:FindFirstChild("MeteoriteSword")`)
