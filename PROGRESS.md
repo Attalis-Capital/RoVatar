@@ -1,7 +1,40 @@
 # PROGRESS.md — RoVatar
 
-## Current Sprint: #10 — Bug Fixes & Code Quality (Issue #9 subset)
-**Branch:** `sprint-10-bugfixes`
+## Current Sprint: #11 — Modernise Remaining Deprecated APIs (Issue #9 subset) — COMPLETE
+**Branch:** `sprint-11-deprecated-apis`
+**Issue:** https://github.com/Attalis-Capital/RoVatar/issues/9
+
+### Tasks
+- [x] S11.0 — Merge PR #32 (sprint 10 bugfixes) into main, rebase working branch
+- [x] S11.1 — Replace `wait()` → `task.wait()` in CharacterController.lua (5 calls)
+- [x] S11.2 — Replace `wait()` → `task.wait()` in Glider.lua and Appa.lua (2 calls)
+- [x] S11.3 — Replace `wait()` → `task.wait()` in LoadGameGui.lua (4 calls)
+- [x] S11.4 — Fix `wait()` → `warn()` bug in InputController.lua (was silently discarding diagnostic strings)
+- [x] S11.5 — Replace `wait()` → `task.wait()` in NPCAI/Animate.lua (1 call)
+
+### Commits
+- `cc43a7c` (main) S10: Bug fixes — deprecated APIs, debug no-ops, nil-guards (#32)
+- `517782c` fix: S11 modernise remaining deprecated wait() calls
+
+### Files Modified
+- `Controllers/Character/CharacterController.lua` — 5x wait→task.wait
+- `Components/Vehicles/Glider.lua` — 1x wait→task.wait
+- `Components/Vehicles/Appa.lua` — 1x wait→task.wait
+- `Components/GUIs/LoadGameGui.lua` — 4x wait→task.wait
+- `Controllers/Player/InputController.lua` — 1x wait→warn (bug fix)
+- `Server/Components/NPCAI/Templates/Animate.lua` — 1x wait→task.wait
+
+### Out of Scope (remaining wait() calls)
+- Packages/ — vendor code, DO NOT EDIT
+- Legacy Bendings `_S.lua` scripts — disabled with `if true then return end`
+- VFXHandler ability modules — deeper refactor needed
+- Workspace NPC Animate.lua copies — Studio-managed duplicates
+- Comments and `:await()` (Promise method)
+
+---
+
+## Previous Sprint: #10 — Bug Fixes & Code Quality (Issue #9 subset) — COMPLETE
+**Branch:** `sprint-10-bugfixes` (merged via PR #32)
 **Issue:** https://github.com/Attalis-Capital/RoVatar/issues/9
 
 ### Tasks
@@ -14,7 +47,7 @@
 
 ### Commits
 - `dea0acc` (main) feat(quests): sprint 4a quest fixes — IsSameDay, deep clone, rate-limit, re-assignment (#23)
-- `9b98dde` fix: S10 bug fixes — modernise deprecated APIs, remove debug no-ops, add nil-guards
+- `cc43a7c` (main) S10: Bug fixes — deprecated APIs, debug no-ops, nil-guards (#32)
 
 ### Files Modified
 - `WindController.lua` — spawn→task.spawn, wait→task.wait
