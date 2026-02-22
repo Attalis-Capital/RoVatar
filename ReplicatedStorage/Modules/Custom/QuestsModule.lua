@@ -581,7 +581,7 @@ QuestsModule.Quests = {
 				Name = "The Zephir Reclamation",
 				Title = "The Zephir Reclamation",
 				Objective = QuestsModule.QuestObjectives.Combined,
-				Description = `Glide to {Constants.Items.SounderAirTemple.Name} and defeat 10 {Constants.NPCsType.AirBender} NPCs and talk to {QuestsModule.TargetIds["Zephir Guide"]} to reclaim the location.`,
+				Description = `Glide to {Constants.Items.SounderAirTemple.Name} and defeat 10 {Constants.NPCsType.AirBender} NPCs and talk to Sael to reclaim the location.`,
 				Targets = {
 					[1] = { Id = QuestsModule.TargetIds.SounderAirTemple, Title = `Glide to {Constants.Items.SounderAirTemple.Name}`},
 					[2] = { Id = "AirBender", Title = "Defeat first " .. Constants.NPCsType.AirBender},
@@ -594,11 +594,11 @@ QuestsModule.Quests = {
 					[9] = { Id = "AirBender", Title = "Defeat 8th " .. Constants.NPCsType.AirBender},
 					[10] = { Id = "AirBender", Title = "Defeat 9th " .. Constants.NPCsType.AirBender},
 					[11] = { Id = "AirBender", Title = "Defeat final " .. Constants.NPCsType.AirBender},
-					[12] = { Id = QuestsModule.TargetIds["Zephir Guide"], Title = "Talk to Zephir Guide"},
+					[12] = { Id = QuestsModule.TargetIds["Zephir Guide"], Title = "Talk to Sael"},
 				},
 				Duration = SecToHours(600),
 				PendingMsg = `Glide to Zephyr Monastery and defeat {Constants.NPCsType.AirBender} NPCs to reclaim the location.`,
-				CompleteMsg = "You've reclaimed the Zephyr Monastery! The Air Benders have been driven out, and the skies are calm once more.",
+				CompleteMsg = "You've reclaimed the Zephyr Monastery! The Skystriders have been driven out, and the skies are calm once more.",
 				Reward = {
 					[1] = { Type = Constants.QuestRewardType.Gold, Value = 300 },
 					[2] = { Type = Constants.QuestRewardType.LevelUp, Value = 1 },
@@ -614,7 +614,7 @@ QuestsModule.Quests = {
 				Targets = {
 					[1] = { Id = QuestsModule.TargetIds.OpenMap, Title = `Open World Map`},
 					[2] = { Id = QuestsModule.TargetIds.KioshiIsland, Title = `Select Sentinel Isle`},
-					[3] = { Id = QuestsModule.TargetIds["Journey Master"], Title = `Report to Journey Master.`},
+					[3] = { Id = QuestsModule.TargetIds["Journey Master"], Title = `Report to Oryn.`},
 				},
 				Duration = SecToHours(120),
 				PendingMsg = `The elder awaits your return. Use the teleport on the Map.`,

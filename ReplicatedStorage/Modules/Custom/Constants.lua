@@ -57,10 +57,10 @@ table.freeze(Constants.Places)
 
 ------================>>>>>>>>>>>>>>>>>>>>>>.......... NPCs .........<<<<<<<<<<<<<<<<<<<<<=================------
 Constants.NPCsType = {
-	AirBender = "Wind strider",
-	FireBender = "Solar flare",
-	WaterBender = "Wave binder",
-	EarthBender = "Mountain Guardian",
+	AirBender = "Skystrider",
+	FireBender = "Infernalist",
+	WaterBender = "Aquamancer",
+	EarthBender = "Stoneguard",
 	FireBender_MiniBoss = "Molten Crag King",
 }
 table.freeze(Constants.NPCsType)
@@ -936,7 +936,7 @@ Constants.Items = {
 		--Item Info 
 		Id = "NorthenWaterTribe",
 		Name = "Frozen Haven",
-		Description = "The Northen Water Tribe",
+		Description = "The Frozen Haven",
 		Image = "",
 		Price = 0,
 		CurrencyType = Constants.CurrencyTypes.Free,
@@ -1359,7 +1359,7 @@ Constants.QuestTargetIds = {
 	FireBender = "FireBender",
 	AirBender = "AirBender",
 	
-	-- Upgraded version of Fire Bender
+	-- Upgraded version of FireBender
 	FireBender_MiniBoss = "FireBender_MiniBoss",
 
 	--- PURCHASE

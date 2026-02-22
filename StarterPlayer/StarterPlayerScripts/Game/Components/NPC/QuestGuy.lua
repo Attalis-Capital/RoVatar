@@ -99,12 +99,12 @@ function QuestGuy:AssignQuest(Quest)
 end
 
 function CreateTooLowLevelDialogue(self)
-	-- Your level is too low. Complete more quests to reach #Conversations.LevelUP. 
-	-- Start by talking to Guru Pathik for tutorial quests that will help you level up.
+	-- Your level is too low. Complete more quests to reach #Conversations.LevelUP.
+	-- Start by talking to Kaen for tutorial quests that will help you level up.
 
 	local DialogueData :CustomTypes.DialogueDataType = {}
 	DialogueData.Narrator = self.Instance.Name
-	DialogueData.Message = "Your level is too low. Complete more quests to reach "..(#Conversations.LevelUP + 1)..". \nStart by talking to Guru Pathik for tutorial quests that will help you level up." 
+	DialogueData.Message = "Your level is too low. Complete more quests to reach "..(#Conversations.LevelUP + 1)..". \nStart by talking to Kaen for tutorial quests that will help you level up." 
 
 	local DialogueButton :CustomTypes.DialogueButtonType = {}
 	DialogueButton.Txt = "Ok"
@@ -132,7 +132,7 @@ local function CreateNoTaskToAssignDialogue(self)
 	local DialogueData :CustomTypes.DialogueDataType = {}
 	DialogueData.Narrator = self.Instance.Name
 	
-	local otherGurus = {"Pink Guiders", "Journey Master"}
+	local otherGurus = {"Pink Guiders", "Oryn"}
 	otherGurus = otherGurus[math.random(1, #otherGurus)]
 	
 	DialogueData.Message = `I don't have any quests for you right now. You can speak to the {otherGurus} for more tasks.`
@@ -296,7 +296,7 @@ function QuestGuy:StartConversation()
 	print(`Plr level: {level} and hasGlider {hasGlider}`)
 	if Conversations.LevelUP[level] and not hasGlider then
 		-- Your level is too low. Complete more quests to reach #Conversations.LevelUP. 
-		-- Start by talking to Guru Pathik for tutorial quests that will help you level up.
+		-- Start by talking to Kaen for tutorial quests that will help you level up.
 		CreateTooLowLevelDialogue(self)
 	else
 		

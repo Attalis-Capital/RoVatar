@@ -216,7 +216,7 @@ local function CreateNoTaskToAssignDialogue(self)
 	if CF.PlayerQuestData.GetJourneyQuestProgress(_G.PlayerData) > CF.Tables.TableLength(QuestModule.Quests.NPC.Combined) then
 		DialogueData.Message = "I don't have any quests for you right now. You can speak to the Pink Guiders for more tasks."
 	else
-		DialogueData.Message = "I don't have any quests for you right now. You can speak to the Journey Master for more tasks."
+		DialogueData.Message = "I don't have any quests for you right now. You can speak to Oryn for more tasks."
 	end
 
 	local DialogueButton :CustomTypes.DialogueButtonType = {}
