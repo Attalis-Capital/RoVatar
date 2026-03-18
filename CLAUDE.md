@@ -47,13 +47,6 @@ After changes, check:
 - Costs.lua used for all numeric values
 - No edits to Packages/ or Replica/
 
-
-## Top Session-Ending Bugs (Audit 2026-02-22) — ALL FIXED in Sprint 5a (PR #25)
-
-1. ~~**_G.PlayerData nil on startup**~~ — Fixed: pcall ready-gate in DataController.lua initialises defaults before ListenChange fires
-2. ~~**Death during tutorial deadlocks dialogue**~~ — Fixed: OnCharacterAdded resets `_G.Talking` + all bare `Talking` refs fixed to `_G.Talking`
-3. ~~**DataStore failures invisible + no retry**~~ — Fixed: warn/print overrides removed, 3-retry with exponential backoff added, GetAsync failure returns nil instead of silently creating defaults
-
 ## Gotchas
 
 - ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ — FIXED in sprint 5a: overrides removed, diagnostics now visible; QuestGuy.lua was the last remaining instance, FIXED in sprint 10
@@ -111,7 +104,6 @@ After changes, check:
 - Quest target entries have both `Id` (functional, matched against workspace) and `Title` (display, shown to player) — you can safely hardcode new display names in Title without touching the Id
 - `wait()` in Luau silently ignores any string arguments — `wait("log message")` yields briefly and discards the strings without error, making misuse as a logging function a silent bug; always use `warn()` for diagnostic output
 - Workspace NPC Animate.lua copies under `Workspace/Scripted_Items/NPCs/` are Studio-managed duplicates of `ServerScriptService/Server/Components/NPCAI/Templates/Animate.lua` — changes to the template don't auto-propagate to workspace copies
-
 
 ## Sprint workflow
 
