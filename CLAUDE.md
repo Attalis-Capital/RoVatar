@@ -94,3 +94,26 @@ After changes, check:
 - Quest target entries have both `Id` (functional, matched against workspace) and `Title` (display, shown to player) — you can safely hardcode new display names in Title without touching the Id
 - `wait()` in Luau silently ignores any string arguments — `wait("log message")` yields briefly and discards the strings without error, making misuse as a logging function a silent bug; always use `warn()` for diagnostic output
 - Workspace NPC Animate.lua copies under `Workspace/Scripted_Items/NPCs/` are Studio-managed duplicates of `ServerScriptService/Server/Components/NPCAI/Templates/Animate.lua` — changes to the template don't auto-propagate to workspace copies
+
+## Working Memory Protocol
+
+Long sessions degrade silently. Use the filesystem as external memory.
+
+### Checkpointing
+- Create .scratch/ at session start if it doesn't exist
+- After each discrete subtask, write findings to .scratch/{task-name}.md
+- Every 20 tool calls, update .scratch/PROGRESS.md with: completed, pending, key decisions, blockers
+- Before starting any new phase, re-read .scratch/PROGRESS.md
+
+### Synthesis
+- When producing final output, read all .scratch/*.md files first
+- Never synthesise from conversation history alone if session exceeds 25 tool calls
+- If a prior finding feels uncertain, re-read the .scratch/ file
+
+### Large outputs
+- If a tool result exceeds 200 lines, write to .scratch/raw/ and reference it
+- Summarise inline, detail in file
+
+### Mission integration
+- For /mission blocks: write phase summaries to .scratch/phase-{n}.md at each boundary
+- If mission exceeds 40 tool calls, pause and re-read .scratch/PROGRESS.md before continuing
