@@ -8,4 +8,5 @@ keys.env
 # Synced Claude Code config (managed by sync-to-repos.ps1)
 .claude/skills/
 .claude/agents/
-
+# Working memory
+.scratch/
