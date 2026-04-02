@@ -254,11 +254,14 @@ function DataServer:Establish()
 	end
 
 	function self.ClientSide:GetPlrData(plr:Player, plrUserId:number)
-		--print("Received calll here:", plr, plrUserId)
 		assert(plrUserId, "Invalid or nil plrUserId. Invalid request from plr:",plr)
-		
-		--print("self here:", DataServer, self, self._keySuffix, self._plrsInfo)
-		
+
+		-- Security: only allow players to request their own data
+		if plrUserId ~= plr.UserId then
+			warn("[SECURITY] Rejected GetPlrData: player", plr.Name, "requested userId", plrUserId)
+			return nil
+		end
+
 		local key = plrUserId..self._keySuffix
 		
 		if(self._plrsInfo[key]) then

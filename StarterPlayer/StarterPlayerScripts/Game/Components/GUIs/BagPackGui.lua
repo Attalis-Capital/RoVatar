@@ -58,6 +58,7 @@ end
 function Bind_OnChanges()
 
 	local plrData:CT.PlayerDataModel = _G.PlayerData
+	if not plrData then return end
 
 	local function CleanUp(Parent)
 		for _, child in pairs(Parent:GetChildren()) do

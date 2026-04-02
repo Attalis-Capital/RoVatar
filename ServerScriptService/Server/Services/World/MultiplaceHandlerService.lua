@@ -53,9 +53,25 @@ local function SetupSceneState()
 end
 
 ---------------------->>>>>>>>>>>>>>>
+local ALLOWED_PLACE_IDS = {}
+for _, place in pairs(Constants.Places) do
+	ALLOWED_PLACE_IDS[place.PlaceId] = true
+end
+
 local function TeleportRequest(_player, _placeId, _reserveServer)
+	if typeof(_placeId) ~= "number" or not ALLOWED_PLACE_IDS[_placeId] then
+		warn("[SECURITY] Rejected teleport: player", _player.Name, "requested invalid PlaceId", tostring(_placeId))
+		return
+	end
+
 	if _reserveServer then
-		local accessCode = TS:ReserveServer(_placeId)
+		local s, accessCode = pcall(function()
+			return TS:ReserveServer(_placeId)
+		end)
+		if not s then
+			warn("[MultiplaceHandler] ReserveServer failed:", accessCode)
+			return
+		end
 		TS:TeleportToPrivateServer(_placeId, accessCode, {_player})
 	else
 		TS:Teleport(_placeId, _player)
