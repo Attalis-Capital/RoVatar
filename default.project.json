@@ -1,0 +1,12 @@
+{
+  "name": "RoVatar",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedFirst": { "$path": "ReplicatedFirst" },
+    "ReplicatedStorage": { "$path": "ReplicatedStorage" },
+    "ServerScriptService": { "$path": "ServerScriptService" },
+    "StarterGui": { "$path": "StarterGui" },
+    "StarterPlayer": { "$path": "StarterPlayer" },
+    "Workspace": { "$path": "Workspace" }
+  }
+}
