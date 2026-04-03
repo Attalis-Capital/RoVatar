@@ -10,11 +10,6 @@
     "StarterPlayer": {
       "$path": "StarterPlayer",
       "$ignoreUnknownInstances": true
-    },
-    "Workspace": {
-      "$ignoreUnknownInstances": true,
-      "Scripted_Items": { "$path": "Workspace/Scripted_Items" },
-      "ServerTime": { "$path": "Workspace/ServerTime" }
     }
   }
 }
