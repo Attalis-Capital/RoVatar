@@ -2,6 +2,7 @@
   "name": "RoVatar",
   "tree": {
     "$className": "DataModel",
+    "$ignoreUnknownInstances": true,
     "ReplicatedFirst": { "$path": "ReplicatedFirst" },
     "ReplicatedStorage": { "$path": "ReplicatedStorage" },
     "ServerScriptService": { "$path": "ServerScriptService" },
