@@ -94,6 +94,11 @@ After changes, check:
 - Quest target entries have both `Id` (functional, matched against workspace) and `Title` (display, shown to player) — you can safely hardcode new display names in Title without touching the Id
 - `wait()` in Luau silently ignores any string arguments — `wait("log message")` yields briefly and discards the strings without error, making misuse as a logging function a silent bug; always use `warn()` for diagnostic output
 - Workspace NPC Animate.lua copies under `Workspace/Scripted_Items/NPCs/` are Studio-managed duplicates of `ServerScriptService/Server/Components/NPCAI/Templates/Animate.lua` — changes to the template don't auto-propagate to workspace copies
+- Binary `.rbxl` files use **zstd** compression (magic `28b52ffd`), not zlib — the `rbx` pip package is a cloud tools library, not a Roblox file parser; parse chunks manually with `zstandard` Python package
+- Place file contains ~130 scripts NOT managed by Rojo (Zone+, Janitor, Trove, LightningBolt, RocksModule, DamageModule, SwimController, etc.) — these are invisible to the repo and diverge silently
+- `GetPlrData` RemoteFunction was exposing ANY player's full data without authorisation — FIXED in session 2026-04-03: restricted to same-player lookups only
+- `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks — FIXED in session 2026-04-03: whitelist from `Constants.Places`
+- As of 2026-04-03, all security fixes from sprints 5a–11 are NOT deployed to the live Roblox game — the place file predates these changes; Rojo sync + publish required
 
 ## Working Memory Protocol
 
