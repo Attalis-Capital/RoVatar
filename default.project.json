@@ -1,12 +1,27 @@
 {
   "name": "RoVatar",
+  "servePlaceIds": [10467665782],
+  "placeId": 10467665782,
+  "gameId": 3812540898,
   "tree": {
     "$className": "DataModel",
     "$ignoreUnknownInstances": true,
-    "ReplicatedFirst": { "$path": "ReplicatedFirst" },
-    "ReplicatedStorage": { "$path": "ReplicatedStorage" },
-    "ServerScriptService": { "$path": "ServerScriptService" },
-    "StarterGui": { "$path": "StarterGui" },
+    "ReplicatedFirst": {
+      "$path": "ReplicatedFirst",
+      "$ignoreUnknownInstances": true
+    },
+    "ReplicatedStorage": {
+      "$path": "ReplicatedStorage",
+      "$ignoreUnknownInstances": true
+    },
+    "ServerScriptService": {
+      "$path": "ServerScriptService",
+      "$ignoreUnknownInstances": true
+    },
+    "StarterGui": {
+      "$path": "StarterGui",
+      "$ignoreUnknownInstances": true
+    },
     "StarterPlayer": {
       "$path": "StarterPlayer",
       "$ignoreUnknownInstances": true
