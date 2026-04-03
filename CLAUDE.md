@@ -27,6 +27,63 @@ Place ID: 10467665782 | Universe ID: 3812540898
 - DO NOT modify ReplicatedStorage/Packages/ or ReplicatedStorage/Replica/
 - Conventional commits: fix:, feat:, refactor:
 
+## Rojo Publish Workflow
+
+### Master Place File - CRITICAL
+- Master file: `C:\Users\johns\OneDrive\Documents\RoVatar\Rovatar.rbxl`
+- This file contains the full game map (73,988 MeshParts + 6,050 Parts)
+- The map is NOT terrain - it is model-based and embedded in the .rbxl file
+- ALWAYS open this file in Studio before connecting Rojo - NEVER open from Roblox cloud
+- The file is on OneDrive and syncs to all PCs automatically
+
+### Step-by-Step Publish (DO NOT DEVIATE)
+0. On the PC that has rojo installed:
+   ```powershell
+   cd C:\Users\johns\RoVatar
+   git pull
+   rojo serve default.project.json
+   ```
+   (Rojo is at: C:\Users\johns\OneDrive\Downloads\rojo-7.6.1-windows-x86_64\rojo.exe)
+   (Add to PATH: `$env:PATH += ";C:\Users\johns\OneDrive\Downloads\rojo-7.6.1-windows-x86_64"`)
+
+1. In Roblox Studio:
+   - Open the master file: double-click `Rovatar.rbxl` - NOT File > Open from Roblox
+   - Check title bar says `RoVatar`
+   - Wait for full load
+   - Rojo panel > Connect
+   - REVIEW the sync preview - confirm NO Workspace changes in the list
+   - Click Accept only if Workspace is clean
+   - Check Drafts panel - Click Commit if anything shows
+   - File > Publish to Roblox
+
+2. Verify after publish:
+   ```powershell
+   (Invoke-WebRequest "https://games.roblox.com/v1/games?universeIds=3812540898").Content | python -c "import json,sys; d=json.load(sys.stdin); print('Updated:', d['data'][0]['updated'])"
+   ```
+   Timestamp must be after the last git commit time.
+
+3. Play the game at https://www.roblox.com/games/10467665782 to confirm map is intact.
+
+### Why These Rules
+- The map is model-based (MeshParts) embedded in the .rbxl file, not Roblox server terrain
+- Opening from Roblox cloud gives you a file without the map embedded - publishing that wipes the map
+- `$ignoreUnknownInstances` defaults to `false` when `$path` is set - this means Rojo deletes anything in a service not in the repo
+- We have added `$ignoreUnknownInstances: true` to ALL services in default.project.json to prevent this
+- Workspace is NOT in default.project.json - Rojo cannot touch it
+
+### If the Map Disappears
+1. Go to https://create.roblox.com/dashboard/creations/experiences/3812540898/places/10467665782/version-history
+2. Restore the last version before today's publish
+3. Intestigate which file was opened in Studio - it was probably opened from Roblox cloud not the master file
+4. Always open from the local master file next time
+
+### Unmanaged Scripts (in place file but NOT in repo)
+These scripts are in the live game but invisible to Rojo. Do not delete them in Studio:
+- Zone+, Janitor, Trove, LightningBolt, RocksModule, DamageModule, SwimController, TooltipModule, Detection, Mouse2, Tracker
+- Fist_ORIGINAL (dead code - safe to delete via Studio)
+
+TODO: extract these into the repo as .rbxm files so Rojo manages them
+
 ## Issue Tracker
 > See `.claude/commands/issue-tracker.md`
 
@@ -39,66 +96,66 @@ After changes, check:
 
 ## Gotchas
 
-- ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ — FIXED in sprint 5a: overrides removed, diagnostics now visible; QuestGuy.lua was the last remaining instance, FIXED in sprint 10
+- ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ —- FIXED in sprint 5a: overrides removed, diagnostics now visible; QuestGuy.lua was the last remaining instance, FIXED in sprint 10
 - VFXHandler.lua runs in both client and server contexts — server-side security code must go in the `else` (IsServer) block only
-- Old Bendings `_S.lua` scripts are a parallel combat system to VFXHandler — disabling one without the other leaves duplicate exploit paths
-- DataServer `DataReceivedFromClient` accepts raw full-data overwrites — most fields now validated (Gold, Gems, TotalXP, GamePasses, ElementLevels, Abilities, OwnedInventory, per-profile PlayerLevel/XP/Kills)
-- WaterStance has two-phase dispatch (`typ == "Weld"` = activation, `else` = deactivation) — stamina/level gates belong only in the Weld branch
+- Old Bendings `_S.lua` scripts are a parallel combat system to VFXHandler └ disabling one without the other leaves duplicate exploit paths
+- DataServer `DataReceivedFromClient` accepts raw full-data overwrites └ most fields now validated (Gold, Gems, TotalXP, GamePasses, ElementLevels, Abilities, OwnedInventory, per-profile PlayerLevel/XP/Kills)
+- WaterStance has two-phase dispatch (`typ == "Weld"` = activation, `else` = deactivation) └ stamina/level gates belong only in the Weld branch
 - `RemovePlrData` was exposed as a client RemoteEvent — always audit RemoteEvent creation for destructive operations before shipping
-- New persistent data fields must be added to BOTH `GetSlotDataModel()` defaults (PlayerData.lua) AND the type definition (CustomTypes.lua) — `CheckAndUpdatePlayerData` Sync/remove strips undeclared fields on migration
-- `QuestDataService:OnPlayerAdded` mutates `plrData` in memory without saving — any data changes in OnPlayerAdded must explicitly call `UpdateData` or they're lost on quick disconnect (before 30s auto-save)
-- `Constants.GameInventory.Abilities[id].RequiredLevel` is the canonical level-gate source — values flow from Costs.lua → Constants.Items → Constants.GameInventory; never hardcode level thresholds
+- New persistent data fields must be added to BOTH `GetSlotDataModel()` defaults (PlayerData.lua) AND the type definition (CustomTypes.lua) └ `CheckAndUpdatePlayerData` Sync/remove strips undeclared fields on migration
+- `QuestDataService:OnPlayerAdded` mutates `plrData` in memory without saving └ any data changes in OnPlayerAdded must explicitly call `UpdateData` or they're lost on quick disconnect (before 30s auto-save)
+- `Constants.GameInventory.Abilities[id].RequiredLevel` is the canonical level-gate source └ values flow from Costs.lua → Constants.Items → Constants.GameInventory; never hardcode level thresholds
 - `IsSameDay()` in QuestDataService — fixed in sprint 4a: was comparing `os.date("!*t")` numeric fields against strings, and mixing local/UTC date calls; all `os.date` calls must use `!` prefix consistently
-- `GetQuest()` returns a direct reference to cached `today_Quest` — callers must deep-clone via `CF.Tables.CloneTable(GetQuest())` before mutating (shallow `table.clone` leaves nested frozen sub-tables exposed)
-- `RefreshDailyQuest` is a client-callable signal — always rate-limit client-triggered data-write signals; cooldown table must be cleaned up on `PlayerRemoving`
-- `DailyQuest()` guard must check `IsCompleted and IsClaimed` in addition to `IsSameDay` and missing `Id` — otherwise completed+claimed quests block new assignment for the rest of the day
-- `_onCharacterAdded` shadows its `player` parameter with `Players:GetPlayerFromCharacter(character)` on line 419 — the re-declaration can return nil; use the original parameter
+- `GetQuest()` returns a direct reference to cached `today_Quest` └ callers must deep-clone via `CF.Tables.CloneTable(GetQuest())` before mutating (shallow `table.clone` leaves nested frozen sub-tables exposed)
+- `RefreshDailyQuest` is a client-callable signal └ always rate-limit client-triggered data-write signals; cooldown table must be cleaned up on `PlayerRemoving`
+- `DailyQuest()` guard must check `IsCompleted and IsClaimed` in addition to `IsSameDay` and missing `Id` └ otherwise completed+claimed quests block new assignment for the rest of the day
+- `_onCharacterAdded` shadows its `player` parameter with `Players:GetPlayerFromCharacter(character)` on line 419 └ the re-declaration can return nil; use the original parameter
 - `SetupCharacter` is async (callback inside `_G.PlayerDataStore:GetData`) and replaces `player.Character` — code after `SetupCharacter()` in `_onCharacterAdded` references the stale original character, not the replacement model
 - `ToggleWeapon` sword equip uses `task.delay(.25)` to hide the holstered model — if the player unequips within 0.25s the delayed callback races; always guard with a state check (`Char:FindFirstChild("MeteoriteSword")`)
-- `DamageIndication.BindToAllNPCs()` is a one-shot scan at startup — respawned/new NPCs need a `workspace.DescendantAdded` listener; filter out player characters with `Players:GetPlayerFromCharacter`
+- `DamageIndication.BindToAllNPCs()` is a one-shot scan at startup └ respawned/new NPCs need a `workspace.DescendantAdded` listener; filter out player characters with `Players:GetPlayerFromCharacter`
 - VFXHandler bending abilities originally used `plr.CombatStats.Level` which never existed — the correct player level accessor is `plr.Progression.LEVEL.Value` (fixed in sprint 4b)
-- Modules in `ReplicatedStorage` that call `_G.PlayerDataStore` (e.g. `ElementXp.Award`) will nil-index if required client-side — guard with `RunService:IsServer()` or keep server-only logic in ServerScriptService
-- Element level attributes (`ElementLevel_Air`, etc.) must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ElementXp.Award` (on level-up) — if either path is missed, `DamageCalc.GetElementLevel` returns stale data via `plr:GetAttribute()`
-- ~~`LevelUpService.lua` and `EffectsController.lua` watched `CombatStats.Level` which does NOT exist~~ — FIXED in sprint 5a: both now watch `Progression.LEVEL`
-- ~~`validateClientData` in DataServer.lua now guards 7 fields + GamePurchases.Passes (sprint 5a) — but `Abilities`, `Inventory`, and `ElementLevels` can still be spoofed by the client via `UpdateDataRqst`~~ — FIXED in sprint 5c: ElementLevels (Level/TotalXP increase rejected) and Abilities (new keys require level gate) now validated
-- ~~VFXHandler (`VFXHandler.lua:52`) validates effect name via `VALID_EFFECTS` whitelist but never checks bending-type ownership — any player can fire any ability regardless of their selected element~~ — FIXED in sprint 5c: `Has_*Bending` player attributes set at login + data change, checked in VFXHandler server dispatch
-- ~~Boomerang and MeteoriteSword server handlers have NO GamePass ownership check~~ — FIXED in sprint 5b: `UserOwnsGamePassAsync` check added in VFXHandler server dispatch
-- ~~5 of 7 ability handlers in VFXHandler have NO SafeZone PvP check~~ — FIXED in sprint 5b: all 7 abilities now check `InSafeZone` before XP/damage/knockback
-- ~~Duplicate `DialogueGui.lua` exists in both `ReplicatedFirst/` and `StarterPlayer/.../Components/GUIs/`~~ — FIXED in sprint 5b: ReplicatedFirst copy deleted
-- ~~`QuestController.lua:58` — quest progress updates silently fail~~ — FIXED in sprint 5c: DataClient.lua had warn/print no-ops (same as DataServer sprint 5a); arity was actually correct for client-side API
-- ~~`Calculations.lua:53` calls `_G.Warn(...)` which is never assigned — any code path hitting this crashes~~ — FIXED: replaced with `warn(...)` (standard Luau)
-- In Roblox Luau, bare `Talking` and `_G.Talking` are different variables — `_G` is the shared cross-script table, bare globals are script-scoped only. Always use the `_G.` prefix for cross-script state
+- Modules in `ReplicatedStorage` that call `_G.PlayerDataStore` (e.g. `ElementXp.Award`) will nil-index if required client-side └ guard with `RunService:IsServer()` or keep server-only logic in ServerScriptService
+- Element level attributes (`ElementLevel_Air`, etc.) must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ElementXp.Award` (on level-up) └ if either path is missed, `DamageCalc.GetElementLevel` returns stale data via `plr:GetAttribute()`
+- ~~`LevelUpService.lua` and `EffectsController.lua` watched `CombatStats.Level` which does NOT exist~~ └ FIXED in sprint 5a: both now watch `Progression.LEVEL`
+- ~~`validateClientData` in DataServer.lua now guards 7 fields + GamePurchases.Passes (sprint 5a) └ but `Abilities`, `Inventory`, and `ElementLevels` can still be spoofed by the client via `UpdateDataRqst`~~ — FIXED in sprint 5c: ElementLevels (Level/TotalXP increase rejected) and Abilities (new keys require level gate) now validated
+- ~~VFXHandler (`VFXHandler.lua:52`) validates effect name via `VALID_EFFECTS` whitelist but never checks bending-type ownership - any player can fire any ability regardless of their selected element~~ └ FIXED in sprint 5c: `Has_*Bending` player attributes set at login + data change, checked in VFXHandler server dispatch
+- ~~Boomerang and MeteoriteSword server handlers have NO GamePass ownership check~~ └ FIXED in sprint 5b: `UserOwnsGamePassAsync` check added in VFXHandler server dispatch
+- ~~5 of 7 ability handlers in VFXHandler have NO SafeZone PvP check~~ └ FIXED in sprint 5b: all 7 abilities now check `InSafeZone` before XP/damage/knockback
+- ~~Duplicate `DialogueGui.lua` exists in both `ReplicatedFirst/` and `StarterPlayer/.../Components/GUIs/`~~ └ FIXED in sprint 5b: ReplicatedFirst copy deleted
+- ~~`QuestController.lua:58` — quest progress updates silently fail~~ └ FIXED in sprint 5c: DataClient.lua had warn/print no-ops (same as DataServer sprint 5a); arity was actually correct for client-side API
+- ~~`Calculations.lua:53` calls `_G.Warn(...)` which is never assigned └ any code path hitting this crashes~~ └ FIXED: replaced with `warn(...)` (standard Luau)
+- In Roblox Luau, bare `Talking` and `_G.Talking` are different variables └ `_G` is the shared cross-script table, bare globals are script-scoped only. Always use the `_G.` prefix for cross-script state
 - `GetPlayerDataModel()` and `GetSlotDataModel()` access `workspace.ServerTime.Value` — calling on client at require-time crashes if ServerTime doesn't exist yet. Always pcall or guard with `FindFirstChild`
-- `OnPlayerLeaving` cleanup must be unconditional — never gate `_plrsInfo` cleanup on `Save()` success or player state leaks permanently on DataStore outages
+- `OnPlayerLeaving` cleanup must be unconditional └ never gate `_plrsInfo` cleanup on `Save()` success or player state leaks permanently on DataStore outages
 - ~~`EffectsController.lua` XP listener still watches `CombatStats.EXP` (not Progression)~~ — FIXED: now watches `Progression.EXP` (matches the Level listener pattern)
-- SafeZone PvP checks must go before ALL victim effects (ragdoll, knockback, CFrame, VFX) not just before `TakeDamage` — otherwise players still get flung/stunned in safe zones
+- SafeZone PvP checks must go before ALL victim effects (ragdoll, knockback, CFrame, VFX) not just before `TakeDamage` └ otherwise players still get flung_stunned in safe zones
 - VFXHandler ability modules live as children of the VFXHandler ModuleScript (`ReplicatedStorage/Modules/Custom/VFXHandler/`), not the old Bendings `_S.lua` scripts which are disabled with `if true then return end`
 - `Hits[target]` debounce set before a SafeZone early-return is never cleared by the delayed nil-setter — low impact for short-lived hitboxes but a structural leak pattern to watch
-- `UserOwnsGamePassAsync` can throw on network errors — always pcall and default to deny; log the error for diagnostics
+- `UserOwnsGamePassAsync` can throw on network errors └ always pcall and default to deny; log the error for diagnostics
 - When adding early-return guards (SafeZone, auth) to existing hit handlers, check for duplicate state assignments downstream — e.g. `Hits[char] = true` may appear both at the dedup gate and after damage
-- `Has_*Bending` player attributes must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ListenSpecChange("AllProfiles")` callback (on data change) — mirrors the `ElementLevel_*` dual-write pattern
-- `validateClientData` Abilities check must allow level-gated unlocks via `curProfile.PlayerLevel >= ABILITY_LEVELS[abilityId]` — pure rejection breaks BendingSelectionGui unlock flow
+- `Has_*Bending` player attributes must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ListenSpecChange("AllProfiles")` callback (on data change) └!mirrors the `ElementLevel_*` dual-write pattern
+- `validateClientData` Abilities check must allow level-gated unlocks&�ia `curProfile.PlayerLevel >= ABILITY_LEVELS[abilityId]` └ pure rejection breaks BendingSelectionGui unlock flow
 - ~~DataClient.lua had warn/print no-op overrides identical to DataServer~~ — FIXED in sprint 5c: always check BOTH client and server DataReplicator modules for diagnostic suppression
 - OwnedInventory validation must handle nested subcategories (e.g. `Styling.Hair = {id = true}`) — single-level key check misses sub-category item spoofing
-- Store→GamePass merge (sprint 6c): `GamePassGui.UpdateGamePasses()` now shows GamePass + Gems + Gold via `validCategories` filter; Store proximity trigger (`workspace.Scripted_Items.Store`) redirects to GamePassGui
-- `MainMenuGui` has 6 buttons in Studio but hides StoreButton and ProfileBtn at runtime via `Visible = false` — visible sidebar is 4 buttons (Quests, Settings, Map, GamePass) + collapsible toggle
-- `SettingsGui` VfxToggle is repurposed for overhead visibility — Studio label still reads "VFX" but Luau code controls `OverheadGui.Enabled` on all player characters
+- Store↑GamePass merge (sprint 6c): `GamePassGui.UpdateGamePasses()` now shows GamePass + Gems + Gold via `validCategories` filter; Store proximity trigger (`workspace.Scripted_Items.Store`) redirects to GamePassGui
+- `MainMenuGui` has 6 buttons in Studio but hides StoreButton and ProfileBtn at runtime via `Visible = false` └ visible sidebar is 4 buttons (Quests, Settings, Map, GamePass) + collapsible toggle
+- `SettingsGui` VfxToggle is repurposed for overhead visibility └ Studio label still reads "VFX" but Luau code controls `OverheadGui.Enabled` on all player characters
 - `OverheadService.lua` (server Knit service) creates BillboardGui above player heads — `SlotName` player attribute set in PlayerDataService follows the same dual-write pattern as `Has_*Bending` and `ElementLevel_*`
-- `plrData.AllProfiles[plrData.ActiveProfile]` can return nil early in session before profile data is fully loaded — always nil-guard before indexing into the result (affects DialogueGui Welcome, UpdateMap, and any client code using this accessor)
-- `UpdateMap` Component fires `.Touched` events and `ListenChange` callbacks on startup — these can race with GUI initialisation causing duplicate notifications or nil crashes; guard with `_G.PlayerData` readiness checks and dedup flags
-- Momo.lua pet obstacle raycast (checking for walls near pet) is fundamentally broken — terrain/buildings near the player always trigger hits causing constant despawn flicker; use distance-based teleport (>80 studs → warp to player) instead
-- `BindToRenderStep` names are global across all scripts — always namespace (e.g. `"PetFollow"` not `"Follow"`) to avoid silent collisions
-- `Has_Momo` attribute follows the dual-write pattern (`onPlayerAdded` + `ListenSpecChange("GamePurchases.Passes")`) but must be set AFTER `IAPService:RefreshPurchaseDataUpdates` — setting before uses stale save data, missing purchases since last login
+- `plrData.AllProfiles[plrData.ActiveProfile]` can return nil early in session before profile data is fully loaded └ always nil-guard before indexing into the result (affects DialogueGui Welcome, UpdateMap, and any client code using this accessor)
+- `UpdateMap` Component fires `.Touched` events and `ListenChange` callbacks on startup └ these can race with GUI initialisation causing duplicate notifications or nil crashes; guard with `_G.PlayerData` readiness checks and dedup flags
+- Momo.lua pet obstacle raycast (checking for walls near pet) is fundamentally broken └ terrain/buildings near the player always trigger hits causing constant despawn flicker; use distance-based teleport (>80 studs → warp to player) instead
+- `BindToRenderStep` names are global across all scripts └ always namespace (e.g. `"PetFollow"` not `"Follow"`) to avoid silent collisions
+- `Has_Momo` attribute follows the dual-write pattern (`onPlayerAdded` + `ListenSpecChange("GamePurchases.Passes")`) but must be set AFTER `IAPService:RefreshPurchaseDataUpdates` └ setting before uses stale save data, missing purchases since last login
 - `Constants.NPCsType` values cascade to ~30 quest descriptions via `{Constants.NPCsType.AirBender}` interpolation — changing these 4-5 values is the single point for NPC display name updates
-- `Assigner` fields in Conversation.lua and `QuestTargetIds` values must match workspace NPC `Instance.Name` — these are functional identifiers for quest progression, not display text; renaming requires a Studio rename first
+- `Assigner` fields in Conversation.lua and `QuestTargetIds` values must match workspace NPC `Instance.Name` └ these are functional identifiers for quest progression, not display text; renaming requires a Studio rename first
 - Quest target entries have both `Id` (functional, matched against workspace) and `Title` (display, shown to player) — you can safely hardcode new display names in Title without touching the Id
-- `wait()` in Luau silently ignores any string arguments — `wait("log message")` yields briefly and discards the strings without error, making misuse as a logging function a silent bug; always use `warn()` for diagnostic output
-- Workspace NPC Animate.lua copies under `Workspace/Scripted_Items/NPCs/` are Studio-managed duplicates of `ServerScriptService/Server/Components/NPCAI/Templates/Animate.lua` — changes to the template don't auto-propagate to workspace copies
+- `wait()` in Luau silently ignores any string arguments └ `wait("log message")` yields briefly and discards the strings without error, making misuse as a logging function a silent bug; always use `warn()` for diagnostic output
+- Workspace NPC Animate.lua copies under `Workspace/Scripted_Items/NPCs/` are Studio-managed duplicates of `ServerScriptService/Server/Components/NPCAI/Templates/Animate.lua` └ changes to the template don't auto-propagate to workspace copies
 - Binary `.rbxl` files use **zstd** compression (magic `28b52ffd`), not zlib — the `rbx` pip package is a cloud tools library, not a Roblox file parser; parse chunks manually with `zstandard` Python package
-- Place file contains ~130 scripts NOT managed by Rojo (Zone+, Janitor, Trove, LightningBolt, RocksModule, DamageModule, SwimController, etc.) — these are invisible to the repo and diverge silently
+- Place file contains ~130 scripts NOT managed by Rojo (Zone+, Janitor, Trove, LightningBolt, RocksModule, DamageModule, SwimController, etc.) └ these are invisible to the repo and diverge silently
 - `GetPlrData` RemoteFunction was exposing ANY player's full data without authorisation — FIXED in session 2026-04-03: restricted to same-player lookups only
-- `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks — FIXED in session 2026-04-03: whitelist from `Constants.Places`
-- As of 2026-04-03, all security fixes from sprints 5a–11 are NOT deployed to the live Roblox game — the place file predates these changes; Rojo sync + publish required
+- `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks └ FIXED in session 2026-04-03: whitelist from `Constants.Places`
+- As of 2026-04-03, all security fixes from sprints 5a�11 are NOT deployed to the live Roblox game └ the place file predates these changes; Rojo sync + publish required
 
 ## Working Memory Protocol
 
