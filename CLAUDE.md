@@ -27,55 +27,72 @@ Place ID: 10467665782 | Universe ID: 3812540898
 - DO NOT modify ReplicatedStorage/Packages/ or ReplicatedStorage/Replica/
 - Conventional commits: fix:, feat:, refactor:
 
+## TEAM CREATE - CRITICAL WARNING
+
+Team Create is the single biggest risk to the RoVatar map.
+
+**NEVER open the production RoVatar place with Team Create ON.**
+
+Why:
+- Team Create AUTO-SAVES to Roblox's cloud every 4 minutes silently
+- When Team Create is ON, Workspace content is STREAMED from the cloud for display only
+- The map appears empty in the Explorer panel but renders visually in the viewport
+- If Studio auto-saves while Workspace appears empty, it pushes an empty map to the cloud
+- This happens silently without any publish action from the user
+
+**If you accidentally open with Team Create ON:**
+1. Close Studio IMMEDIATELY (do not wait 4 minutes)
+2. Go to version history and restore the last good version
+   https://create.roblox.com/dashboard/creations/experiences/3812540898/places/10467665782/version-history
+3. Look for the last version with the tick mark (published version) and restore it
+4* Verify the live game at https://www.roblox.com/games/10467665782
+
+**How to disable Team Create if already open:**
+1. Click the collaborator icons in the top-right of Studio toolbar to open Live Collaborators window
+2. Click the **** button in the bottom-right of that window
+3. Select **Disable Team Create**
+4. Confirm - Studio reloads in non-collaborative mode
+
 ## Rojo Publish Workflow
 
-### Master Place File - CRITICAL
-- Master file: `C:\Users\johns\OneDrive\Documents\RoVatar\Rovatar.rbxl`
-- This file contains the full game map (73,988 MeshParts + 6,050 Parts)
-- The map is NOT terrain - it is model-based and embedded in the .rbxl file
-- ALWAYS open this file in Studio before connecting Rojo - NEVER open from Roblox cloud
-- The file is on OneDrive and syncs to all PCs automatically
+### The Fundamental Problem
+RoVatar map geometry (Scripted_Items, all islands, NPCs) is owned by the group and lives on Roblox's servers as MeshPart references to asset IDs. The map does NOT exist in any local .rbxl file - it only exists on Roblox's cloud. Rojo only manages scripts.
 
-### Step-by-Step Publish (DO NOT DEVIATE)
-0. On the PC that has rojo installed:
+### Correct Publish Workflow
+1. Open PowerShell and start Rojo:
    ```powershell
    cd C:\Users\johns\RoVatar
    git pull
    rojo serve default.project.json
    ```
-   (Rojo is at: C:\Users\johns\OneDrive\Downloads\rojo-7.6.1-windows-x86_64\rojo.exe)
-   (Add to PATH: `$env:PATH += ";C:\Users\johns\OneDrive\Downloads\rojo-7.6.1-windows-x86_64"`)
 
-1. In Roblox Studio:
-   - Open the master file: double-click `Rovatar.rbxl` - NOT File > Open from Roblox
-   - Check title bar says `RoVatar`
-   - Wait for full load
+2. In Roblox Studio, logged in as **wimma777** (owner):
+   - File > Open from Roblox > select RoVatar
+   - Confirm Team Create is ON (wimma777 is the owner so map will stream correctly)
+   - Wait for map to render in viewport
    - Rojo panel > Connect
-   - REVIEW the sync preview - confirm NO Workspace changes in the list
-   - Click Accept only if Workspace is clean
-   - Check Drafts panel - Click Commit if anything shows
+   - Review sync preview - confirm NO Workspace changes
+   - Accept
+   - Check Drafts panel - Commit if anything shows
    - File > Publish to Roblox
+   - **Close Studio immediately after publish** to stop auto-saves
 
-2. Verify after publish:
+3. Verify live game has map:
    ```powershell
    (Invoke-WebRequest "https://games.roblox.com/v1/games?universeIds=3812540898").Content | python -c "import json,sys; d=json.load(sys.stdin); print('Updated:', d['data'][0]['updated'])"
    ```
-   Timestamp must be after the last git commit time.
+   Play the live game to confirm map is intact.
 
-3. Play the game at https://www.roblox.com/games/10467665782 to confirm map is intact.
-
-### Why These Rules
-- The map is model-based (MeshParts) embedded in the .rbxl file, not Roblox server terrain
-- Opening from Roblox cloud gives you a file without the map embedded - publishing that wipes the map
-- `$ignoreUnknownInstances` defaults to `false` when `$path` is set - this means Rojo deletes anything in a service not in the repo
-- We have added `$ignoreUnknownInstances: true` to ALL services in default.project.json to prevent this
-- Workspace is NOT in default.project.json - Rojo cannot touch it
+### Accounts
+- **wimma777** = owner of RoVatar Studios group, use this for publishing
+- **RoVatar_Studio** = separate account, NOT for publishing (map does not render when opened as this account)
 
 ### If the Map Disappears
-1. Go to https://create.roblox.com/dashboard/creations/experiences/3812540898/places/10467665782/version-history
-2. Restore the last version before today's publish
-3. Intestigate which file was opened in Studio - it was probably opened from Roblox cloud not the master file
-4. Always open from the local master file next time
+1. Do NOT panic - version history goes back 4675+ versions
+2. Go to https://create.roblox.com/dashboard/creations/experiences/3812540898/places/10467665782/version-history
+3. Find the last version with the tick mark (published version) and click Restore
+4. Close Studio if open (stops auto-saves overwriting the restore)
+5. Play the live game to confirm map is back
 
 ### Unmanaged Scripts (in place file but NOT in repo)
 These scripts are in the live game but invisible to Rojo. Do not delete them in Studio:
@@ -96,7 +113,7 @@ After changes, check:
 
 ## Gotchas
 
-- ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ —- FIXED in sprint 5a: overrides removed, diagnostics now visible; QuestGuy.lua was the last remaining instance, FIXED in sprint 10
+- ~~DataServer.lua overrides `warn` and `print` as no-ops at the top~~ └ FIXED in sprint 5a: overrides removed, diagnostics now visible; QuestGuy.lua was the last remaining instance, FIXED in sprint 10
 - VFXHandler.lua runs in both client and server contexts — server-side security code must go in the `else` (IsServer) block only
 - Old Bendings `_S.lua` scripts are a parallel combat system to VFXHandler └ disabling one without the other leaves duplicate exploit paths
 - DataServer `DataReceivedFromClient` accepts raw full-data overwrites └ most fields now validated (Gold, Gems, TotalXP, GamePasses, ElementLevels, Abilities, OwnedInventory, per-profile PlayerLevel/XP/Kills)
@@ -127,35 +144,10 @@ After changes, check:
 - In Roblox Luau, bare `Talking` and `_G.Talking` are different variables └ `_G` is the shared cross-script table, bare globals are script-scoped only. Always use the `_G.` prefix for cross-script state
 - `GetPlayerDataModel()` and `GetSlotDataModel()` access `workspace.ServerTime.Value` — calling on client at require-time crashes if ServerTime doesn't exist yet. Always pcall or guard with `FindFirstChild`
 - `OnPlayerLeaving` cleanup must be unconditional └ never gate `_plrsInfo` cleanup on `Save()` success or player state leaks permanently on DataStore outages
-- ~~`EffectsController.lua` XP listener still watches `CombatStats.EXP` (not Progression)~~ — FIXED: now watches `Progression.EXP` (matches the Level listener pattern)
-- SafeZone PvP checks must go before ALL victim effects (ragdoll, knockback, CFrame, VFX) not just before `TakeDamage` └ otherwise players still get flung_stunned in safe zones
-- VFXHandler ability modules live as children of the VFXHandler ModuleScript (`ReplicatedStorage/Modules/Custom/VFXHandler/`), not the old Bendings `_S.lua` scripts which are disabled with `if true then return end`
-- `Hits[target]` debounce set before a SafeZone early-return is never cleared by the delayed nil-setter — low impact for short-lived hitboxes but a structural leak pattern to watch
-- `UserOwnsGamePassAsync` can throw on network errors └ always pcall and default to deny; log the error for diagnostics
-- When adding early-return guards (SafeZone, auth) to existing hit handlers, check for duplicate state assignments downstream — e.g. `Hits[char] = true` may appear both at the dedup gate and after damage
-- `Has_*Bending` player attributes must be set in BOTH `PlayerDataService.onPlayerAdded` (login) AND `ListenSpecChange("AllProfiles")` callback (on data change) └!mirrors the `ElementLevel_*` dual-write pattern
-- `validateClientData` Abilities check must allow level-gated unlocks&�ia `curProfile.PlayerLevel >= ABILITY_LEVELS[abilityId]` └ pure rejection breaks BendingSelectionGui unlock flow
-- ~~DataClient.lua had warn/print no-op overrides identical to DataServer~~ — FIXED in sprint 5c: always check BOTH client and server DataReplicator modules for diagnostic suppression
-- OwnedInventory validation must handle nested subcategories (e.g. `Styling.Hair = {id = true}`) — single-level key check misses sub-category item spoofing
-- Store↑GamePass merge (sprint 6c): `GamePassGui.UpdateGamePasses()` now shows GamePass + Gems + Gold via `validCategories` filter; Store proximity trigger (`workspace.Scripted_Items.Store`) redirects to GamePassGui
-- `MainMenuGui` has 6 buttons in Studio but hides StoreButton and ProfileBtn at runtime via `Visible = false` └ visible sidebar is 4 buttons (Quests, Settings, Map, GamePass) + collapsible toggle
-- `SettingsGui` VfxToggle is repurposed for overhead visibility └ Studio label still reads "VFX" but Luau code controls `OverheadGui.Enabled` on all player characters
-- `OverheadService.lua` (server Knit service) creates BillboardGui above player heads — `SlotName` player attribute set in PlayerDataService follows the same dual-write pattern as `Has_*Bending` and `ElementLevel_*`
-- `plrData.AllProfiles[plrData.ActiveProfile]` can return nil early in session before profile data is fully loaded └ always nil-guard before indexing into the result (affects DialogueGui Welcome, UpdateMap, and any client code using this accessor)
-- `UpdateMap` Component fires `.Touched` events and `ListenChange` callbacks on startup └ these can race with GUI initialisation causing duplicate notifications or nil crashes; guard with `_G.PlayerData` readiness checks and dedup flags
-- Momo.lua pet obstacle raycast (checking for walls near pet) is fundamentally broken └ terrain/buildings near the player always trigger hits causing constant despawn flicker; use distance-based teleport (>80 studs → warp to player) instead
-- `BindToRenderStep` names are global across all scripts └ always namespace (e.g. `"PetFollow"` not `"Follow"`) to avoid silent collisions
-- `Has_Momo` attribute follows the dual-write pattern (`onPlayerAdded` + `ListenSpecChange("GamePurchases.Passes")`) but must be set AFTER `IAPService:RefreshPurchaseDataUpdates` └ setting before uses stale save data, missing purchases since last login
-- `Constants.NPCsType` values cascade to ~30 quest descriptions via `{Constants.NPCsType.AirBender}` interpolation — changing these 4-5 values is the single point for NPC display name updates
-- `Assigner` fields in Conversation.lua and `QuestTargetIds` values must match workspace NPC `Instance.Name` └ these are functional identifiers for quest progression, not display text; renaming requires a Studio rename first
-- Quest target entries have both `Id` (functional, matched against workspace) and `Title` (display, shown to player) — you can safely hardcode new display names in Title without touching the Id
-- `wait()` in Luau silently ignores any string arguments └ `wait("log message")` yields briefly and discards the strings without error, making misuse as a logging function a silent bug; always use `warn()` for diagnostic output
-- Workspace NPC Animate.lua copies under `Workspace/Scripted_Items/NPCs/` are Studio-managed duplicates of `ServerScriptService/Server/Components/NPCAI/Templates/Animate.lua` └ changes to the template don't auto-propagate to workspace copies
-- Binary `.rbxl` files use **zstd** compression (magic `28b52ffd`), not zlib — the `rbx` pip package is a cloud tools library, not a Roblox file parser; parse chunks manually with `zstandard` Python package
-- Place file contains ~130 scripts NOT managed by Rojo (Zone+, Janitor, Trove, LightningBolt, RocksModule, DamageModule, SwimController, etc.) └ these are invisible to the repo and diverge silently
-- `GetPlrData` RemoteFunction was exposing ANY player's full data without authorisation — FIXED in session 2026-04-03: restricted to same-player lookups only
-- `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks └ FIXED in session 2026-04-03: whitelist from `Constants.Places`
-- As of 2026-04-03, all security fixes from sprints 5a�11 are NOT deployed to the live Roblox game └ the place file predates these changes; Rojo sync + publish required
+- SafeZone PvP checks must go before ALL victim effects (ragdoll, knockback, CFrame, VFX) not just before `TakeDamage` — otherwise players still get flung/stunned in safe zones
+- `GetPlrData` RemoteFunction was exposing ANY player's full data without authorisation └ FIXED in session 2026-04-03: restricted to same-player lookups only
+- `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks — FIXED in session 2026-04-03: whitelist from `Constants.Places`
+- As of 2026-04-04, all security fixes from sprints 5a-11 are NOT deployed to the live Roblox game └ publish via wimma777 account with Rojo required
 
 ## Working Memory Protocol
 
