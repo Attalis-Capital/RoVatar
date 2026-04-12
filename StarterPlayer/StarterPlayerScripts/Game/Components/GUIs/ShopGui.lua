@@ -1,4 +1,5 @@
 -- @ScriptType: ModuleScript
+-- Moved from: Components/GUIs/HomeScreens/ShopGui.lua (cleanup sprint)
 local CollectionService = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
 local RS = game:GetService("ReplicatedStorage")
