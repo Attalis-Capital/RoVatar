@@ -3,7 +3,6 @@ local CommonFunctions = {}
 
 local utils = script.Utils
 ----------------------***************** General Methods **********************----------------------
-CommonFunctions.Number = require(utils.Number)
 
 -- Inlined from: Modules/Custom/CommonFunctions/Utils/String.lua (cleanup sprint)
 CommonFunctions.String = {
