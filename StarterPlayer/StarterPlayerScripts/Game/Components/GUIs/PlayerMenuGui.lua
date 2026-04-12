@@ -15,7 +15,7 @@ local CF = require(CustomModules.CommonFunctions)
 local Constants = require(CustomModules.Constants)
 local SFXHandler = require(CustomModules.SFXHandler)
 local NotificationData = require(CustomModules.NotificationData)
-local TooltipModule = require(RS.Modules.Packages.TooltipModule)
+-- Removed unused require: TooltipModule (cleanup sprint)
 
 local player = game.Players.LocalPlayer
 
