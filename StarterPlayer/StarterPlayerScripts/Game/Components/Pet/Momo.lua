@@ -3,13 +3,10 @@ local Momo = {}
 
 local RunS = game:GetService("RunService")
 local RS = game:GetService("ReplicatedStorage")
-local CT = require(RS.Modules.Custom.CustomTypes)
 local Constants = require(RS.Modules.Custom.Constants)
-local CF = require(RS.Modules.Custom.CommonFunctions)
 local SwimController = require(RS.Modules.Packages.SwimController)
 
 local Packages = RS.Packages
-local Knit = require(Packages.Knit)
 local Component = require(Packages.Component)
 
 local player = game.Players.LocalPlayer
