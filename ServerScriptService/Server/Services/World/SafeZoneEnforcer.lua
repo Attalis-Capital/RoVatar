@@ -46,26 +46,6 @@ local function IsPositionInSafeZone(position: Vector3): boolean
 	return false
 end
 
--- Check if a character is in a safe zone (uses cached attribute for performance)
-local function IsInSafeZone(character: Model): boolean
-	if not character then return false end
-	return character:GetAttribute("InSafeZone") == true
-end
-
--- Should PvP damage be blocked? Returns true to PREVENT damage
--- Only blocks player-vs-player. PvE is always allowed.
-local function ShouldBlockPvPDamage(attackerChar: Model, victimChar: Model): boolean
-	if not attackerChar or not victimChar then return false end
-
-	-- Only block if both are players
-	local attackerPlayer = Players:GetPlayerFromCharacter(attackerChar)
-	local victimPlayer = Players:GetPlayerFromCharacter(victimChar)
-	if not attackerPlayer or not victimPlayer then return false end
-
-	-- Block if either is in safe zone
-	return IsInSafeZone(attackerChar) or IsInSafeZone(victimChar)
-end
-
 -- Start monitoring all players for safe zone entry/exit
 local CHECK_INTERVAL = 0.5 -- seconds between position checks
 
