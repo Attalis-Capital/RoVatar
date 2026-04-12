@@ -3,12 +3,9 @@ local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
 local TS = game:GetService("TeleportService")
 
-local Signal = require(RS.Packages.Signal)
 local Knit = require(RS.Packages.Knit)
 
 local Constants = require(RS.Modules.Custom.Constants)
-local CT = require(RS.Modules.Custom.CustomTypes)
-local CF = require(RS.Modules.Custom.CommonFunctions)
 
 local MultiplaceHandlerService = Knit.CreateService {
 	Name = "MultiplaceHandlerService",
