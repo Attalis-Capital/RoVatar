@@ -1,7 +1,6 @@
 -- @ScriptType: ModuleScript
 local QuestsModule = {}
 local Constants = require(script.Parent.Constants)
-local CustomTypes = require(script.Parent.CustomTypes)
 
 QuestsModule.QuestObjectives = Constants.QuestObjectives
 QuestsModule.TargetIds = Constants.QuestTargetIds
