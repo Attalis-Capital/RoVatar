@@ -628,11 +628,6 @@ local function UpdateStrengthOnServer(value)
 	CharacterService.UpdateStats:Fire(combats)
 end
 
-local function UpdateStaminOnServer(value)
-	local combats = {Stamina = value}
-	CharacterService.UpdateStats:Fire(combats)
-end
-
 ------------------------------------- >>> Combat <<< ------------------------------------
 
 function ToggleBoomerang(enable)
