@@ -10,7 +10,6 @@ local Component = require(Packages.Component) -- Require the Component module fr
 
 local CustomModules = RS.Modules.Custom -- Get the Custom folder from ReplicatedStorage
 local CT = require(CustomModules.CustomTypes) -- Require the CustomTypes module from the Custom folder
-local CF = require(CustomModules.CommonFunctions) -- Require the CommonFunctions module from the Custom folder
 local Constants = require(CustomModules.Constants) -- Require the Constants module from the Custom folder
 local SFXHandler = require(CustomModules.SFXHandler) -- Require the SFXHandler module from the Custom folder
 
