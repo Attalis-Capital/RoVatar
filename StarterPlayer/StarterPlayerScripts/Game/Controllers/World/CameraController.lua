@@ -13,7 +13,6 @@ local character = player.Character or player.CharacterAdded:Wait()
 -- Camera --
 local camera = workspace.CurrentCamera
 
-local Constants = require(Modules.Custom.Constants)
 local CameraShaker = require(Modules.Packages.CameraShaker)
 
 local camShake = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCFrame)

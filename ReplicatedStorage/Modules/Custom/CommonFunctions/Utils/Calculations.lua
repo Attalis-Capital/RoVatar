@@ -2,7 +2,6 @@
 local RS = game:GetService("ReplicatedStorage")
 
 local CD = require(RS.Modules.Custom.Constants)
-local CT = require(RS.Modules.Custom.CustomTypes)
 
 return {
 	GetPivotLocation = function(obj, spawnner:Part)

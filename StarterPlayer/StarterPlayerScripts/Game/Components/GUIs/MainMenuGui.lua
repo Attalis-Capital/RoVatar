@@ -11,8 +11,6 @@ local Knit = require(Packages.Knit)
 local Component = require(Packages.Component)
 
 local CustomModules = RS.Modules.Custom
-local CT = require(CustomModules.CustomTypes)
-local CF = require(CustomModules.CommonFunctions)
 local Constants = require(CustomModules.Constants)
 
 local player = game.Players.LocalPlayer

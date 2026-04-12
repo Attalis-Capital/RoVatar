@@ -8,12 +8,9 @@ local Knit = require(Packages.Knit)
 local Component = require(Packages.Component)
 
 ----Related scripts
-local CF = require(RS.Modules.Custom.CommonFunctions)
 local Constants = require(RS.Modules.Custom.Constants)
 local SimplePath = require(RS.Modules.Custom.SimplePath)
-local SFXHandler = require(RS.Modules.Custom.SFXHandler)
 local CustomTypes = require(RS.Modules.Custom.CustomTypes)
-local QuestModule = require(RS.Modules.Custom.QuestsModule)
 local Conversation = require(RS.Modules.Custom.QuestsModule.Conversation)
 
 local player = game.Players.LocalPlayer

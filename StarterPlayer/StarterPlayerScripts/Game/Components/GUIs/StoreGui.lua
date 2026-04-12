@@ -13,7 +13,6 @@ local CustomModules = RS.Modules.Custom
 local CT = require(CustomModules.CustomTypes)
 local CF = require(CustomModules.CommonFunctions)
 local Constants = require(CustomModules.Constants)
-local SFXHandler = require(CustomModules.SFXHandler)
 
 local player = game.Players.LocalPlayer
 
@@ -48,10 +47,6 @@ local TWController
 
 
 ------------- Helper ------------
-
-local function ToggleBtn(btn:TextButton)
-	
-end
 
 
 ----------------------***************** Private Methods **********************----------------------

@@ -1,9 +1,6 @@
 -- @ScriptType: ModuleScript
 local RS = game:GetService("ReplicatedStorage")
 
-local CD = require(RS.Modules.Custom.Constants)
-local CT = require(RS.Modules.Custom.CustomTypes)
-
 local Calculations = require(script.Parent.Calculations)
 return {
 	--[TOBEINT]

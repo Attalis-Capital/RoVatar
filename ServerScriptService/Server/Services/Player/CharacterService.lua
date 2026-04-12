@@ -3,13 +3,11 @@ local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
 
-local Signal = require(RS.Packages.Signal)
 local Knit = require(RS.Packages.Knit)
 
 local Modules = RS.Modules
 local misc = require(Modules.Packages.Misc)
 local Constants = require(RS.Modules.Custom.Constants)
-local VFXHandler = require(RS.Modules.Custom.VFXHandler)
 local CT = require(RS.Modules.Custom.CustomTypes)
 local CF = require(RS.Modules.Custom.CommonFunctions)
 local SFXHandler = require(RS.Modules.Custom.SFXHandler)

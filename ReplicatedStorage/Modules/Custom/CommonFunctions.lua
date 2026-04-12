@@ -1,9 +1,6 @@
 -- @ScriptType: ModuleScript
 local CommonFunctions = {}
 
-local CT = require(script.Parent.CustomTypes)
-local CD = require(script.Parent.Constants)
-
 local utils = script.Utils
 ----------------------***************** General Methods **********************----------------------
 CommonFunctions.Number = require(utils.Number)

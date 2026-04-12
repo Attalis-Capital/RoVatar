@@ -3,7 +3,6 @@ local RS = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Knit = require(RS.Packages.Knit)
 
-local CD = require(RS.Modules.Custom.Constants)
 local CT = require(RS.Modules.Custom.CustomTypes)
 
 local NotificationService = Knit.CreateService {

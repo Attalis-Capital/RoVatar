@@ -12,11 +12,7 @@ local rocksModule = require(Modules.Packages.RocksModule)
 local debrisModule = require(Modules.Packages.Debris)
 
 -- FUNCTIONS --
-local function RoundNumber(num)
-	return(math.floor(num+0.5))
-end
 local AirImmunityTag = "AirDown"
-local Misc = require(Modules.Packages.Misc)
 
 Combat.Perform = function(Action, Variable2, Variable3)
 	--print('Combat Test ', Action, Variable2, Variable3)
