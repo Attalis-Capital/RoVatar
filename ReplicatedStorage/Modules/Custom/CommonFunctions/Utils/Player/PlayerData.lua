@@ -205,7 +205,7 @@ PlayerData = {
 
 		if(plrStoreVersion) then
 			if (plrStoreVersion == 1 and currentVersion == 1.1) then
-				local DataModels = require(script.Parent.DataModels)
+				local DataModels = require(script.Parent.Parent.DataModels)
 				return DataModels:UpdateData1To1Dot1(playerData, newDataModel, PlayerData.GetSlotDataModel())
 
 			elseif (plrStoreVersion < 1) then
