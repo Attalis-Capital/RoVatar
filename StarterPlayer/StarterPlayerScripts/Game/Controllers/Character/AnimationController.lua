@@ -4,8 +4,6 @@ local UIS = game:GetService("UserInputService")
 
 local Knit = require(RS.Packages.Knit)
 
-local Constants = require(RS.Modules.Custom.Constants)
-local CustomTypes = require(RS.Modules.Custom.CustomTypes)
 local AnimatorS = require(RS.Modules.Custom.Animator)
 
 local player = game.Players.LocalPlayer

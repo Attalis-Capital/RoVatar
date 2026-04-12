@@ -7,7 +7,6 @@ local Signal = require(RS.Packages.Signal)
 local Custom = RS.Modules.Custom
 local CD = require(Custom.Constants)
 local CT = require(Custom.CustomTypes)
-local CF = require(Custom.CommonFunctions)
 local SFXHandler = require(Custom.SFXHandler)
 
 local player = game.Players.LocalPlayer
