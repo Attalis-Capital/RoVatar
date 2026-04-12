@@ -148,6 +148,8 @@ After changes, check:
 - `GetPlrData` RemoteFunction was exposing ANY player's full data without authorisation └ FIXED in session 2026-04-03: restricted to same-player lookups only
 - `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks — FIXED in session 2026-04-03: whitelist from `Constants.Places`
 - As of 2026-04-04, all security fixes from sprints 5a-11 are NOT deployed to the live Roblox game └ publish via wimma777 account with Rojo required
+- Knit Components in `StarterPlayerScripts/` are discovered by CollectionService tags, not `require()` └ can be freely moved within StarterPlayerScripts hierarchy without updating callers
+- `CommonFunctions/Utils/` has name collisions with `CommonFunctions/` (DataModels.lua, Value.lua exist at both levels) └ must resolve collisions before any Utils/ flattening
 
 ## Working Memory Protocol
 
