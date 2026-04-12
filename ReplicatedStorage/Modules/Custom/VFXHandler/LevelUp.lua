@@ -4,9 +4,6 @@ local Tween = game:GetService("TweenService")
 local RS = game:GetService("ReplicatedStorage")
 local CS = game:GetService("CollectionService")
 
-local Modules = RS.Modules
-local misc = require(Modules.Packages.Misc)
-
 local VFXs = RS.Assets.VFXs
 local LevelUp = VFXs.LevelUp
 
