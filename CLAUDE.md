@@ -148,6 +148,7 @@ After changes, check:
 - `GetPlrData` RemoteFunction was exposing ANY player's full data without authorisation └ FIXED in session 2026-04-03: restricted to same-player lookups only
 - `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks — FIXED in session 2026-04-03: whitelist from `Constants.Places`
 - As of 2026-04-04, all security fixes from sprints 5a-11 are NOT deployed to the live Roblox game └ publish via wimma777 account with Rojo required
+- `CommonFunctions.lua` re-exports sub-modules (e.g. `CommonFunctions.Transform = require(utils.Transform)`) └ dependency graph analysis must trace re-exports via CF.*, not just direct `require()` calls, to avoid inlining multi-use modules
 
 ## Working Memory Protocol
 
