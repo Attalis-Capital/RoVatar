@@ -149,6 +149,8 @@ After changes, check:
 - `TeleportRequest` RemoteEvent accepted arbitrary PlaceIds enabling redirect attacks — FIXED in session 2026-04-03: whitelist from `Constants.Places`
 - As of 2026-04-04, all security fixes from sprints 5a-11 are NOT deployed to the live Roblox game └ publish via wimma777 account with Rojo required
 - `CommonFunctions.lua` re-exports sub-modules (e.g. `CommonFunctions.Transform = require(utils.Transform)`) └ dependency graph analysis must trace re-exports via CF.*, not just direct `require()` calls, to avoid inlining multi-use modules
+- Rojo-managed code can reference modules that only exist in the live Roblox place file (unmanaged scripts) └ a missing file on disk doesn't always mean a broken require; check git history before assuming cleanup caused it
+- `script.Parent` in Rojo resolves to the file's immediate parent folder └ `Utils/Player/PlayerData.lua` using `script.Parent.X` resolves to `Utils/Player/X`, NOT `Utils/X`
 
 ## Working Memory Protocol
 
