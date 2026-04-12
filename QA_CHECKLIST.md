@@ -10,13 +10,21 @@
 
 | Phase | Check | Result |
 |-------|-------|--------|
-| 1. Require chain integrity | All require() calls resolve to existing files | PASS |
+| 1. Require chain integrity | All cleanup-related requires intact; 2 pre-existing broken requires found (not caused by cleanup) | PASS WITH WARNINGS |
 | 2. Module export verification | All modified files return correctly, no dangling refs | PASS |
 | 3. Knit registration | All services/controllers still registered, none deleted | PASS |
 | 4. Component registration | All 10 moved GUIs have valid Component.new() calls | PASS |
 | 5. Cross-boundary safety | No removed require had method calls in the same file | PASS |
 
-**Overall verdict: PASS**
+**Overall verdict: PASS WITH WARNINGS**
+
+### Pre-Existing Broken Requires (NOT caused by cleanup)
+
+These broken requires exist in the codebase but were NOT introduced by any cleanup PR. They have never had valid targets in the git history:
+
+1. **`CommonFunctions.lua:6`** — `require(utils.Number)` — `Number.lua` has never existed in the repo. Likely an unmanaged Studio module (similar to Zone+, Janitor, etc. listed in CLAUDE.md). `CF.Number` is never called by any consumer, so this doesn't crash at runtime.
+
+2. **`PlayerData.lua:208`** — `require(script.Parent.DataModels)` — resolves to `Utils/Player/DataModels.lua` which doesn't exist. DataModels.lua is at `Utils/DataModels.lua` (one level up). This is a legacy v1→v1.1 data migration path that only fires if a player has version 1 data — likely dead code.
 
 ---
 
@@ -97,4 +105,4 @@ These items were flagged during the dead code scan (PR #38) but left untouched d
 
 ## Summary
 
-All automated checks pass. The cleanup removed only genuinely dead code — no require chains were broken, no module exports were lost, no Knit registrations were affected, and no cross-boundary calls were severed. The in-game test list above covers all areas touched by the cleanup PRs.
+All cleanup-related checks pass. The cleanup removed only genuinely dead code — no require chains were broken, no module exports were lost, no Knit registrations were affected, and no cross-boundary calls were severed. The in-game test list above covers all areas touched by the cleanup PRs.
