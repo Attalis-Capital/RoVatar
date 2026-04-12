@@ -1,4 +1,5 @@
 -- @ScriptType: ModuleScript
+-- Moved from: Components/GUIs/HomeScreens/BendingSelectionGui.lua (cleanup sprint)
 local CollectionService = game:GetService("CollectionService")
 local Debris = game:GetService("Debris")
 local RS = game:GetService("ReplicatedStorage")
