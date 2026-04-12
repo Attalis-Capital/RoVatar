@@ -1,4 +1,5 @@
 -- @ScriptType: ModuleScript
+-- Moved from: Components/GUIs/LoadGameGui/CustomizationUI.lua (cleanup sprint)
 local RS = game:GetService("ReplicatedStorage")
 local MPS = game:GetService("MarketplaceService")
 
