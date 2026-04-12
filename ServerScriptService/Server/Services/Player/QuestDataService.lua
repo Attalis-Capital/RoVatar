@@ -11,7 +11,6 @@ local CD = require(RS.Modules.Custom.Constants)
 local CT = require(RS.Modules.Custom.CustomTypes)
 local SFXHandler = require(RS.Modules.Custom.SFXHandler)
 local QuestModule = require(RS.Modules.Custom.QuestsModule)
-local DataReplicator = require(RS.Modules.Custom.DataReplicator)
 
 ---- Create Service
 local QuestDataService = Knit.CreateService {

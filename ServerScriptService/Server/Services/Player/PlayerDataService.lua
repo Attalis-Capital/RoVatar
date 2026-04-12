@@ -2,7 +2,6 @@
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 
-local Signal = require(RS.Packages.Signal)
 local Knit = require(RS.Packages.Knit)
 
 local CF = require(RS.Modules.Custom.CommonFunctions)
@@ -38,27 +37,6 @@ local PlayerDataService = Knit.CreateService {
 
 
 --------------- Helper ------------------
-local function val(typ:string, parent:Instance, name:string, default:any)
-	if(parent:FindFirstChild(name)) then
-		return
-	end
-
-	local v = Instance.new(typ, parent)
-	v.Name = name
-	if(typ ~= "Folder") then
-		v.Value = default
-	end
-	
-	return v
-end
-
-local function getTableLength(t)
-	local l = 0
-	for i,v in pairs(t) do
-		l += 1
-	end
-	return l
-end
 
 function CheckDataStoreVersion(playerData :CustomTypes.PlayerDataModel)
 
