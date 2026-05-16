@@ -1,10 +1,10 @@
-# RoVatar Repo State Audit — May 2026 (refreshed 2026-05-15)
+# RoVatar Repo State Audit — May 2026 (refreshed 2026-05-16)
 
-> **Refresh note:** This audit was first produced 2026-05-12 (PR #40) and confirmed accurate. This refresh (2026-05-15) records two material changes: (1) PR #40 itself is now merged, and (2) the sprint-12 PR flagged as P1 in that audit remains unfiled three days later. All code-level findings are unchanged — the last game-code commit is still `f86ce39` (2026-04-12).
+> **Refresh note:** This audit was first produced 2026-05-12 (PR #40), refreshed 2026-05-15 (PR #41), and refreshed again today (2026-05-16). This refresh adds one new material finding: sprint-12 branch cannot be filed as a PR without rebasing — `QuestTrackerHUD.lua` was deleted from main in cleanup PR #38 while sprint-12's wiring commit references it, and the branch diverges from main by 18 commits. All other code-level findings are unchanged — the last game-code commit is still `f86ce39` (2026-04-12).
 
 ## Executive Summary
 
-The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 2 docs PRs (PRs #12–#40) are all merged, code quality is high, and the codebase has been hardened against every critical and warning security issue found in the Feb 2026 audit. However, **none of these fixes are live.** Every security patch, gameplay improvement, and structural change since the game was last published (estimated pre-Feb 2026) exists only in the repo. The single biggest risk is a player exploiting `GetPlrData` (full data exposure for any player) or the `TeleportRequest` redirect attack while the fix sits undeployed — over three months of accumulated fixes unshipped. A secondary blocking item is branch `sprint-12-quest-tracker-glider`, which has two complete commits and no PR; it has been flagged as P1 since the May 12 audit with no action taken. The recommended next action remains an immediate Rojo publish to the live game via the `wimma777` account, followed by filing a PR for sprint 12.
+The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 3 docs PRs (PRs #12–#41) are all merged, code quality is high, and the codebase has been hardened against every critical and warning security issue found in the Feb 2026 audit. However, **none of these fixes are live.** Every security patch, gameplay improvement, and structural change since the game was last published (estimated pre-Feb 2026) exists only in the repo. The single biggest risk is a player exploiting `GetPlrData` (full data exposure for any player) or the `TeleportRequest` redirect attack while the fix sits undeployed — over three months of accumulated fixes unshipped. A secondary blocking item is branch `sprint-12-quest-tracker-glider`: the actual game code is a modest 5-file, 33-line change, but the branch cannot be filed as a PR without rebasing onto main first — it was created before 18 main commits (the full cleanup sprint and AGENTS.md migration), and `QuestTrackerHUD.lua` was deleted from main during cleanup while sprint-12's wiring code still references it. The recommended next action remains an immediate Rojo publish to the live game via the `wimma777` account, followed by rebasing and filing a PR for sprint 12.
 
 ---
 
@@ -35,7 +35,7 @@ The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 2 d
 | Cleanup 5 | Dead code scan — 7 modules, 7 functions, 43 requires removed | #38 | MERGED |
 | Docs | Migrate CLAUDE.md to AGENTS.md convention | #39 | MERGED |
 | Docs | Repo state audit — April/May 2026 | #40 | MERGED 2026-05-12 |
-| S12 | Quest Tracker HUD wiring + glider constants | **NO PR** | Branch exists, not merged |
+| S12 | Quest Tracker HUD wiring + glider constants | **NO PR** | Branch exists, needs rebase before PR can be filed |
 
 **PRs #1, #11, and #23 were closed without merge** (superseded by #12 and the S10 squash respectively). All others merged.
 
@@ -45,7 +45,7 @@ The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 2 d
 
 ### Security (undeployed fixes)
 
-All security fixes in the repo have **never** been published to the live Roblox game. As of 2026-05-15 this remains unchanged from the May 12 audit.
+All security fixes in the repo have **never** been published to the live Roblox game. As of 2026-05-16 this remains unchanged from all prior audits.
 
 | Severity | Issue | Fixed in repo? | Deployed to live? | Notes |
 |----------|-------|:--------------:|:-----------------:|-------|
@@ -87,11 +87,11 @@ All security fixes in the repo have **never** been published to the live Roblox 
 
 ### Stale PRs and branches (to close or clean up)
 
-Status as of 2026-05-15:
+Status as of 2026-05-16:
 
 | Branch | PR# | Commits not in main | Status | Recommendation |
 |--------|-----|:------------------:|--------|----------------|
-| `sprint-12-quest-tracker-glider` | None | 2 (`3a4e5e3`, `8db9ad1`) | Complete — no PR filed | **File PR immediately; flagged P1 since 2026-05-12** |
+| `sprint-12-quest-tracker-glider` | None | 2 (`3a4e5e3`, `8db9ad1`) | Complete code — PR blocked until rebased | **Rebase onto main first, THEN file PR** — see Contradictions section |
 | `fix/pre-existing-broken-requires` | None | 0 (merged via `qa/post-cleanup-audit`) | Fully merged | Delete remote branch |
 | `qa/post-cleanup-audit` | None | 0 (merged `f86ce39`) | Fully merged | Delete remote branch |
 | `origin/sprint-1/first-session-survival` | #11 (CLOSED) | 0 | Superseded by #12 | Delete remote branch |
@@ -197,6 +197,7 @@ No explicit "Skimowou" or mesh blocker found in any tracking document. The game'
 | PLACE_AUDIT.md lists QuestTrackerHUD as "IN REPO ONLY — Not yet deployed" | `PLACE_AUDIT.md` (2026-04-03) | Sprint 12 notes claim it was wired | PLACE_AUDIT.md reflects state at audit time; Sprint 12 subsequently wired the module — still undeployed |
 | PROGRESS.md (main) shows Sprint 11 as "Current Sprint" | `main:PROGRESS.md` | Sprint 12 branch PROGRESS.md | Sprint 12 work exists on an unmerged branch; PROGRESS.md on main was never updated |
 | PR #23 listed as CLOSED in `gh pr list` but PROGRESS.md says "dea0acc feat(quests): sprint 4a" was merged | `PROGRESS.md` | GitHub PR state | Changes were squash-committed into main via PR #32 (Sprint 10). PR #23 was closed without merge; its content is in main. No substance contradiction — only PR-state labelling. |
+| Sprint-12 wires `QuestTrackerHUD.Init()` in DataController, but `QuestTrackerHUD.lua` does not exist in main | `sprint-12-quest-tracker-glider:DataController.lua` (`3a4e5e3`) | `main` (commit `1f2067c` deleted QuestTrackerHUD.lua as dead code in cleanup PR #38) | The cleanup sprint removed QuestTrackerHUD.lua because sprint-12's wiring was on an unmerged branch, making it appear unreferenced. Sprint-12 must be rebased onto main — the rebase will restore QuestTrackerHUD.lua as a new file plus the wiring. The diff will then be 5 files, ~33 lines (not the 84-file diff that would result from merging the un-rebased branch). |
 
 ---
 
@@ -206,7 +207,7 @@ Prioritised by impact (updated 2026-05-15):
 
 1. **[P0 — Do today] Rojo publish to live game.** The live game is missing every security fix, gameplay feature, and bug fix from all 12+ sprints spanning over three months. Players are currently exposed to `GetPlrData` data exfiltration and `TeleportRequest` redirect attacks. Publish via `wimma777` account following the Rojo workflow in AGENTS.md.
 
-2. **[P1 — Overdue since 2026-05-12] File a PR for sprint 12.** Branch `sprint-12-quest-tracker-glider` has two complete commits, no open PR, and was flagged as P1 in the May 12 audit. This is now three days overdue. Run `gh pr create` from that branch before starting any new sprint.
+2. **[P1 — Overdue since 2026-05-12] Rebase and file a PR for sprint 12.** The sprint-12 branch has complete game code (5 files, 33 lines) but **cannot be filed as a PR without rebasing first.** The branch was created before 18 main commits and `QuestTrackerHUD.lua` was deleted from main during cleanup while sprint-12 still references it. Steps: (1) `git checkout sprint-12-quest-tracker-glider && git rebase origin/main` — this restores QuestTrackerHUD.lua as a new file and drops the already-merged cleanup changes from the diff; (2) resolve any conflicts in DataController.lua path changes from the flatten-paths PR; (3) `git push --force-with-lease origin sprint-12-quest-tracker-glider && gh pr create`.
 
 3. **[P1 — Do this week] Studio renames for sprint 9 NPC work.** Quest resolution is broken for Oryn, Sael, and Kaen because workspace NPC instance names still use old IP-risk names. Blocks quest completion for those NPCs.
 
@@ -228,4 +229,4 @@ Prioritised by impact (updated 2026-05-15):
 
 ---
 
-*First produced: 2026-05-12. Refreshed: 2026-05-15. Last game-code change: `f86ce39` (2026-04-12).*
+*First produced: 2026-05-12. Refreshed: 2026-05-15, 2026-05-16. Last game-code change: `f86ce39` (2026-04-12).*
