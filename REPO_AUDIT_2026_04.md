@@ -1,6 +1,6 @@
-# RoVatar Repo State Audit — May 2026 (refreshed 2026-05-16)
+# RoVatar Repo State Audit — May 2026 (refreshed 2026-05-17)
 
-> **Refresh note:** This audit was first produced 2026-05-12 (PR #40), refreshed 2026-05-15 (PR #41), and refreshed again today (2026-05-16). This refresh adds one new material finding: sprint-12 branch cannot be filed as a PR without rebasing — `QuestTrackerHUD.lua` was deleted from main in cleanup PR #38 while sprint-12's wiring commit references it, and the branch diverges from main by 18 commits. All other code-level findings are unchanged — the last game-code commit is still `f86ce39` (2026-04-12).
+> **Refresh note:** This audit was first produced 2026-05-12 (PR #40), refreshed 2026-05-15 (PR #41), refreshed 2026-05-16 (PR #42 — still open as of this writing), and refreshed again today (2026-05-17). This pass confirms no new game-code commits have landed since 2026-04-12 and records the sprint-12 rebase finding first identified on 2026-05-16 as the only new material item. All code-level findings, deployment gaps, and open items remain unchanged.
 
 ## Executive Summary
 
@@ -34,7 +34,9 @@ The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 3 d
 | Cleanup 4 | Inline SafeZoneUtils + remove dead TooltipModule require | #37 | MERGED |
 | Cleanup 5 | Dead code scan — 7 modules, 7 functions, 43 requires removed | #38 | MERGED |
 | Docs | Migrate CLAUDE.md to AGENTS.md convention | #39 | MERGED |
-| Docs | Repo state audit — April/May 2026 | #40 | MERGED 2026-05-12 |
+| Docs | Repo state audit — April/May 2026 (first pass) | #40 | MERGED 2026-05-12 |
+| Docs | Repo state audit — May 2026 refresh | #41 | MERGED 2026-05-15 |
+| Docs | Repo state audit — May 2026 refresh (2nd) | #42 | **OPEN** (this PR) |
 | S12 | Quest Tracker HUD wiring + glider constants | **NO PR** | Branch exists, needs rebase before PR can be filed |
 
 **PRs #1, #11, and #23 were closed without merge** (superseded by #12 and the S10 squash respectively). All others merged.
@@ -45,7 +47,7 @@ The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 3 d
 
 ### Security (undeployed fixes)
 
-All security fixes in the repo have **never** been published to the live Roblox game. As of 2026-05-16 this remains unchanged from all prior audits.
+All security fixes in the repo have **never** been published to the live Roblox game. As of 2026-05-17 this remains unchanged from all prior audits.
 
 | Severity | Issue | Fixed in repo? | Deployed to live? | Notes |
 |----------|-------|:--------------:|:-----------------:|-------|
@@ -87,7 +89,7 @@ All security fixes in the repo have **never** been published to the live Roblox 
 
 ### Stale PRs and branches (to close or clean up)
 
-Status as of 2026-05-16:
+Status as of 2026-05-17:
 
 | Branch | PR# | Commits not in main | Status | Recommendation |
 |--------|-----|:------------------:|--------|----------------|
@@ -107,6 +109,7 @@ Status as of 2026-05-16:
 | `origin/sprint-9-npc-rename` | #31 (MERGED) | 0 | Merged | Delete remote branch |
 | `origin/sprint-10-bugfixes` | #32 (MERGED) | 0 | Merged | Delete remote branch |
 | `origin/docs/agents-md-migration` | #39 (MERGED) | 0 | Merged | Delete remote branch |
+| `origin/audit/repo-state-apr-2026` | #40, #41 (MERGED) | 0 | Merged | Delete remote branch |
 | All `cleanup/*` branches | #34–38 (MERGED) | 0 | Merged | Delete remote branches |
 
 ### Open issues (to close or action)
@@ -203,7 +206,7 @@ No explicit "Skimowou" or mesh blocker found in any tracking document. The game'
 
 ## Recommendations
 
-Prioritised by impact (updated 2026-05-15):
+Prioritised by impact (updated 2026-05-17):
 
 1. **[P0 — Do today] Rojo publish to live game.** The live game is missing every security fix, gameplay feature, and bug fix from all 12+ sprints spanning over three months. Players are currently exposed to `GetPlrData` data exfiltration and `TeleportRequest` redirect attacks. Publish via `wimma777` account following the Rojo workflow in AGENTS.md.
 
@@ -219,7 +222,7 @@ Prioritised by impact (updated 2026-05-15):
 
 7. **[P2 — Next sprint] Momo model verification.** Momo.lua requires a `PrimaryPart`, `Humanoid`, `State` StringValue, and `Smoke` ParticleEmitter. Without model verification, summoning Momo will crash.
 
-8. **[P3 — Batch cleanup] Delete stale remote branches.** 16+ merged/closed branches are cluttering the remote. A batch `git push origin --delete` pass would clean this up. Safe — all content is in main.
+8. **[P3 — Batch cleanup] Delete stale remote branches.** 18+ merged/closed branches are cluttering the remote. A batch `git push origin --delete` pass would clean this up. Safe — all content is in main.
 
 9. **[P3 — After sprint 12 merges] Close issue #14.** Quest Tracker HUD (issue #14) is resolved in code. Close once sprint 12 PR merges.
 
@@ -229,4 +232,4 @@ Prioritised by impact (updated 2026-05-15):
 
 ---
 
-*First produced: 2026-05-12. Refreshed: 2026-05-15, 2026-05-16. Last game-code change: `f86ce39` (2026-04-12).*
+*First produced: 2026-05-12. Refreshed: 2026-05-15, 2026-05-16, 2026-05-17. Last game-code change: `f86ce39` (2026-04-12).*
