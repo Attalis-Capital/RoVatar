@@ -1,10 +1,12 @@
-# RoVatar Repo State Audit — May 2026 (refreshed 2026-05-17)
+# RoVatar Repo State Audit — June 2026 (refreshed 2026-06-14)
 
-> **Refresh note:** This audit was first produced 2026-05-12 (PR #40), refreshed 2026-05-15 (PR #41), refreshed 2026-05-16 (PR #42 — still open as of this writing), and refreshed again today (2026-05-17). This pass confirms no new game-code commits have landed since 2026-04-12 and records the sprint-12 rebase finding first identified on 2026-05-16 as the only new material item. All code-level findings, deployment gaps, and open items remain unchanged.
+> **History:** First produced 2026-05-12 (PR #40), refreshed 2026-05-15 (PR #41), refreshed 2026-05-16/17 (PR #42), refreshed 2026-06-14 (this PR). This pass records that all GitHub issues were closed on 2026-05-22, confirms no new game-code commits since 2026-04-12, and notes PR #42 is now merged (it was listed as "OPEN" in the May refresh). All code-level findings, deployment gaps, and Studio-dependent items remain unchanged.
+
+---
 
 ## Executive Summary
 
-The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 3 docs PRs (PRs #12–#41) are all merged, code quality is high, and the codebase has been hardened against every critical and warning security issue found in the Feb 2026 audit. However, **none of these fixes are live.** Every security patch, gameplay improvement, and structural change since the game was last published (estimated pre-Feb 2026) exists only in the repo. The single biggest risk is a player exploiting `GetPlrData` (full data exposure for any player) or the `TeleportRequest` redirect attack while the fix sits undeployed — over three months of accumulated fixes unshipped. A secondary blocking item is branch `sprint-12-quest-tracker-glider`: the actual game code is a modest 5-file, 33-line change, but the branch cannot be filed as a PR without rebasing onto main first — it was created before 18 main commits (the full cleanup sprint and AGENTS.md migration), and `QuestTrackerHUD.lua` was deleted from main during cleanup while sprint-12's wiring code still references it. The recommended next action remains an immediate Rojo publish to the live game via the `wimma777` account, followed by rebasing and filing a PR for sprint 12.
+The repo is structurally clean — 12 game sprints, 5 cleanup PRs, and 4 docs PRs (PRs #12–#42) are all merged, all 15 GitHub issues are now closed, and the codebase has been hardened against every critical security issue identified in the February 2026 audit. However, **none of these fixes are live.** Every security patch, gameplay improvement, and structural change since the game was last published (estimated pre-February 2026) exists only in the repository. The single biggest risk is a player exploiting `GetPlrData` (full data exposure for any player) or the `TeleportRequest` redirect attack — over four months of accumulated fixes unshipped as of June 2026. A secondary blocking item is branch `sprint-12-quest-tracker-glider`: the game code is a modest 5-file, 33-line change, but the branch cannot be filed as a PR without rebasing onto main first — `QuestTrackerHUD.lua` was deleted from main during cleanup PR #38 while sprint-12's wiring code still references it. The recommended next action remains an immediate Rojo publish to the live game via the `wimma777` account, followed by rebasing and filing a PR for sprint 12.
 
 ---
 
@@ -36,10 +38,11 @@ The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 3 d
 | Docs | Migrate CLAUDE.md to AGENTS.md convention | #39 | MERGED |
 | Docs | Repo state audit — April/May 2026 (first pass) | #40 | MERGED 2026-05-12 |
 | Docs | Repo state audit — May 2026 refresh | #41 | MERGED 2026-05-15 |
-| Docs | Repo state audit — May 2026 refresh (2nd) | #42 | **OPEN** (this PR) |
+| Docs | Repo state audit — May 2026 refresh (2nd) | #42 | MERGED 2026-05-16 |
+| Docs | Repo state audit — June 2026 refresh | This PR | OPEN |
 | S12 | Quest Tracker HUD wiring + glider constants | **NO PR** | Branch exists, needs rebase before PR can be filed |
 
-**PRs #1, #11, and #23 were closed without merge** (superseded by #12 and the S10 squash respectively). All others merged.
+**PRs #1, #11, and #23 were closed without merge** (superseded by #12 and the S10 squash respectively). All others are merged.
 
 ---
 
@@ -47,7 +50,7 @@ The repo is in good structural shape — 12 game sprints, 5 cleanup PRs, and 3 d
 
 ### Security (undeployed fixes)
 
-All security fixes in the repo have **never** been published to the live Roblox game. As of 2026-05-17 this remains unchanged from all prior audits.
+All security fixes in the repo have **never** been published to the live Roblox game. As of 2026-06-14 this remains unchanged from all prior audits.
 
 | Severity | Issue | Fixed in repo? | Deployed to live? | Notes |
 |----------|-------|:--------------:|:-----------------:|-------|
@@ -68,9 +71,9 @@ All security fixes in the repo have **never** been published to the live Roblox 
 | Sprint | Task | Status | Blocking? |
 |--------|------|--------|-----------|
 | S6 | Loading screen camera on temples + progress bar | Pending | No |
-| S6 | Character selection label + missing animations 3-5 | Pending | No |
+| S6 | Character selection label + missing animations 3–5 | Pending | No |
 | S6 | Character customisation UI (skin colour + face) | Pending | No |
-| S6 | Store UI editable module + 2x gems GamePass creation | Pending | No |
+| S6 | Store UI editable module + 2× gems GamePass creation | Pending | No |
 | S6 | Profile UI restructure (Gold/Gems next to XP bar) | Pending | No |
 | S6 | Delay bars centring at top of screen | Pending | No |
 | S6 | Glider animation mismatch (orange to blue) | Pending | No |
@@ -87,9 +90,9 @@ All security fixes in the repo have **never** been published to the live Roblox 
 | QA | Run QA_CHECKLIST.md in-game (Simon) — 20 tests across critical/important/minor | Pending | **Yes** — required before next sprint |
 | Publish | Rojo sync and publish all accumulated code changes via wimma777 | **BLOCKING** | **Yes — all code fixes are unreachable in live game** |
 
-### Stale PRs and branches (to close or clean up)
+### Stale PRs and branches
 
-Status as of 2026-05-17:
+Status as of 2026-06-14:
 
 | Branch | PR# | Commits not in main | Status | Recommendation |
 |--------|-----|:------------------:|--------|----------------|
@@ -110,29 +113,40 @@ Status as of 2026-05-17:
 | `origin/sprint-10-bugfixes` | #32 (MERGED) | 0 | Merged | Delete remote branch |
 | `origin/docs/agents-md-migration` | #39 (MERGED) | 0 | Merged | Delete remote branch |
 | `origin/audit/repo-state-apr-2026` | #40, #41 (MERGED) | 0 | Merged | Delete remote branch |
+| `origin/audit/repo-state-may-2026` | #42 (MERGED) | 0 | Merged | Delete remote branch |
 | All `cleanup/*` branches | #34–38 (MERGED) | 0 | Merged | Delete remote branches |
 
-### Open issues (to close or action)
+### GitHub issues (as of 2026-06-14)
 
-| Issue# | Title | State | Actually resolved? | Recommendation |
-|--------|-------|-------|:-----------------:|----------------|
-| #3 | P0: Combat system critical bugs and balance | OPEN | Partially — server security fixed (S5a-5c), GamePass checks added. Original gameplay feel items (damage numbers, block rework, stamina-on-death reset) NOT addressed | Keep open; remaining combat feel items still pending |
-| #4 | P1: Progression system and quest overhaul | OPEN | Partially — element XP system and level gating done (S4b), quest fixes done (S4a). Full redesign (multi-quest, move binding) NOT done | Keep open; major redesign items still pending |
-| #6 | P2: Audio system | OPEN | Partially — shop error sound, glider wind, environment audio controller done (S7). LavaZone Studio tags, area music IDs, Appa sounds still pending | Keep open; Studio + asset items pending |
-| #9 | P3: Feature backlog — combat, narrative, PVP arena | OPEN | No — all items are future features, untouched | Keep open; deferred intentionally |
-| #10 | EPIC: RoVatar Player Feedback Remediation | OPEN | Partially — many sub-items addressed via sprints 2-12, but the 25% approval rate root causes (combat feel, progression redesign, narrative) not fully fixed | Keep open until game metrics improve |
-| #14 | Quest tracker HUD | OPEN | Yes (code-only) — QuestTrackerHUD wired in sprint 12 (branch `sprint-12-quest-tracker-glider`) | Close once sprint 12 PR is merged |
+All 15 tracked issues are **CLOSED**. Issues #3, #4, #6, #9, #10, and #14 were open in the May audit and were closed on 2026-05-22.
+
+| Issue# | Title | Closed | Notes |
+|--------|-------|--------|-------|
+| #2 | P0: First-session onboarding blockers causing D1 churn | 2026-02-20 | |
+| #3 | P0: Combat system critical bugs and balance | 2026-05-22 | Partially resolved — gameplay feel items (damage numbers, block rework) remain |
+| #4 | P1: Progression system and quest overhaul | 2026-05-22 | Partially resolved — full redesign not done |
+| #5 | P1: UI/UX polish and fixes | 2026-02-22 | |
+| #6 | P2: Audio system — sounds, music, and atmosphere | 2026-05-22 | Studio tasks still pending (LavaZone tags, music IDs) |
+| #7 | P2: Pet Lemur (Momo) system implementation | 2026-02-22 | Studio model verification still pending |
+| #8 | P3: NPC and location renaming (IP de-risk) | 2026-02-22 | Studio renames still pending |
+| #9 | P3: Feature backlog — combat, narrative, PVP arena | 2026-05-22 | Deferred intentionally; items untouched |
+| #10 | EPIC: RoVatar Player Feedback Remediation | 2026-05-22 | Closed as milestone marker — root causes not fully resolved |
+| #14 | Quest tracker HUD — always-visible objective display | 2026-05-22 | Sprint-12 code done on branch; PR pending rebase |
+| #16 | Sprint 3: XP and gold earn rates review | 2026-02-21 | |
+| #17 | Sprint 3: Level-up celebration effect | 2026-02-22 | |
+| #18 | Sprint 3: Ability unlock ceremony | 2026-02-22 | |
+| #19 | Bug: XP listener accumulates duplicate connections | 2026-02-22 | |
 
 ### Known bugs (from AGENTS.md and handoffs)
 
-- `QuestDataService:OnPlayerAdded` mutates `plrData` without saving — data lost on quick disconnect
-- `_onCharacterAdded` shadows its `player` parameter — re-declaration can return nil
-- `SetupCharacter` async race — code after `SetupCharacter()` references stale original character
-- `ToggleWeapon` sword equip has 0.25s `task.delay` race — guard needed with state check
-- `DamageIndication.BindToAllNPCs()` is a one-shot scan — respawned NPCs not covered
-- `GetPlayerDataModel`/`GetSlotDataModel` access `workspace.ServerTime.Value` at require-time — crashes on client without pcall guard
-- 6 UNCERTAIN dead code items from QA audit (NPCModule.simplePath, DataReplicator Comm requires) — need in-game NPC pathfinding verification by Simon before removal
-- DevService uses `loadstring()` — needs admin-gate audit in place file
+- `QuestDataService:OnPlayerAdded` mutates `plrData` without saving — data lost on quick disconnect before 30-second auto-save
+- `_onCharacterAdded` shadows its `player` parameter with `Players:GetPlayerFromCharacter(character)` on line 419 — re-declaration can return nil
+- `SetupCharacter` async race — code after `SetupCharacter()` in `_onCharacterAdded` references the stale original character
+- `ToggleWeapon` sword equip has 0.25s `task.delay` race — guard needed with `Char:FindFirstChild("MeteoriteSword")` state check
+- `DamageIndication.BindToAllNPCs()` is a one-shot scan at startup — respawned NPCs not covered without a `workspace.DescendantAdded` listener
+- `GetPlayerDataModel`/`GetSlotDataModel` access `workspace.ServerTime.Value` at require-time — crashes on client without a `pcall` or `FindFirstChild` guard
+- 6 UNCERTAIN dead-code items from QA audit (`NPCModule.simplePath`, DataReplicator Comm requires) — need in-game NPC pathfinding verification by Simon before safe removal
+- DevService uses `loadstring()` — needs admin-gate audit directly in the place file
 
 ---
 
@@ -140,11 +154,11 @@ Status as of 2026-05-17:
 
 ### What is in the repo but not in the live game
 
-Every change from sprints 1–12 plus all 5 cleanup PRs is in the repo and **none of it has been published to the live Roblox game**. The last code change was `f86ce39` (2026-04-12); the game has not been updated since before Feb 2026.
+Every change from sprints 1–12 plus all 5 cleanup PRs is in the repo and **none of it has been published to the live Roblox game**. The last game-code change was commit `f86ce39` on 2026-04-12. The game has not been updated since before February 2026 — over four months of unshipped changes as of June 2026.
 
-**Security infrastructure (CRITICAL — live game is exploitable):**
+**Security infrastructure (CRITICAL — live game is currently exploitable):**
 - `GetPlrData` authorisation fix (same-player restriction)
-- `TeleportRequest` whitelist (Constants.Places)
+- `TeleportRequest` whitelist (`Constants.Places`)
 - `SafeZoneEnforcer.lua` (SafeZoneUtils inlined — all 7 abilities gated)
 - `DataReceivedFromClient` GamePasses validation
 - ElementLevels/Abilities server validation
@@ -156,16 +170,16 @@ Every change from sprints 1–12 plus all 5 cleanup PRs is in the repo and **non
 - `OverheadService.lua` — player overhead BillboardGuis
 - `EnvironmentAudioController.lua` — proximity lava/altitude wind audio
 - `QuestTrackerHUD.lua` — always-visible quest HUD (wired in sprint 12, pending PR)
-- `LevelUpService.lua` (fixed to watch Progression.LEVEL, not dead CombatStats.Level)
+- `LevelUpService.lua` (fixed to watch `Progression.LEVEL`, not dead `CombatStats.Level`)
 - `GameAnalyticsService.lua`
-- All UI/UX polish from sprints 6-9
+- All UI/UX polish from sprints 6–9
 
 **Code quality / stability (never live):**
 - DataStore exponential-backoff retry
-- warn/print override removal in DataServer
-- All deprecated `wait()`/`spawn()`/`delay()` replacements (sprints 10-11)
+- `warn`/`print` override removal in DataServer
+- All deprecated `wait()`/`spawn()`/`delay()` replacements (sprints 10–11)
 - Nil-guards across 6+ files
-- All dead code removed by cleanup PRs #34-38
+- All dead code removed by cleanup PRs #34–38
 
 ### How to close the gap
 
@@ -177,18 +191,18 @@ Every change from sprints 1–12 plus all 5 cleanup PRs is in the repo and **non
 6. Close Studio immediately after publish (stops auto-save overwriting the map)
 7. Verify via `https://www.roblox.com/games/10467665782`
 
-**WARNING:** Never open with Team Create OFF — the map does not render as local files and an accidental save will push an empty map. See AGENTS.md for full Team Create warning and recovery steps.
+**WARNING:** Never open with Team Create OFF — the map does not render as local files and an accidental save will push an empty map. See AGENTS.md for the full Team Create warning and recovery steps.
 
 ### Rojo integration status
 
 `default.project.json` is present and correctly configured:
 - `$ignoreUnknownInstances: true` on all services (prevents Rojo from deleting Studio-managed content)
 - `servePlaceIds` locked to Place ID `10467665782`
-- Workspace is NOT in the Rojo tree (protects the map from terrain wipe)
+- Workspace is NOT in the Rojo tree (protects map geometry from terrain wipe)
 
-### Skimowou/mesh blocker status
+### World geometry
 
-No explicit "Skimowou" or mesh blocker found in any tracking document. The game's world geometry lives entirely as MeshPart instances (67,938 per PLACE_AUDIT.md) referencing Roblox asset IDs owned by the RoVatar Studios group — they exist on Roblox's cloud and cannot be managed via Rojo. There is no indication of a specific mesh import blocker in any handoff.
+No explicit mesh or geometry blocker found in any tracking document. The game's world geometry lives entirely as MeshPart instances (67,938 per PLACE_AUDIT.md) referencing Roblox asset IDs owned by the RoVatar Studios group — they exist on Roblox's cloud and cannot be managed via Rojo. Rojo only manages scripts.
 
 ---
 
@@ -196,40 +210,39 @@ No explicit "Skimowou" or mesh blocker found in any tracking document. The game'
 
 | Contradiction | Document A | Document B | Resolution |
 |---------------|-----------|-----------|------------|
-| Sprint 12 PROGRESS.md says "Current Sprint: #12 — COMPLETE" | `sprint-12-quest-tracker-glider:PROGRESS.md` | `main:PROGRESS.md` (shows Sprint 11 as current) | Sprint 12 work is done on the branch but PROGRESS.md on main has not been updated — branch not yet merged |
-| PLACE_AUDIT.md lists QuestTrackerHUD as "IN REPO ONLY — Not yet deployed" | `PLACE_AUDIT.md` (2026-04-03) | Sprint 12 notes claim it was wired | PLACE_AUDIT.md reflects state at audit time; Sprint 12 subsequently wired the module — still undeployed |
-| PROGRESS.md (main) shows Sprint 11 as "Current Sprint" | `main:PROGRESS.md` | Sprint 12 branch PROGRESS.md | Sprint 12 work exists on an unmerged branch; PROGRESS.md on main was never updated |
-| PR #23 listed as CLOSED in `gh pr list` but PROGRESS.md says "dea0acc feat(quests): sprint 4a" was merged | `PROGRESS.md` | GitHub PR state | Changes were squash-committed into main via PR #32 (Sprint 10). PR #23 was closed without merge; its content is in main. No substance contradiction — only PR-state labelling. |
-| Sprint-12 wires `QuestTrackerHUD.Init()` in DataController, but `QuestTrackerHUD.lua` does not exist in main | `sprint-12-quest-tracker-glider:DataController.lua` (`3a4e5e3`) | `main` (commit `1f2067c` deleted QuestTrackerHUD.lua as dead code in cleanup PR #38) | The cleanup sprint removed QuestTrackerHUD.lua because sprint-12's wiring was on an unmerged branch, making it appear unreferenced. Sprint-12 must be rebased onto main — the rebase will restore QuestTrackerHUD.lua as a new file plus the wiring. The diff will then be 5 files, ~33 lines (not the 84-file diff that would result from merging the un-rebased branch). |
+| May 2026 audit listed issues #3, #4, #6, #9, #10, #14 as OPEN | `REPO_AUDIT_2026_04.md` (2026-05-17) | `gh issue list` (2026-06-14) | All six issues were closed 2026-05-22 — after the May audit |
+| May 2026 audit Sprint History listed PR #42 as "**OPEN** (this PR)" | Sprint History table, `REPO_AUDIT_2026_04.md` (2026-05-17) | `gh pr list` (2026-06-14) showing MERGED 2026-05-16 | PR #42 was merged before the audit text that describes it as open was committed — the content was written mid-PR and shipped in the same merge |
+| Sprint 12 PROGRESS.md says "Current Sprint: #12 — COMPLETE" | `sprint-12-quest-tracker-glider:PROGRESS.md` | `main:PROGRESS.md` (shows Sprint 11 as current) | Sprint 12 work is done on the branch but PROGRESS.md on main has never been updated — branch unmerged |
+| Sprint-12 wires `QuestTrackerHUD.Init()` in DataController, but `QuestTrackerHUD.lua` does not exist in main | `sprint-12-quest-tracker-glider:DataController.lua` (`3a4e5e3`) | `main` (cleanup PR #38 deleted QuestTrackerHUD.lua as apparently dead code) | The cleanup sprint removed QuestTrackerHUD.lua because sprint-12's wiring was on an unmerged branch, making it appear unreferenced. Sprint-12 must be rebased onto main — the rebase will restore QuestTrackerHUD.lua as a new file and the diff will be ~5 files, ~33 lines |
+| `main:PROGRESS.md` shows Sprint 11 as "Current Sprint" | `main:PROGRESS.md` | Sprint 12 branch PROGRESS.md | Sprint 12 work exists on an unmerged branch; PROGRESS.md on main was never updated to reflect it |
+| PR #23 listed as CLOSED in `gh pr list` but PROGRESS.md states its commit was merged | `PROGRESS.md` | GitHub PR state | Changes were squash-committed into main via PR #32 (Sprint 10). PR #23 was closed without merge; its content is in main. No substance contradiction — only PR-state labelling |
 
 ---
 
 ## Recommendations
 
-Prioritised by impact (updated 2026-05-17):
+Prioritised by impact (updated 2026-06-14):
 
-1. **[P0 — Do today] Rojo publish to live game.** The live game is missing every security fix, gameplay feature, and bug fix from all 12+ sprints spanning over three months. Players are currently exposed to `GetPlrData` data exfiltration and `TeleportRequest` redirect attacks. Publish via `wimma777` account following the Rojo workflow in AGENTS.md.
+1. **[P0 — Do today] Rojo publish to live game.** The live game is missing every security fix, gameplay feature, and bug fix from all 12+ sprints spanning over four months. Players are currently exposed to `GetPlrData` data exfiltration and `TeleportRequest` redirect attacks. Publish via `wimma777` account following the Rojo workflow in AGENTS.md.
 
-2. **[P1 — Overdue since 2026-05-12] Rebase and file a PR for sprint 12.** The sprint-12 branch has complete game code (5 files, 33 lines) but **cannot be filed as a PR without rebasing first.** The branch was created before 18 main commits and `QuestTrackerHUD.lua` was deleted from main during cleanup while sprint-12 still references it. Steps: (1) `git checkout sprint-12-quest-tracker-glider && git rebase origin/main` — this restores QuestTrackerHUD.lua as a new file and drops the already-merged cleanup changes from the diff; (2) resolve any conflicts in DataController.lua path changes from the flatten-paths PR; (3) `git push --force-with-lease origin sprint-12-quest-tracker-glider && gh pr create`.
+2. **[P1 — Overdue since 2026-05-12] Rebase and file a PR for sprint 12.** The sprint-12 branch has complete game code (5 files, ~33 lines) but **cannot be filed as a PR without rebasing first.** The branch was created before 18 main commits and `QuestTrackerHUD.lua` was deleted from main during cleanup while sprint-12 still references it. Steps: (1) `git checkout sprint-12-quest-tracker-glider && git rebase origin/main` — restores QuestTrackerHUD.lua as a new file and drops already-merged cleanup changes from the diff; (2) resolve any conflicts in DataController.lua path changes from the flatten-paths PR; (3) `git push --force-with-lease origin sprint-12-quest-tracker-glider && gh pr create`.
 
-3. **[P1 — Do this week] Studio renames for sprint 9 NPC work.** Quest resolution is broken for Oryn, Sael, and Kaen because workspace NPC instance names still use old IP-risk names. Blocks quest completion for those NPCs.
+3. **[P1 — Do this week] Studio renames for sprint 9 NPC work.** Quest resolution is broken for Oryn, Sael, and Kaen because workspace NPC instance names still use the old IP-risk names. Blocks quest completion for those NPCs until done.
 
-4. **[P1 — Do this week] Verify DevService `loadstring()` is admin-gated.** The only CRITICAL finding from PLACE_AUDIT.md not yet verified. Confirm it cannot be invoked by regular players (open place file in Studio, inspect DevService).
+4. **[P1 — Do this week] Verify DevService `loadstring()` is admin-gated.** The only CRITICAL finding from PLACE_AUDIT.md that has not yet been verified. Confirm it cannot be invoked by regular players (open place file in Studio, inspect DevService).
 
-5. **[P2 — Next sprint] Run QA_CHECKLIST.md in Studio.** The 20 post-cleanup tests (5 critical, 10 important, 5 minor) in `QA_CHECKLIST.md` have not been executed. Required before shipping to live players — confirms cleanup PRs #34-38 introduced no regressions.
+5. **[P2 — Next sprint] Run QA_CHECKLIST.md in Studio.** The 20 post-cleanup tests (5 critical, 10 important, 5 minor) in `QA_CHECKLIST.md` have not been executed. Required before shipping to live players — confirms cleanup PRs #34–38 introduced no regressions.
 
 6. **[P2 — Next sprint] Tag LavaZone Parts in Studio.** EnvironmentAudioController won't trigger lava audio without CollectionService "LavaZone" tags on the relevant Parts.
 
 7. **[P2 — Next sprint] Momo model verification.** Momo.lua requires a `PrimaryPart`, `Humanoid`, `State` StringValue, and `Smoke` ParticleEmitter. Without model verification, summoning Momo will crash.
 
-8. **[P3 — Batch cleanup] Delete stale remote branches.** 18+ merged/closed branches are cluttering the remote. A batch `git push origin --delete` pass would clean this up. Safe — all content is in main.
+8. **[P3 — Batch cleanup] Delete stale remote branches.** 20+ merged/closed branches clutter the remote. A batch `git push origin --delete` pass would clean this up safely — all content is in main.
 
-9. **[P3 — After sprint 12 merges] Close issue #14.** Quest Tracker HUD (issue #14) is resolved in code. Close once sprint 12 PR merges.
+9. **[P3 — Verify before removing] Resolve 6 UNCERTAIN dead-code items from QA_CHECKLIST.md.** Simon needs to verify NPC pathfinding (`NPCModule.simplePath`) and DataReplicator Comm requires in-game before these can be safely removed.
 
-10. **[P3 — Verify before removing] Resolve 6 UNCERTAIN dead-code items from QA_CHECKLIST.md.** Simon needs to verify NPC pathfinding (NPCModule.simplePath) and DataReplicator Comm requires in-game before these can be safely removed.
-
-11. **[P3 — Future] Address remaining open issues #3 and #4.** Combat feel (damage numbers, block rework) and the full progression redesign (multi-quest, move binding) are the root causes of the 25% approval rate. Highest-value work once deployment is unblocked.
+10. **[P3 — Future] Address remaining gameplay gaps.** Combat feel (damage numbers, block rework) and the full progression redesign (multi-quest, move binding) are the root causes of the 25% approval rate. These are the highest-value items once deployment is unblocked.
 
 ---
 
-*First produced: 2026-05-12. Refreshed: 2026-05-15, 2026-05-16, 2026-05-17. Last game-code change: `f86ce39` (2026-04-12).*
+*First produced: 2026-05-12. Refreshed: 2026-05-15, 2026-05-16, 2026-05-17, 2026-06-14. Last game-code change: `f86ce39` (2026-04-12).*
